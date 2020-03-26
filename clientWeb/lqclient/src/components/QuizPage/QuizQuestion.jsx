@@ -10,12 +10,15 @@ import Typography from "@material-ui/core/Typography";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import QuizReport from "./QuizReport";
 
 export class QuizQuestion extends Component {
   state = {
     counter: 0,
     cardDetails: [],
-    quizTitle: ""
+    quizTitle: "",
+    quizReport: [],
+    showReport: false,
   };
 
   componentDidMount() {
@@ -46,9 +49,39 @@ export class QuizQuestion extends Component {
     this.setState({cardDetails: cardDetails});
   };
 
+  handleSubmitQuiz = () => {
+    const questions = this.state.cardDetails;
+    let quizReport = [];
+    for (var i=0;i<questions.length;i++) {
+      var obj = {};
+      obj.questionText = questions[i].label;
+      obj.checkedAnswer = questions[i].checkedAns;
+      obj.checkedJustification = questions[i].checkedJust;
+      var answers = questions[i].answer;
+      for(var j = 0;j<answers.length;j++){
+        if(answers[j].is_correct){
+          obj.correctAnswer = answers[j].text;
+          var justifications = answers[j].justifications;
+          for(var k = 0; k < justifications.length;k++) {
+            if(justifications[k].is_correct){
+              obj.correctJustification = justifications[k].text;
+              obj.explaination = justifications[k].explaination[0].text;
+            }
+          }
+        }
+      }
+      quizReport.push(obj);
+    }
+    this.setState({showReport:true, quizReport: quizReport});
+  };
+
   render() {
     if (this.state.cardDetails.length === 0) {
       return null;
+    }
+
+    if (this.state.showReport) {
+      return <QuizReport quizTitle={this.state.quizTitle} quizReport = {this.state.quizReport}/>
     }
     return (
       <div>
@@ -65,7 +98,7 @@ export class QuizQuestion extends Component {
             </Link>
           </Typography>
           <Typography variant="subtitle2" color="textPrimary">
-            Available Quizzes
+          {this.state.quizTitle} Quiz
           </Typography>
         </Breadcrumbs>
         <Grid
@@ -83,7 +116,7 @@ export class QuizQuestion extends Component {
               variant="contained"
               color="primary"
               size="small"
-              onClick={this.nextQuestion}
+              onClick={this.handleSubmitQuiz}
               endIcon={<AssignmentTurnedInIcon />}
             >
               Submit
