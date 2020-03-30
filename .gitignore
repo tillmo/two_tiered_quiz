@@ -1,0 +1,19 @@
+*.pyc
+
+# Misc artifacts
+*.bak
+*.sav
+*.old
+*.orig
+.*.swp
+*.DS_Store
+*~
+.nfs*
+*.tmp
+*.rej
+*.project
+core
+python_modules/
+tmp/
+build/
+__pycache__/
