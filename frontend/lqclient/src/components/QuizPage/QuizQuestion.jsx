@@ -34,11 +34,15 @@ export class QuizQuestion extends Component {
   }
 
   previousQuestion = () => {
-    this.setState({ counter: this.state.counter - 1 });
+    if (this.state.counter !== 0) {
+      this.setState({ counter: this.state.counter - 1 });
+    }
   };
 
   nextQuestion = () => {
+    if (this.state.counter<(this.state.cardDetails.length-1)) {
     this.setState({ counter: this.state.counter + 1 });
+    }
   };
 
   updateCheckedAnwers = (qno, ansId, ans, justId, just) => {
