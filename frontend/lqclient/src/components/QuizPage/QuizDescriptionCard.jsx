@@ -35,10 +35,10 @@ const QuizDescriptionCard = props => {
   const classes = useStyles();
   console.log(props);
 
-  const formatDate = createdDate =>{
-    var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(createdDate).toLocaleDateString([],options);
-  };
+const formatDate = createdDate => {
+  var options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(createdDate).toLocaleDateString([], options);
+};
 
   return (
     <Card className={classes.root}>

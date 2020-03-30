@@ -18,7 +18,7 @@ class JustificationInline(nested_admin.NestedTabularInline):
 class AnswerInline(nested_admin.NestedTabularInline):
  model = Answer
  extra = 4
- max_num = 2
+ max_num = 4
  inlines = [JustificationInline,]
 
 

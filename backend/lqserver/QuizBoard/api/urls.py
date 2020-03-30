@@ -7,7 +7,8 @@ from .views import (
     QuizCreateView, 
     QuestionCreateView, 
     AnswerCreateView,
-    JustificationsCreateView
+    JustificationsCreateView,
+    ExplainationsCreateView
 )
 
 urlpatterns = [
@@ -16,5 +17,6 @@ urlpatterns = [
     path('createQuestion/', QuestionCreateView.as_view()),
     path('createAnswer/', AnswerCreateView.as_view()),
     path('createJustification/', JustificationsCreateView.as_view()),
+    path('createExplaination/', ExplainationsCreateView.as_view()),
     path('<pk>', QuizRetrieveView.as_view()),
 ]

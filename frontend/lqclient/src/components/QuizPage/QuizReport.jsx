@@ -8,10 +8,9 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Grid from "@material-ui/core/Grid";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
-import { green } from "@material-ui/core/colors";
-import Chip from '@material-ui/core/Chip';
+import Paper from "@material-ui/core/Paper";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 export class QuizReport extends Component {
   state = {
@@ -19,7 +18,34 @@ export class QuizReport extends Component {
     cardDetails: [],
     quizTitle: ""
   };
-  componentDidMount() {}
+  componentDidMount() {};
+
+  getAnswerColor = (ansid, isCorrectAns, checkedAid) => {
+      if (ansid === checkedAid) {
+        if(isCorrectAns) {
+          return "green";
+        } else {
+          return "red";
+        }
+      } else if (isCorrectAns) {
+        return "green";
+      } 
+  };
+
+  getIcons = (ansid, isCorrectAns, checkedAid) => {
+    if (ansid === checkedAid) {
+      if(isCorrectAns) {
+        return <CheckCircleIcon style={{marginLeft:"5px", fontSize:"small"}}/>;
+      } else {
+        return <CancelIcon style={{marginLeft:"5px", fontSize:"small"}}/>;
+      }
+    } else if (isCorrectAns) {
+      return <CheckCircleIcon style={{marginLeft:"5px", fontSize:"small"}}/>;
+    } else {
+      return null;
+    }
+};
+
   render() {
     return (
       <div>
@@ -44,83 +70,75 @@ export class QuizReport extends Component {
           spacing={1}
           style={{ justify: "space-between", marginTop: "10px" }}
         >
-        <Grid item xs={12} sm={12} md={8}>
+          <Grid item xs={12} sm={12} md={8}>
             <Typography variant="h6" color="textPrimary">
               {this.props.quizTitle} Quiz Report
             </Typography>
+          </Grid>
         </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={1}
-          style={{ justify: "space-between", marginTop: "10px" }}
-        >
-        {this.props.quizReport.map(obj => (
-          <ExpansionPanel>
+        <Paper style={{ padding: "10px", marginTop: "15px" }}>
+          Result: {this.props.score}/{this.props.totalScore}
+        </Paper>
+        {this.props.cardDetail.map((obj, index) => (
+          <ExpansionPanel style={{marginTop: "10px"}}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
+              aria-label="Expand"
+              aria-controls={obj.label}
+              id={obj.id}
             >
-              <Typography>{obj.questionText}</Typography>
+              <Typography>
+                {index + 1}. {obj.label}
+              </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Grid
-                container
-                spacing={1}
-                style={{ justify: "space-between" }}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="subtitle2">Checked Answer</Typography>
+            <Grid
+          container
+          spacing={1}
+          style={{ justify: "space-between" }}
+        >
+              {obj.answer.map(ans => (
+                <Grid item xs={12} sm={12} md={12}>
+                <ExpansionPanel>
+                  <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-label="Expand"
+                    aria-controls={ans.text}
+                    id={ans.id}
+                  >
+                    <Typography variant="body2">
+                      <div style={{ color:this.getAnswerColor(ans.id, ans.is_correct, obj.checkedAid) }}>
+                        {ans.text}{this.getIcons(ans.id, ans.is_correct, obj.checkedAid)}
+                      </div>
+                    </Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails style={{ marginLeft: "15px" }}>
+                    <Typography color="textSecondary" variant="body2">
+                      <Typography color="textPrimary" variant="subtitle2">
+                        Justifications
+                      </Typography>
+                      {ans.justifications.map(just => (
+                        <Typography>
+                          <div
+                            style={{
+                              fontSize: "15px",
+                              marginTop: "8px",
+                              color: this.getAnswerColor(just.id, just.is_correct, obj.checkedJustId)
+                            }}
+                          >
+                            {just.text}{this.getIcons(just.id, just.is_correct, obj.checkedJustId)}
+                          </div>
+                        </Typography>
+                      ))}
+                    </Typography>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
                 </Grid>
-                <Grid item xs={12} sm={12} style={{marginLeft:"15px" }}>
-                  <Typography variant="body2" color="textSecondary">
-                    {obj.checkedAnswer}
-                    <CloseIcon color="secondary" />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="subtitle2">Correct Answer</Typography>
-                </Grid>
-                <Grid item xs={12} sm={12} style={{marginLeft:"15px" }}>
-                  <Typography variant="body2" color="textSecondary">
-                    {obj.correctAnswer}
-                    <CheckIcon style={{ color: green[500] }} />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="subtitle2">
-                    Checked Justification
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12} style={{marginLeft:"15px" }}>
-                  <Typography variant="body2" color="textSecondary">
-                    {obj.checkedJustification}
-                    <CloseIcon color="secondary" />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="subtitle2">
-                    Correct Justification
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12} style={{marginLeft:"15px" }}>
-                  <Typography variant="body2" color="textSecondary">
-                    {obj.correctJustification}
-                    <CheckIcon style={{ color: green[500] }} />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="subtitle2">Explaination</Typography>
-                </Grid>
-                <Grid item xs={12} sm={12} style={{marginLeft:"15px" }}>
-                <Chip label={obj.explaination} color="primary"/>
-                </Grid>
+              ))}
               </Grid>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         ))}
-        </Grid>
       </div>
     );
   }

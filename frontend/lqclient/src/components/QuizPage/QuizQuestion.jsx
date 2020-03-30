@@ -9,7 +9,7 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Typography from "@material-ui/core/Typography";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import QuizReport from "./QuizReport";
 
 export class QuizQuestion extends Component {
@@ -19,6 +19,8 @@ export class QuizQuestion extends Component {
     quizTitle: "",
     quizReport: [],
     showReport: false,
+    score: 0,
+    totalScore: 0
   };
 
   componentDidMount() {
@@ -40,39 +42,61 @@ export class QuizQuestion extends Component {
   };
 
   updateCheckedAnwers = (qno, ansId, ans, justId, just) => {
-    console.log(qno+" "+ansId+" "+ans+" "+justId+" "+just);
+    console.log(qno + " " + ansId + " " + ans + " " + justId + " " + just);
     let cardDetails = this.state.cardDetails;
     cardDetails[qno].checkedAid = ansId;
     cardDetails[qno].checkedAns = ans;
     cardDetails[qno].checkedJustId = justId;
     cardDetails[qno].checkedJust = just;
-    this.setState({cardDetails: cardDetails});
+    this.setState({ cardDetails: cardDetails });
   };
 
   handleSubmitQuiz = () => {
     const questions = this.state.cardDetails;
     let quizReport = [];
-    for (var i=0;i<questions.length;i++) {
+    let score = 0;
+    let totalScore = 10 * questions.length;
+    for (var i = 0; i < questions.length; i++) {
       var obj = {};
+      obj.isCorrectAns = false;
+      obj.isCorrectJust = false;
+      obj.qno = i + 1;
       obj.questionText = questions[i].label;
       obj.checkedAnswer = questions[i].checkedAns;
       obj.checkedJustification = questions[i].checkedJust;
+      obj.checkedAid = questions[i].checkedAid;
+      obj.checkedJustId = questions[i].checkedJustId;
       var answers = questions[i].answer;
-      for(var j = 0;j<answers.length;j++){
-        if(answers[j].is_correct){
+      for (var j = 0; j < answers.length; j++) {
+        if (answers[j].is_correct) {
           obj.correctAnswer = answers[j].text;
-          var justifications = answers[j].justifications;
-          for(var k = 0; k < justifications.length;k++) {
-            if(justifications[k].is_correct){
-              obj.correctJustification = justifications[k].text;
-              obj.explaination = justifications[k].explaination[0].text;
-            }
-          }
+          obj.correctAid = answers[j].id;
         }
+        var justifications = answers[j].justifications;
+        for (var k = 0; k < justifications.length; k++) {
+          if (justifications[k].is_correct) {
+            if (obj.checkedJustId == justifications[k].id) {
+              score += 5;
+              obj.isCorrectJust = true;
+            }
+            obj.correctJustificationId = justifications[k].id;
+            obj.correctJustification = justifications[k].text;
+            obj.explaination = justifications[k].explaination[0].text;
+          }
+        }     
       }
+      if (obj.checkedAid == obj.correctAid) {
+        score += 5;
+        obj.isCorrectAns = true;
+      } 
       quizReport.push(obj);
     }
-    this.setState({showReport:true, quizReport: quizReport});
+    this.setState({
+      showReport: true,
+      quizReport: quizReport,
+      score: score,
+      totalScore: totalScore
+    });
   };
 
   render() {
@@ -81,7 +105,15 @@ export class QuizQuestion extends Component {
     }
 
     if (this.state.showReport) {
-      return <QuizReport quizTitle={this.state.quizTitle} quizReport = {this.state.quizReport}/>
+      return (
+        <QuizReport
+          quizTitle={this.state.quizTitle}
+          quizReport={this.state.quizReport}
+          score={this.state.score}
+          totalScore={this.state.totalScore}
+          cardDetail={this.state.cardDetails}
+        />
+      );
     }
     return (
       <div>
@@ -98,7 +130,7 @@ export class QuizQuestion extends Component {
             </Link>
           </Typography>
           <Typography variant="subtitle2" color="textPrimary">
-          {this.state.quizTitle} Quiz
+            {this.state.quizTitle} Quiz
           </Typography>
         </Breadcrumbs>
         <Grid
@@ -144,13 +176,13 @@ export class QuizQuestion extends Component {
               Next
             </Button>
           </Grid>
-          
+
           <Grid item xs={12} sm={12} md={12}>
             <QuizQuestionCard
               key={this.state.cardDetails[this.state.counter].id}
               cardDetail={this.state.cardDetails[this.state.counter]}
               quesNo={this.state.counter}
-              updateCheckedAnwers = {this.updateCheckedAnwers}
+              updateCheckedAnwers={this.updateCheckedAnwers}
             />
           </Grid>
         </Grid>

@@ -7,12 +7,12 @@ from rest_framework.generics import (
     UpdateAPIView,
     ListCreateAPIView,
 )
-from QuizBoard.models import Quiz, Question, Answer, Response, QuizTakers, Justifications
-from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer
+from QuizBoard.models import Quiz, Question, Answer, Response, QuizTakers, Justifications, Explaination
+from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer
 
 class QuizListView(ListAPIView):
     queryset = Quiz.objects.all()
-    serializer_class = QuizSerializer
+    serializer_class = QuizListSerializer
 
 
 class QuizRetrieveView(RetrieveAPIView):
@@ -54,3 +54,7 @@ class AnswerCreateView(CreateAPIView):
 class JustificationsCreateView(CreateAPIView):
     queryset = Justifications.objects.all()
     serializer_class = JustificationsSerializer
+
+class ExplainationsCreateView(CreateAPIView):
+    queryset = Explaination.objects.all()
+    serializer_class = ExplainationSerializer
