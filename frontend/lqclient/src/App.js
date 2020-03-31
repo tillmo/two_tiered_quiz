@@ -6,15 +6,10 @@ import SignUp from "./components/Authentication/SignUp";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 export class App extends Component {
-  state = {
-    isUserLoggedIn: false
-  };
-
-  setUser = isLoggedIn => {
-    this.setState({
-      isUserLoggedIn: true
-    });
-  };
+  
+  componentDidMount() {
+    document.title = 'Logik Quiz';
+  }
 
   render() {
     return (

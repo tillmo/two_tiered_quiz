@@ -22,7 +22,6 @@ const useStyles = makeStyles({
 
 const QuizQuestionCard = props => {
   const classes = useStyles();
-  console.log(props);
   const [value, setValue] = React.useState(
     props.cardDetail.checkedAns ? props.cardDetail.checkedAns : ""
   );

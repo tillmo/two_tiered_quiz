@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 
 const QuizDescriptionCard = props => {
   const classes = useStyles();
-  console.log(props);
+
 
 const formatDate = createdDate => {
   var options = { year: "numeric", month: "long", day: "numeric" };

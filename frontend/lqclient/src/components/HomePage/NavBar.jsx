@@ -28,11 +28,7 @@ import Badge from "@material-ui/core/Badge";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import QuizDescription from "../QuizPage/QuizDescription";
 import QuizQuestion from "../QuizPage/QuizQuestion";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -93,10 +89,9 @@ const useStyles = makeStyles(theme => ({
       display: "none"
     }
   },
-  listItemStyle:{
-    fontSize:"15px",
-  },
-
+  listItemStyle: {
+    fontSize: "15px"
+  }
 }));
 
 const NavBar = props => {
@@ -198,25 +193,37 @@ const NavBar = props => {
           <ListItemIcon style={{ minWidth: "40px" }}>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText classes={{primary:classes.listItemStyle}} primary="Weekly Quiz"/>
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary="Weekly Quiz"
+          />
         </ListItem>
         <ListItem button key={"archive"}>
           <ListItemIcon style={{ minWidth: "40px" }}>
             <StorageIcon />
           </ListItemIcon>
-          <ListItemText classes={{primary:classes.listItemStyle}} primary="Quizzes Available" />
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary="Quizzes Available"
+          />
         </ListItem>
         <ListItem button key={"dashboard"}>
           <ListItemIcon style={{ minWidth: "40px" }}>
             <AssessmentIcon />
           </ListItemIcon>
-          <ListItemText classes={{primary:classes.listItemStyle}} primary="Dashboard" />
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary="Dashboard"
+          />
         </ListItem>
         <ListItem button key={"checksample"}>
           <ListItemIcon style={{ minWidth: "40px" }}>
             <RateReviewIcon />
           </ListItemIcon>
-          <ListItemText classes={{primary:classes.listItemStyle}} primary="Check Sample" />
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary="Check Sample"
+          />
         </ListItem>
       </List>
       <Divider />
@@ -225,7 +232,10 @@ const NavBar = props => {
           <ListItemIcon style={{ minWidth: "40px" }}>
             <ReportIcon />
           </ListItemIcon>
-          <ListItemText classes={{primary:classes.listItemStyle}} primary="Report a problem" />
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary="Report a problem"
+          />
         </ListItem>
       </List>
     </div>
@@ -319,10 +329,9 @@ const NavBar = props => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        
-                <Route path={props.match.url + "/"} exact component={QuizDescription} />
-                <Route path={props.match.url +"/quiz/:id"} component={QuizQuestion} />
-        
+
+        <Route path={props.match.url + "/"} exact component={QuizDescription} />
+        <Route path={props.match.url + "/quiz/:id"} component={QuizQuestion} />
       </main>
     </div>
   );

@@ -9,7 +9,6 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
-import Snackbar from "@material-ui/core/Snackbar";
 import { BrowserRouter as Router, Switch, Route,Redirect } from "react-router-dom";
 
 
@@ -72,7 +71,6 @@ export class Login extends Component {
         password: this.state.password
       })
       .then(res => {
-        console.log(res.data);
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
         this.setState({

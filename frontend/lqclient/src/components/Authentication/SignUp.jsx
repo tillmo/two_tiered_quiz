@@ -9,8 +9,6 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
-import { BrowserRouter as Redirect } from "react-router-dom";
-import Snackbar from "@material-ui/core/Snackbar";
 
 export class SignUp extends Component {
   state = {
@@ -66,16 +64,12 @@ export class SignUp extends Component {
  
   handleLogin = e => {
     e.preventDefault();
-    console.log(this.state.formData);
     axios
       .post("http://127.0.0.1:8000/rest-auth/registration/", this.state.formData)
       .then(res => {
-        console.log(res.data);
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
-        this.setState({
-          isToken: true
-        });
+        this.props.history.push("/app/");
       })
       .catch(err => {
         console.log("invalid credentials");
@@ -83,9 +77,6 @@ export class SignUp extends Component {
   };
 
   render() {
-    if (this.state.isToken) {
-        return <Redirect to="/"/>;
-    }
     return (
       <div>
         <CssBaseline />

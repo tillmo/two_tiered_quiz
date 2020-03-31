@@ -46,7 +46,6 @@ export class QuizQuestion extends Component {
   };
 
   updateCheckedAnwers = (qno, ansId, ans, justId, just) => {
-    console.log(qno + " " + ansId + " " + ans + " " + justId + " " + just);
     let cardDetails = this.state.cardDetails;
     cardDetails[qno].checkedAid = ansId;
     cardDetails[qno].checkedAns = ans;
@@ -79,7 +78,7 @@ export class QuizQuestion extends Component {
         var justifications = answers[j].justifications;
         for (var k = 0; k < justifications.length; k++) {
           if (justifications[k].is_correct) {
-            if (obj.checkedJustId == justifications[k].id) {
+            if (obj.checkedJustId === justifications[k].id) {
               score += 5;
               obj.isCorrectJust = true;
             }
@@ -89,7 +88,7 @@ export class QuizQuestion extends Component {
           }
         }     
       }
-      if (obj.checkedAid == obj.correctAid) {
+      if (obj.checkedAid === obj.correctAid) {
         score += 5;
         obj.isCorrectAns = true;
       } 
