@@ -19,7 +19,6 @@ export class QuizDescription extends Component {
   }
 
   render() {
-    console.log(this.state.cardDetails);
     return (
       <div>
         <Grid container spacing={1} style={{ justify: "space-between" }}>

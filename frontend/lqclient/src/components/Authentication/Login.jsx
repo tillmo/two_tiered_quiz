@@ -24,6 +24,14 @@ export class Login extends Component {
   };
 
   componentDidMount() {
+    var loggedInTime = localStorage.getItem("loggedinTime");
+    
+    var timeDifference = (Date.now() - loggedInTime);
+    var diffMins = Math.round(((timeDifference % 86400000) % 3600000) / 60000); 
+    if (diffMins>60) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("loggedinTime");
+    } 
     var x = localStorage.getItem("token");
     if(x) {
       this.setState({isUserLoggedIn:true});
@@ -66,6 +74,7 @@ export class Login extends Component {
       .then(res => {
         console.log(res.data);
         localStorage.setItem("token", res.data.key);
+        localStorage.setItem("loggedinTime", Date.now());
         this.setState({
           isToken: true,
         });

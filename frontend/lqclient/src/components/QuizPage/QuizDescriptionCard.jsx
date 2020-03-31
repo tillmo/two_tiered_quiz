@@ -87,7 +87,7 @@ const formatDate = createdDate => {
             >
               <Link
                 style={{ color: "white", textDecoration: "none" }}
-                to={"/quiz/" + props.cardDetail.id}
+                to={"quiz/" + props.cardDetail.id}
               >
                 start
               </Link>

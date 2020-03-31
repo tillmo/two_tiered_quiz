@@ -72,6 +72,7 @@ export class SignUp extends Component {
       .then(res => {
         console.log(res.data);
         localStorage.setItem("token", res.data.key);
+        localStorage.setItem("loggedinTime", Date.now());
         this.setState({
           isToken: true
         });

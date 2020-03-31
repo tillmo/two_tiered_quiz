@@ -319,11 +319,10 @@ const NavBar = props => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Switch>
-                <Route path={props.match.url + "/"} component={QuizDescription} />
+        
+                <Route path={props.match.url + "/"} exact component={QuizDescription} />
                 <Route path={props.match.url +"/quiz/:id"} component={QuizQuestion} />
-              </Switch>
-              
+        
       </main>
     </div>
   );
