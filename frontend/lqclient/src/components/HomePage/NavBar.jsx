@@ -26,6 +26,13 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import Badge from "@material-ui/core/Badge";
 import MoreIcon from "@material-ui/icons/MoreVert";
+import QuizDescription from "../QuizPage/QuizDescription";
+import QuizQuestion from "../QuizPage/QuizQuestion";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -312,7 +319,11 @@ const NavBar = props => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {props.children}
+        <Switch>
+                <Route path={props.match.url + "/"} component={QuizDescription} />
+                <Route path={props.match.url +"/quiz/:id"} component={QuizQuestion} />
+              </Switch>
+              
       </main>
     </div>
   );

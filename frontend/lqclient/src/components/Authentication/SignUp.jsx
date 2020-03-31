@@ -9,77 +9,81 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
+import { BrowserRouter as Redirect } from "react-router-dom";
 import Snackbar from "@material-ui/core/Snackbar";
-import { BrowserRouter as Router, Switch, Route,Redirect } from "react-router-dom";
 
-
-
-export class Login extends Component {
+export class SignUp extends Component {
   state = {
-    username: "",
-    password: "",
-    open: false,
-    isToken: false,
-    isUserLoggedIn : false,
+      formData : {
+        username: "",
+        email:"",
+        password1: "",
+        password2:""
+      },
+    isToken: false
   };
-
-  componentDidMount() {
-    var x = localStorage.getItem("token");
-    if(x) {
-      this.setState({isUserLoggedIn:true});
-    }
-  }
 
   handle_username_change = e => {
+    const value = e.target.value;    
+    this.setState({
+        formData: {
+            ...this.state.formData,
+            username: value,
+          },
+    });
+  };
+
+  handle_email_change = e => {
+    const value = e.target.value;    
+    this.setState({
+        formData: {
+            ...this.state.formData,
+            email: value,
+          },
+    });
+  };
+
+  handle_password1_change = e => {
     const value = e.target.value;
     this.setState({
-      username: value
+        formData: {
+            ...this.state.formData,
+            password1: value,
+          },
     });
   };
 
-  handle_password_change = e => {
+  handle_password2_change = e => {
     const value = e.target.value;
     this.setState({
-      password: value
+        formData: {
+            ...this.state.formData,
+            password2: value,
+          },
     });
   };
 
-  handleClick = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  handleClose = (event, reason) => {
-    this.setState({
-      open: false
-    });
-  };
-
+ 
   handleLogin = e => {
     e.preventDefault();
+    console.log(this.state.formData);
     axios
-      .post("http://127.0.0.1:8000/rest-auth/login/", {
-        username: this.state.username,
-        password: this.state.password
-      })
+      .post("http://127.0.0.1:8000/rest-auth/registration/", this.state.formData)
       .then(res => {
         console.log(res.data);
         localStorage.setItem("token", res.data.key);
         this.setState({
-          isToken: true,
+          isToken: true
         });
-        
       })
-      .catch(err => {console.log("invalid credentials")});
+      .catch(err => {
+        console.log("invalid credentials");
+      });
   };
 
   render() {
-    if (this.state.isUserLoggedIn) {
-      return <Redirect to="/app/"/>;
-    }
     if (this.state.isToken) {
-      return <Redirect to="/app/"/>;
+        return <Redirect to="/"/>;
     }
     return (
       <div>
@@ -108,7 +112,7 @@ export class Login extends Component {
             >
               <Grid item xs={12} sm={12} md={12}>
                 <Typography component="h2" variant="h6">
-                  Login
+                  Sign Up
                   <LockOutlinedIcon
                     style={{
                       marginLeft: "5px",
@@ -120,7 +124,7 @@ export class Login extends Component {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
-                  style={{ width: "100%" }}
+                  fullWidth
                   id="outlined-basic"
                   label="username"
                   variant="outlined"
@@ -130,14 +134,40 @@ export class Login extends Component {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
-                  style={{ width: "100%" }}
+                  id="outlined-email-input"
+                  label="email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  variant="outlined"
+                  value={this.state.email}
+                  onChange={this.handle_email_change}
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={12}>
+                <TextField
+                  fullWidth
                   id="standard-password-input"
                   label="password"
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
                   value={this.state.password}
-                  onChange={this.handle_password_change}
+                  onChange={this.handle_password1_change}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <TextField
+                  fullWidth
+                  id="standard-password-input"
+                  label="confirm password"
+                  type="password"
+                  autoComplete="current-password"
+                  variant="outlined"
+                  value={this.state.password}
+                  onChange={this.handle_password2_change}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
@@ -146,12 +176,12 @@ export class Login extends Component {
                   color="primary"
                   onClick={this.handleLogin}
                 >
-                  Login
+                  Sign Up
                 </Button>
               </Grid>
               <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "15px" }}>
-                <Link href="/signup" variant="body2" style={{ marginLeft: "60px" }}>
-                  {"Don't have an account? Sign Up"}
+                <Link href="/" variant="body2" style={{ marginLeft: "60px" }}>
+                  {"Go to Login Page"}
                 </Link>
               </Grid>
             </Grid>
@@ -162,4 +192,4 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+export default SignUp;
