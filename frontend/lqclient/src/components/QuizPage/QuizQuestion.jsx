@@ -15,7 +15,7 @@ import QuizReport from "./QuizReport";
 export class QuizQuestion extends Component {
   state = {
     counter: 0,
-    cardDetails: [],
+    questions: [],
     quizTitle: "",
     quizReport: [],
     showReport: false,
@@ -26,9 +26,13 @@ export class QuizQuestion extends Component {
   componentDidMount() {
     const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
     axios.get(getUrl).then(res => {
+      let questions = res.data.question;
+      for (var i = 0; i < questions.length; i++) {
+        questions[i].isAttempted = false; 
+      }
       this.setState({
         quizTitle: res.data.name,
-        cardDetails: res.data.question
+        questions: questions
       });
     });
   }
@@ -40,22 +44,23 @@ export class QuizQuestion extends Component {
   };
 
   nextQuestion = () => {
-    if (this.state.counter<(this.state.cardDetails.length-1)) {
-    this.setState({ counter: this.state.counter + 1 });
+    if (this.state.counter < this.state.questions.length - 1) {
+      this.setState({ counter: this.state.counter + 1 });
     }
   };
 
   updateCheckedAnwers = (qno, ansId, ans, justId, just) => {
-    let cardDetails = this.state.cardDetails;
-    cardDetails[qno].checkedAid = ansId;
-    cardDetails[qno].checkedAns = ans;
-    cardDetails[qno].checkedJustId = justId;
-    cardDetails[qno].checkedJust = just;
-    this.setState({ cardDetails: cardDetails });
+    let questions = this.state.questions;
+    questions[qno].isAttempted = true;
+    questions[qno].checkedAid = ansId;
+    questions[qno].checkedAns = ans;
+    questions[qno].checkedJustId = justId;
+    questions[qno].checkedJust = just;
+    this.setState({ cardDetails: questions });
   };
 
   handleSubmitQuiz = () => {
-    const questions = this.state.cardDetails;
+    const questions = this.state.questions;
     let quizReport = [];
     let score = 0;
     let totalScore = 10 * questions.length;
@@ -74,24 +79,24 @@ export class QuizQuestion extends Component {
         if (answers[j].is_correct) {
           obj.correctAnswer = answers[j].text;
           obj.correctAid = answers[j].id;
-        }
-        var justifications = answers[j].justifications;
-        for (var k = 0; k < justifications.length; k++) {
-          if (justifications[k].is_correct) {
-            if (obj.checkedJustId === justifications[k].id) {
-              score += 5;
-              obj.isCorrectJust = true;
+          var justifications = answers[j].justifications;
+          for (var k = 0; k < justifications.length; k++) {
+            if (justifications[k].is_correct) {
+              if (obj.checkedJustId === justifications[k].id) {
+                score += 5;
+                obj.isCorrectJust = true;
+                obj.correctJustificationId = justifications[k].id;
+                obj.correctJustification = justifications[k].text;
+                obj.explaination = justifications[k].explaination[0].text;
+              }
             }
-            obj.correctJustificationId = justifications[k].id;
-            obj.correctJustification = justifications[k].text;
-            obj.explaination = justifications[k].explaination[0].text;
           }
-        }     
+        }
       }
       if (obj.checkedAid === obj.correctAid) {
         score += 5;
         obj.isCorrectAns = true;
-      } 
+      }
       quizReport.push(obj);
     }
     this.setState({
@@ -103,7 +108,7 @@ export class QuizQuestion extends Component {
   };
 
   render() {
-    if (this.state.cardDetails.length === 0) {
+    if (this.state.questions.length === 0) {
       return null;
     }
 
@@ -114,7 +119,7 @@ export class QuizQuestion extends Component {
           quizReport={this.state.quizReport}
           score={this.state.score}
           totalScore={this.state.totalScore}
-          cardDetail={this.state.cardDetails}
+          questions={this.state.questions}
         />
       );
     }
@@ -182,8 +187,8 @@ export class QuizQuestion extends Component {
 
           <Grid item xs={12} sm={12} md={12}>
             <QuizQuestionCard
-              key={this.state.cardDetails[this.state.counter].id}
-              cardDetail={this.state.cardDetails[this.state.counter]}
+              key={this.state.questions[this.state.counter].id}
+              question={this.state.questions[this.state.counter]}
               quesNo={this.state.counter}
               updateCheckedAnwers={this.updateCheckedAnwers}
             />
