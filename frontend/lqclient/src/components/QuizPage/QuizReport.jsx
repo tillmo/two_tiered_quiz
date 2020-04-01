@@ -38,20 +38,14 @@ export class QuizReport extends Component {
     checkedid,
     isCorrectAns
   ) => {
-    if (isCorrectAns) {
-      if (id === checkedid) {
-        if (isCorrectJustification) {
-          return "green";
-        } else {
-          return "red";
-        }
-      } else if (isCorrectJustification) {
+    if (id === checkedid) {
+      if (isCorrectJustification) {
         return "green";
-      }
-    } else {
-      if (id === checkedid) {
+      } else {
         return "red";
       }
+    } else if (isCorrectJustification) {
+      return "green";
     }
   };
 
@@ -79,42 +73,40 @@ export class QuizReport extends Component {
     checkedid,
     isCorrectAns
   ) => {
-    if (isCorrectAns) {
-      if (id === checkedid) {
-        if (isCorrectJustification) {
-          return (
-            <CheckCircleIcon style={{ marginLeft: "5px", fontSize: "small" }} />
-          );
-        } else {
-          return (
-            <CancelIcon style={{ marginLeft: "5px", fontSize: "small" }} />
-          );
-        }
-      } else if (isCorrectJustification) {
+    if (id === checkedid) {
+      if (isCorrectJustification) {
         return (
           <CheckCircleIcon style={{ marginLeft: "5px", fontSize: "small" }} />
         );
       } else {
-        return null;
+        return <CancelIcon style={{ marginLeft: "5px", fontSize: "small" }} />;
       }
+    } else if (isCorrectJustification) {
+      return (
+        <CheckCircleIcon style={{ marginLeft: "5px", fontSize: "small" }} />
+      );
     } else {
-      if (id === checkedid) {
-        return (
-          <CancelIcon style={{ marginLeft: "5px", fontSize: "small" }} />
-        );
-      }
+      return null;
     }
   };
 
   showExplaination = (id, isCorrectJustification, checkedid, isCorrectAns) => {
-    if (id === checkedid && isCorrectAns) {
+    if (id === checkedid) {
       if (isCorrectJustification) {
         return false;
       } else {
         return true;
       }
-    } else if(id === checkedid) {
+    } else if (id === checkedid) {
       return true;
+    }
+  };
+
+  showUserAnswer = (ansid, isCorrectAns, checkedAid) => {
+    if (ansid === checkedAid) {
+      return "-Your Answer";
+    } else if (isCorrectAns) {
+      return "";
     }
   };
 
@@ -207,6 +199,20 @@ export class QuizReport extends Component {
                                 ans.is_correct,
                                 obj.checkedAid
                               )}
+                              <Typography
+                                color="textSecondary"
+                                variant="subtitle2"
+                                style={{
+                                  display: "inline-block",
+                                  marginLeft: "5px"
+                                }}
+                              >
+                                {this.showUserAnswer(
+                                  ans.id,
+                                  ans.is_correct,
+                                  obj.checkedAid
+                                )}
+                              </Typography>
                             </div>
                           </Typography>
                         </ExpansionPanelSummary>
@@ -253,7 +259,7 @@ export class QuizReport extends Component {
                                       variant="subtitle2"
                                       style={{ display: "inline-block" }}
                                     >
-                                      Because:
+                                      justification wrong because:
                                     </Typography>
                                     <Typography
                                       color="textSecondary"
