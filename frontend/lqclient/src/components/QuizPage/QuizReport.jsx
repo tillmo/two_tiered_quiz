@@ -48,6 +48,10 @@ export class QuizReport extends Component {
       } else if (isCorrectJustification) {
         return "green";
       }
+    } else {
+      if (id === checkedid) {
+        return "red";
+      }
     }
   };
 
@@ -94,21 +98,23 @@ export class QuizReport extends Component {
         return null;
       }
     } else {
-      return null;
+      if (id === checkedid) {
+        return (
+          <CancelIcon style={{ marginLeft: "5px", fontSize: "small" }} />
+        );
+      }
     }
   };
 
   showExplaination = (id, isCorrectJustification, checkedid, isCorrectAns) => {
-    if (isCorrectAns) {
-      if (id === checkedid) {
-        return true;
-      } else if (isCorrectJustification) {
-        return true;
-      } else {
+    if (id === checkedid && isCorrectAns) {
+      if (isCorrectJustification) {
         return false;
+      } else {
+        return true;
       }
-    } else {
-      return false;
+    } else if(id === checkedid) {
+      return true;
     }
   };
 

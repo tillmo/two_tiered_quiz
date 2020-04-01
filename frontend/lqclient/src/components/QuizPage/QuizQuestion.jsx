@@ -108,6 +108,8 @@ export class QuizQuestion extends Component {
   };
 
   render() {
+    const counter = this.state.counter;
+    const noOfQuestions = this.state.questions.length - 1
     if (this.state.questions.length === 0) {
       return null;
     }
@@ -165,8 +167,9 @@ export class QuizQuestion extends Component {
           <Grid item xs={3} sm={2} md={1}>
             <Button
               variant="contained"
-              color="primary"
+              color={(counter !== 0)? "primary" : "disabled"}
               size="small"
+              disabled={(counter === 0)}
               onClick={this.previousQuestion}
               startIcon={<KeyboardArrowLeftIcon />}
             >
@@ -176,9 +179,10 @@ export class QuizQuestion extends Component {
           <Grid item xs={3} sm={2} md={1}>
             <Button
               variant="contained"
-              color="primary"
+              color={(counter < noOfQuestions)? "primary" : "disabled"}
               size="small"
               onClick={this.nextQuestion}
+              disabled={(counter >= noOfQuestions)}
               endIcon={<KeyboardArrowRightIcon />}
             >
               Next
