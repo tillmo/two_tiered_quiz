@@ -23,13 +23,13 @@ const useStyles = makeStyles({
 const QuizQuestionCard = props => {
   const classes = useStyles();
   const [value, setValue] = React.useState(
-    props.cardDetail.checkedAns ? props.cardDetail.checkedAns : ""
+    props.question.checkedAns ? props.question.checkedAns : ""
   );
   const [justificationvalue, setJustificationValue] = React.useState(
-    props.cardDetail.checkedJustId ? props.cardDetail.checkedJustId : -1
+    props.question.checkedJustId ? props.question.checkedJustId : -1
   );
   const [isExpanded, setExpandedValue] = React.useState(
-    props.cardDetail.checkedAid ? props.cardDetail.checkedAid : -1
+    props.question.checkedAid ? props.question.checkedAid : -1
   );
 
   const handleChange = event => {
@@ -55,15 +55,15 @@ const QuizQuestionCard = props => {
     <Card className={classes.root}>
       <CardContent>
         <Typography gutterBottom variant="h6" component="h2">
-          {props.quesNo + 1}.{props.cardDetail.label}
+          {props.quesNo + 1}.{props.question.label}
         </Typography>
         <RadioGroup
-          aria-label={props.cardDetail.label}
-          name={props.cardDetail.label}
+          aria-label={props.question.label}
+          name={props.question.label}
           value={value}
           onChange={handleChange}
         >
-          {props.cardDetail.answer.map(ans => (
+          {props.question.answer.map(ans => (
             <ExpansionPanel expanded={isExpanded === ans.id}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
