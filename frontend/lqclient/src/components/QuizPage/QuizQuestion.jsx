@@ -11,6 +11,7 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import QuizReport from "./QuizReport";
+import QuizSubmitConfirmDialog from "./QuizSubmitConfirmDialog";
 
 export class QuizQuestion extends Component {
   state = {
@@ -20,7 +21,8 @@ export class QuizQuestion extends Component {
     quizReport: [],
     showReport: false,
     score: 0,
-    totalScore: 0
+    totalScore: 0,
+    openConfirmDialog: false
   };
 
   componentDidMount() {
@@ -28,7 +30,7 @@ export class QuizQuestion extends Component {
     axios.get(getUrl).then(res => {
       let questions = res.data.question;
       for (var i = 0; i < questions.length; i++) {
-        questions[i].isAttempted = false; 
+        questions[i].isAttempted = false;
       }
       this.setState({
         quizTitle: res.data.name,
@@ -107,9 +109,17 @@ export class QuizQuestion extends Component {
     });
   };
 
+  openQuizSubmitConfirmDialog = () => {
+    this.setState({ openConfirmDialog: true });
+  };
+
+  handleDialogClose = () =>{
+    this.setState({ openConfirmDialog: false });
+  }
+
   render() {
     const counter = this.state.counter;
-    const noOfQuestions = this.state.questions.length - 1
+    const noOfQuestions = this.state.questions.length - 1;
     if (this.state.questions.length === 0) {
       return null;
     }
@@ -148,46 +158,46 @@ export class QuizQuestion extends Component {
           spacing={1}
           style={{ justify: "space-between", marginTop: "10px" }}
         >
-          <Grid item xs={12} sm={12} md={8}>
+          <Grid item xs={12} sm={12} md={6}>
             <Typography variant="h6" color="textPrimary">
               {this.state.quizTitle} Quiz
             </Typography>
           </Grid>
-          <Grid item xs={6} sm={6} md={2}>
+          <Grid item xs={12} sm={12} md={3}>
             <Button
               variant="contained"
               color="primary"
               size="small"
-              onClick={this.handleSubmitQuiz}
+              onClick={this.openQuizSubmitConfirmDialog}
               endIcon={<AssignmentTurnedInIcon />}
             >
-              Submit
+              Submit Quiz
             </Button>
           </Grid>
-          <Grid item xs={3} sm={2} md={1}>
+          <Grid item xs={12} sm={12} md={3}>
             <Button
               variant="contained"
-              color={(counter !== 0)? "primary" : "disabled"}
+              color={counter !== 0 ? "primary" : "disabled"}
               size="small"
-              disabled={(counter === 0)}
+              disabled={counter === 0}
               onClick={this.previousQuestion}
               startIcon={<KeyboardArrowLeftIcon />}
             >
               Back
             </Button>
-          </Grid>
-          <Grid item xs={3} sm={2} md={1}>
             <Button
               variant="contained"
-              color={(counter < noOfQuestions)? "primary" : "disabled"}
+              color={counter < noOfQuestions ? "primary" : "disabled"}
               size="small"
+              style={{marginLeft:"8px",float:"right"}}
               onClick={this.nextQuestion}
-              disabled={(counter >= noOfQuestions)}
+              disabled={counter >= noOfQuestions}
               endIcon={<KeyboardArrowRightIcon />}
             >
               Next
             </Button>
           </Grid>
+          
 
           <Grid item xs={12} sm={12} md={12}>
             <QuizQuestionCard
@@ -198,6 +208,11 @@ export class QuizQuestion extends Component {
             />
           </Grid>
         </Grid>
+        <QuizSubmitConfirmDialog
+          dialogOpen={this.state.openConfirmDialog}
+          handleClose={this.handleDialogClose}
+          submitQuiz={this.handleSubmitQuiz}
+        />
       </div>
     );
   }
