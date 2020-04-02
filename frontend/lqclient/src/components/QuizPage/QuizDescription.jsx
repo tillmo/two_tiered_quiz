@@ -6,6 +6,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { HasSessionExpired } from "../Utils/LoginUtils.js";
 
 export class QuizDescription extends Component {
   state = {
@@ -13,9 +14,13 @@ export class QuizDescription extends Component {
   };
 
   componentDidMount() {
-    axios.get("http://127.0.0.1:8000/api/").then(res => {
-      this.setState({ cardDetails: res.data });
-    });
+    if (HasSessionExpired()) {
+      this.props.history.push("/");
+    } else {
+      axios.get("http://127.0.0.1:8000/api/").then(res => {
+        this.setState({ cardDetails: res.data });
+      });
+    }
   }
 
   render() {
@@ -25,7 +30,7 @@ export class QuizDescription extends Component {
           <Grid item xs={12} sm={12} md={12}>
             <Breadcrumbs
               style={{
-                marginLeft: "8px",
+                marginLeft: "8px"
               }}
               separator={<NavigateNextIcon fontSize="small" />}
               aria-label="breadcrumb"

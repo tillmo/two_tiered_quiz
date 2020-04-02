@@ -12,6 +12,7 @@ import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import QuizReport from "./QuizReport";
 import QuizSubmitConfirmDialog from "./QuizSubmitConfirmDialog";
+import { HasSessionExpired } from "../Utils/LoginUtils.js";
 
 export class QuizQuestion extends Component {
   state = {
@@ -26,17 +27,21 @@ export class QuizQuestion extends Component {
   };
 
   componentDidMount() {
-    const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
-    axios.get(getUrl).then(res => {
-      let questions = res.data.question;
-      for (var i = 0; i < questions.length; i++) {
-        questions[i].isAttempted = false;
-      }
-      this.setState({
-        quizTitle: res.data.name,
-        questions: questions
+    if (HasSessionExpired()) {
+      this.props.history.push("/");
+    } else {
+      const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
+      axios.get(getUrl).then(res => {
+        let questions = res.data.question;
+        for (var i = 0; i < questions.length; i++) {
+          questions[i].isAttempted = false;
+        }
+        this.setState({
+          quizTitle: res.data.name,
+          questions: questions
+        });
       });
-    });
+    }
   }
 
   previousQuestion = () => {
@@ -113,15 +118,19 @@ export class QuizQuestion extends Component {
     this.setState({ openConfirmDialog: true });
   };
 
-  handleDialogClose = () =>{
+  handleDialogClose = () => {
     this.setState({ openConfirmDialog: false });
-  }
+  };
 
   render() {
     const counter = this.state.counter;
     const noOfQuestions = this.state.questions.length - 1;
     if (this.state.questions.length === 0) {
-      return null;
+      return (
+        <Typography variant="h6" color="textPrimary">
+          No Questions
+        </Typography>
+      );
     }
 
     if (this.state.showReport) {
@@ -189,7 +198,7 @@ export class QuizQuestion extends Component {
               variant="contained"
               color={counter < noOfQuestions ? "primary" : "disabled"}
               size="small"
-              style={{marginLeft:"8px",float:"right"}}
+              style={{ marginLeft: "8px", float: "right" }}
               onClick={this.nextQuestion}
               disabled={counter >= noOfQuestions}
               endIcon={<KeyboardArrowRightIcon />}
@@ -197,7 +206,6 @@ export class QuizQuestion extends Component {
               Next
             </Button>
           </Grid>
-          
 
           <Grid item xs={12} sm={12} md={12}>
             <QuizQuestionCard
