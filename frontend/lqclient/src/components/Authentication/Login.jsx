@@ -9,9 +9,16 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route,Redirect } from "react-router-dom";
-
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
+import Snackbar from "@material-ui/core/Snackbar";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { HasSessionExpired } from "../Utils/LoginUtils.js";
 
 export class Login extends Component {
   state = {
@@ -19,21 +26,15 @@ export class Login extends Component {
     password: "",
     open: false,
     isToken: false,
-    isUserLoggedIn : false,
+    isUserLoggedIn: false,
+    openSnackBar: false,
+    errorMessage: "",
+    openBackDrop: false
   };
 
   componentDidMount() {
-    var loggedInTime = localStorage.getItem("loggedinTime");
-    
-    var timeDifference = (Date.now() - loggedInTime);
-    var diffMins = Math.round(((timeDifference % 86400000) % 3600000) / 60000); 
-    if (diffMins>60) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("loggedinTime");
-    } 
-    var x = localStorage.getItem("token");
-    if(x) {
-      this.setState({isUserLoggedIn:true});
+    if (!HasSessionExpired()) {
+      this.setState({ isUserLoggedIn: true });
     }
   }
 
@@ -53,7 +54,7 @@ export class Login extends Component {
 
   handleClick = () => {
     this.setState({
-      open: true,
+      open: true
     });
   };
 
@@ -65,6 +66,7 @@ export class Login extends Component {
 
   handleLogin = e => {
     e.preventDefault();
+    this.setState({ openBackDrop: true });
     axios
       .post("http://127.0.0.1:8000/rest-auth/login/", {
         username: this.state.username,
@@ -75,21 +77,48 @@ export class Login extends Component {
         localStorage.setItem("loggedinTime", Date.now());
         this.setState({
           isToken: true,
+          openBackDrop: false
         });
-        
       })
-      .catch(err => {console.log("invalid credentials")});
+      .catch(err => {
+        this.setState({
+          openBackDrop: false,
+          openSnackBar: true,
+          errorMessage: Object.entries(err.response.data).map(
+            ([key, value]) => (
+              <Typography>
+                {key} - {value}
+              </Typography>
+            )
+          )
+        });
+      });
+  };
+
+  handleClose = () => {
+    this.setState({ openSnackBar: false, errorMessage: "" });
   };
 
   render() {
+    const { openSnackBar, errorMessage, openBackDrop } = this.state;
     if (this.state.isUserLoggedIn) {
-      return <Redirect to="/app/"/>;
+      return <Redirect to="/app/" />;
     }
     if (this.state.isToken) {
-      return <Redirect to="/app/"/>;
+      return <Redirect to="/app/" />;
     }
     return (
       <div>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          autoHideDuration={6000}
+          open={openSnackBar}
+          onClose={this.handleClose}
+          message={errorMessage}
+        />
+        <Backdrop open={openBackDrop} style={{ zIndex: 1000, color: "#fff" }}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <CssBaseline />
         <Container maxWidth="sm" style={{ marginTop: "50px" }}>
           <Typography
@@ -133,6 +162,7 @@ export class Login extends Component {
                   variant="outlined"
                   value={this.state.username}
                   onChange={this.handle_username_change}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
@@ -145,6 +175,7 @@ export class Login extends Component {
                   variant="outlined"
                   value={this.state.password}
                   onChange={this.handle_password_change}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
@@ -157,7 +188,11 @@ export class Login extends Component {
                 </Button>
               </Grid>
               <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "15px" }}>
-                <Link href="/signup" variant="body2" style={{ marginLeft: "60px" }}>
+                <Link
+                  href="/signup"
+                  variant="body2"
+                  style={{ marginLeft: "60px" }}
+                >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

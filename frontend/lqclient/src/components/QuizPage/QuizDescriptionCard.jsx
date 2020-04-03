@@ -18,7 +18,8 @@ const useStyles = makeStyles({
     borderLeftWidth: "3px",
     borderLeftColor: "#1976d2",
     borderLeftStyle: "solid",
-    borderRadius: "1px"
+    borderRadius: "1px",
+    minHeight: "190px"
   },
   media: {
     height: 140
@@ -34,11 +35,10 @@ const useStyles = makeStyles({
 const QuizDescriptionCard = props => {
   const classes = useStyles();
 
-
-const formatDate = createdDate => {
-  var options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(createdDate).toLocaleDateString([], options);
-};
+  const formatDate = createdDate => {
+    var options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(createdDate).toLocaleDateString([], options);
+  };
 
   return (
     <Card className={classes.root}>
@@ -46,9 +46,11 @@ const formatDate = createdDate => {
         <Typography gutterBottom variant="h6" component="h2">
           {props.cardDetail.name}
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {props.cardDetail.description}
-        </Typography>
+        <div style={{ minHeight: "40px" }}>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {props.cardDetail.description}
+          </Typography>
+        </div>
         <Grid
           container
           spacing={1}

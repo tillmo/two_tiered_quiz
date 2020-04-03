@@ -127,6 +127,12 @@ const NavBar = props => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const logout = event => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loggedinTime");
+    props.history.replace('/');
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -140,6 +146,7 @@ const NavBar = props => {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={logout}>logout</MenuItem>
     </Menu>
   );
 

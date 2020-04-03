@@ -9,76 +9,111 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
+import Snackbar from "@material-ui/core/Snackbar";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export class SignUp extends Component {
   state = {
-      formData : {
-        username: "",
-        email:"",
-        password1: "",
-        password2:""
-      },
-    isToken: false
+    formData: {
+      username: "",
+      email: "",
+      password1: "",
+      password2: ""
+    },
+    openSnackBar: false,
+    errorMessage: "",
+    openBackDrop: false
   };
 
   handle_username_change = e => {
-    const value = e.target.value;    
+    const value = e.target.value;
     this.setState({
-        formData: {
-            ...this.state.formData,
-            username: value,
-          },
+      formData: {
+        ...this.state.formData,
+        username: value
+      }
     });
   };
 
   handle_email_change = e => {
-    const value = e.target.value;    
+    const value = e.target.value;
     this.setState({
-        formData: {
-            ...this.state.formData,
-            email: value,
-          },
+      formData: {
+        ...this.state.formData,
+        email: value
+      }
     });
   };
 
   handle_password1_change = e => {
     const value = e.target.value;
     this.setState({
-        formData: {
-            ...this.state.formData,
-            password1: value,
-          },
+      formData: {
+        ...this.state.formData,
+        password1: value
+      }
     });
   };
 
   handle_password2_change = e => {
     const value = e.target.value;
     this.setState({
-        formData: {
-            ...this.state.formData,
-            password2: value,
-          },
+      formData: {
+        ...this.state.formData,
+        password2: value
+      }
     });
   };
 
- 
   handleLogin = e => {
     e.preventDefault();
+    this.setState({ openBackDrop: true });
     axios
-      .post("http://127.0.0.1:8000/rest-auth/registration/", this.state.formData)
+      .post(
+        "http://127.0.0.1:8000/rest-auth/registration/",
+        this.state.formData
+      )
       .then(res => {
+        this.setState({ openBackDrop: false });
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
         this.props.history.push("/app/");
       })
       .catch(err => {
-        console.log("invalid credentials");
+        this.setState({
+          openBackDrop: false,
+          openSnackBar: true,
+          errorMessage: Object.entries(err.response.data).map(
+            ([key, value]) => (
+              <Typography>
+                {key} - {value}
+              </Typography>
+            )
+          )
+        });
       });
   };
 
+  handleClose = () => {
+    this.setState({ openSnackBar: false, errorMessage: "" });
+  };
+
   render() {
+    const { email, password1, password2 } = this.state.formData;
+    const { openSnackBar, errorMessage, openBackDrop } = this.state;
     return (
       <div>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          autoHideDuration={6000}
+          open={openSnackBar}
+          onClose={this.handleClose}
+          message={errorMessage}
+        />
+        <Backdrop open={openBackDrop} style={{ zIndex: 1000, color: "#fff" }}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <CssBaseline />
         <Container maxWidth="sm" style={{ marginTop: "50px" }}>
           <Typography
@@ -120,8 +155,9 @@ export class SignUp extends Component {
                   id="outlined-basic"
                   label="username"
                   variant="outlined"
-                  value={this.state.username}
+                  value={this.state.formData.username}
                   onChange={this.handle_username_change}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
@@ -132,34 +168,35 @@ export class SignUp extends Component {
                   name="email"
                   autoComplete="email"
                   variant="outlined"
-                  value={this.state.email}
+                  value={email}
                   onChange={this.handle_email_change}
                   fullWidth
+                  required
                 />
               </Grid>
 
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   fullWidth
-                  id="standard-password-input"
                   label="password"
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
-                  value={this.state.password}
+                  value={password1}
                   onChange={this.handle_password1_change}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   fullWidth
-                  id="standard-password-input"
                   label="confirm password"
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
-                  value={this.state.password}
+                  value={password2}
                   onChange={this.handle_password2_change}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
