@@ -1,8 +1,9 @@
 export const HasSessionExpired = () => {
     var loggedInTime = localStorage.getItem("loggedinTime");
+    var authToken = localStorage.getItem("token");
     var timeDifference = Date.now() - loggedInTime;
-    var diffMins = Math.round(((timeDifference % 86400000) % 3600000) / 60000);
-    if (loggedInTime===null) {
+    var diffMins = Math.round((timeDifference / 1000) / 60);
+    if (loggedInTime===null && authToken===null) {
       return true;
     }
     if ( diffMins > 60 ) {
