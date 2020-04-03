@@ -68,67 +68,31 @@ export class SignUp extends Component {
 
   handleLogin = e => {
     e.preventDefault();
-    if (this._validateFormData()) {
-      axios
-        .post(
-          "http://127.0.0.1:8000/rest-auth/registration/",
-          this.state.formData
-        )
-        .then(res => {
-          this.setState({ openBackDrop: false });
-          localStorage.setItem("token", res.data.key);
-          localStorage.setItem("loggedinTime", Date.now());
-          this.props.history.push("/app/");
-        })
-        .catch(err => {
-          this.setState({
-            openBackDrop: false,
-            openSnackBar: true,
-            errorMessage: "Error at serverside"
-          });
-          console.log("invalid details:" + err);
+    this.setState({ openBackDrop: true });
+    axios
+      .post(
+        "http://127.0.0.1:8000/rest-auth/registration/",
+        this.state.formData
+      )
+      .then(res => {
+        this.setState({ openBackDrop: false });
+        localStorage.setItem("token", res.data.key);
+        localStorage.setItem("loggedinTime", Date.now());
+        this.props.history.push("/app/");
+      })
+      .catch(err => {
+        this.setState({
+          openBackDrop: false,
+          openSnackBar: true,
+          errorMessage: Object.entries(err.response.data).map(
+            ([key, value]) => (
+              <Typography>
+                {key} - {value}
+              </Typography>
+            )
+          )
         });
-    }
-  };
-
-  _validateFormData = () => {
-    const { username, email, password1, password2 } = this.state.formData;
-    const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g;
-    const validEmail = emailPattern.test(email);
-    if (
-      username.trim().length === 0 ||
-      email.trim().length === 0 ||
-      password1.trim().length === 0 ||
-      password2.trim().length === 0
-    ) {
-      this.setState({
-        openSnackBar: true,
-        errorMessage: "Please enter all fields"
       });
-      return false;
-    } else if (email && !validEmail) {
-      this.setState({
-        openSnackBar: true,
-        errorMessage: "Enter a valid email"
-      });
-      return false;
-    } else if (password1 && password1.length <= 8) {
-      this.setState({
-        openSnackBar: true,
-        errorMessage: "Minimum password length is 8 characters"
-      });
-      return false;
-    } else if (password1 && password2 && password1 !== password2) {
-      this.setState({
-        openSnackBar: true,
-        errorMessage: "Passwords Doesnot match"
-      });
-      return false;
-    } else {
-      this.setState({ openSnackBar: false, errorMessage: "" });
-      this.setState({ openBackDrop: true });
-      return true;
-    }
   };
 
   handleClose = () => {
@@ -138,12 +102,10 @@ export class SignUp extends Component {
   render() {
     const { email, password1, password2 } = this.state.formData;
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
-    const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g;
-    const validEmail = emailPattern.test(email);
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
           autoHideDuration={6000}
           open={openSnackBar}
           onClose={this.handleClose}
@@ -209,12 +171,6 @@ export class SignUp extends Component {
                   value={email}
                   onChange={this.handle_email_change}
                   fullWidth
-                  error={email && !validEmail}
-                  helperText={
-                    email && !validEmail
-                      ? "Enter a valid email "
-                      : ""
-                  }
                   required
                 />
               </Grid>
@@ -227,13 +183,7 @@ export class SignUp extends Component {
                   autoComplete="current-password"
                   variant="outlined"
                   value={password1}
-                  error={password1 && password1.length <= 8}
                   onChange={this.handle_password1_change}
-                  helperText={
-                    password1 && password1.length <= 8
-                      ? "Minimum password length is 8 characters"
-                      : ""
-                  }
                   required
                 />
               </Grid>
@@ -245,13 +195,7 @@ export class SignUp extends Component {
                   autoComplete="current-password"
                   variant="outlined"
                   value={password2}
-                  error={password1 && password2 && password1 !== password2}
                   onChange={this.handle_password2_change}
-                  helperText={
-                    password1 && password2 && password1 !== password2
-                      ? "Passwords Doesnot match"
-                      : ""
-                  }
                   required
                 />
               </Grid>

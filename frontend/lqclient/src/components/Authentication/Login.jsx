@@ -18,7 +18,7 @@ import {
 import Snackbar from "@material-ui/core/Snackbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {HasSessionExpired} from '../Utils/LoginUtils.js';
+import { HasSessionExpired } from "../Utils/LoginUtils.js";
 
 export class Login extends Component {
   state = {
@@ -66,53 +66,38 @@ export class Login extends Component {
 
   handleLogin = e => {
     e.preventDefault();
-    if (this._validateFormData()) {
-      axios
-        .post("http://127.0.0.1:8000/rest-auth/login/", {
-          username: this.state.username,
-          password: this.state.password
-        })
-        .then(res => {
-          localStorage.setItem("token", res.data.key);
-          localStorage.setItem("loggedinTime", Date.now());
-          this.setState({
-            isToken: true,
-            openBackDrop: false
-          });
-        })
-        .catch(err => {
-          this.setState({
-            openBackDrop: false,
-            openSnackBar: true,
-            errorMessage: "Invalid Credentials"
-          });
-          console.log("invalid credentials");
+    this.setState({ openBackDrop: true });
+    axios
+      .post("http://127.0.0.1:8000/rest-auth/login/", {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(res => {
+        localStorage.setItem("token", res.data.key);
+        localStorage.setItem("loggedinTime", Date.now());
+        this.setState({
+          isToken: true,
+          openBackDrop: false
         });
-    }
-  };
-
-  _validateFormData = () => {
-    const { username, password } = this.state;
-    if (
-      username.trim().length === 0 ||
-      password.trim().length === 0
-    ) {
-      this.setState({
-        openSnackBar: true,
-        errorMessage: "Please enter all fields"
+      })
+      .catch(err => {
+        this.setState({
+          openBackDrop: false,
+          openSnackBar: true,
+          errorMessage: Object.entries(err.response.data).map(
+            ([key, value]) => (
+              <Typography>
+                {key} - {value}
+              </Typography>
+            )
+          )
+        });
       });
-      return false;
-    } else {
-      this.setState({ openSnackBar: false, errorMessage: "" });
-      this.setState({ openBackDrop: true });
-      return true;
-    }
   };
 
   handleClose = () => {
     this.setState({ openSnackBar: false, errorMessage: "" });
   };
-
 
   render() {
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
