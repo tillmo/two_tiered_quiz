@@ -102,10 +102,10 @@ export class QuizReport extends Component {
     }
   };
 
-  showUserAnswer = (ansid, isCorrectAns, checkedAid) => {
-    if (ansid === checkedAid) {
-      return "-Your Answer";
-    } else if (isCorrectAns) {
+  showUserChoice = (id, isCorrect, checkedId, isAns) => {
+    if (id === checkedId) {
+      return isAns ? "-Your Answer" : "-Your Justification";
+    } else if (isCorrect) {
       return "";
     }
   };
@@ -207,10 +207,11 @@ export class QuizReport extends Component {
                                   marginLeft: "5px",
                                 }}
                               >
-                                {this.showUserAnswer(
+                                {this.showUserChoice(
                                   ans.id,
                                   ans.is_correct,
-                                  obj.checkedAid
+                                  obj.checkedAid,
+                                  true
                                 )}
                               </Typography>
                             </div>
@@ -241,11 +242,25 @@ export class QuizReport extends Component {
                                   obj.checkedJustId,
                                   ans.is_correct
                                 )}
+                                <Typography
+                                  color="textSecondary"
+                                  variant="subtitle2"
+                                  style={{
+                                    display: "inline-block",
+                                    marginLeft: "5px",
+                                  }}
+                                >
+                                  {this.showUserChoice(
+                                    just.id,
+                                    just.is_correct,
+                                    obj.checkedJustId,
+                                    false
+                                  )}
+                                </Typography>
                                 {this.showExplaination(
                                   just.id,
                                   just.is_correct,
-                                  obj.checkedJustId,
-                                  ans.is_correct
+                                  obj.checkedJustId
                                 ) ? (
                                   <Typography
                                     style={{
