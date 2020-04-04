@@ -12,6 +12,7 @@ import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {getErrorMessage} from "../Utils/LoginUtils.js";
 
 export class SignUp extends Component {
   state = {
@@ -19,54 +20,54 @@ export class SignUp extends Component {
       username: "",
       email: "",
       password1: "",
-      password2: ""
+      password2: "",
     },
     openSnackBar: false,
     errorMessage: "",
-    openBackDrop: false
+    openBackDrop: false,
   };
 
-  handle_username_change = e => {
+  handle_username_change = (e) => {
     const value = e.target.value;
     this.setState({
       formData: {
         ...this.state.formData,
-        username: value
-      }
+        username: value,
+      },
     });
   };
 
-  handle_email_change = e => {
+  handle_email_change = (e) => {
     const value = e.target.value;
     this.setState({
       formData: {
         ...this.state.formData,
-        email: value
-      }
+        email: value,
+      },
     });
   };
 
-  handle_password1_change = e => {
+  handle_password1_change = (e) => {
     const value = e.target.value;
     this.setState({
       formData: {
         ...this.state.formData,
-        password1: value
-      }
+        password1: value,
+      },
     });
   };
 
-  handle_password2_change = e => {
+  handle_password2_change = (e) => {
     const value = e.target.value;
     this.setState({
       formData: {
         ...this.state.formData,
-        password2: value
-      }
+        password2: value,
+      },
     });
   };
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.setState({ openBackDrop: true });
     axios
@@ -74,23 +75,18 @@ export class SignUp extends Component {
         "http://127.0.0.1:8000/rest-auth/registration/",
         this.state.formData
       )
-      .then(res => {
+      .then((res) => {
         this.setState({ openBackDrop: false });
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
         this.props.history.push("/app/");
       })
-      .catch(err => {
+      .catch((err) => {
+        var errorMessage = getErrorMessage(err);
         this.setState({
           openBackDrop: false,
           openSnackBar: true,
-          errorMessage: Object.entries(err.response.data).map(
-            ([key, value]) => (
-              <Typography>
-                {key} - {value}
-              </Typography>
-            )
-          )
+          errorMessage: errorMessage,
         });
       });
   };
@@ -122,7 +118,7 @@ export class SignUp extends Component {
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             Logik Quiz
@@ -134,7 +130,7 @@ export class SignUp extends Component {
               style={{
                 justify: "space-between",
                 marginTop: "10px",
-                padding: "10px"
+                padding: "10px",
               }}
             >
               <Grid item xs={12} sm={12} md={12}>
@@ -144,7 +140,7 @@ export class SignUp extends Component {
                     style={{
                       marginLeft: "5px",
                       fontSize: "medium",
-                      color: "#1976d2"
+                      color: "#1976d2",
                     }}
                   />
                 </Typography>

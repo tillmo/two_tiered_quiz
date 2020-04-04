@@ -18,7 +18,7 @@ import {
 import Snackbar from "@material-ui/core/Snackbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { HasSessionExpired } from "../Utils/LoginUtils.js";
+import { HasSessionExpired, getErrorMessage} from "../Utils/LoginUtils.js";
 
 export class Login extends Component {
   state = {
@@ -81,16 +81,11 @@ export class Login extends Component {
         });
       })
       .catch(err => {
+        var errorMessage = getErrorMessage(err);
         this.setState({
           openBackDrop: false,
           openSnackBar: true,
-          errorMessage: Object.entries(err.response.data).map(
-            ([key, value]) => (
-              <Typography>
-                {key} - {value}
-              </Typography>
-            )
-          )
+          errorMessage: errorMessage,
         });
       });
   };
@@ -110,7 +105,7 @@ export class Login extends Component {
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
           autoHideDuration={6000}
           open={openSnackBar}
           onClose={this.handleClose}
