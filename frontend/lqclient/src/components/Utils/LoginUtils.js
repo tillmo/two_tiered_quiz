@@ -1,3 +1,6 @@
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+
 export const HasSessionExpired = () => {
     var loggedInTime = localStorage.getItem("loggedinTime");
     var authToken = localStorage.getItem("token");
@@ -14,4 +17,24 @@ export const HasSessionExpired = () => {
     return false;
 }
 
-export default HasSessionExpired;
+export const getErrorMessage = (err) => {
+  let errorMessage = "";
+  if (err.response && err.response.data) {
+    if (err.response.status >= 500 && err.response.status < 600) {
+      errorMessage = "Request cannot be processed";
+    } else {
+      errorMessage = Object.entries(err.response.data).map(
+        ([key, value]) => (
+          <Typography>
+            {key} - {value}
+          </Typography>
+        )
+      );
+    }
+  } else {
+    errorMessage = err.message;
+  }
+  return errorMessage;
+}
+
+export default {HasSessionExpired, getErrorMessage};

@@ -12,6 +12,7 @@ import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {getErrorMessage} from "../Utils/LoginUtils.js";
 
 export class SignUp extends Component {
   state = {
@@ -81,22 +82,7 @@ export class SignUp extends Component {
         this.props.history.push("/app/");
       })
       .catch((err) => {
-        var errorMessage;
-        if (err.response && err.response.data) {
-          if (err.response.status >= 500 && err.response.status < 600) {
-            errorMessage = "Request cannot be processed";
-          } else {
-            errorMessage = Object.entries(err.response.data).map(
-              ([key, value]) => (
-                <Typography>
-                  {key} - {value}
-                </Typography>
-              )
-            );
-          }
-        } else {
-          errorMessage = err.message;
-        }
+        var errorMessage = getErrorMessage(err);
         this.setState({
           openBackDrop: false,
           openSnackBar: true,
