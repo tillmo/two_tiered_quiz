@@ -23,7 +23,7 @@ export class QuizQuestion extends Component {
     showReport: false,
     score: 0,
     totalScore: 0,
-    openConfirmDialog: false
+    openConfirmDialog: false,
   };
 
   componentDidMount() {
@@ -31,14 +31,14 @@ export class QuizQuestion extends Component {
       this.props.history.push("/");
     } else {
       const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
-      axios.get(getUrl).then(res => {
+      axios.get(getUrl).then((res) => {
         let questions = res.data.question;
         for (var i = 0; i < questions.length; i++) {
           questions[i].isAttempted = false;
         }
         this.setState({
           quizTitle: res.data.name,
-          questions: questions
+          questions: questions,
         });
       });
     }
@@ -94,7 +94,9 @@ export class QuizQuestion extends Component {
                 obj.isCorrectJust = true;
                 obj.correctJustificationId = justifications[k].id;
                 obj.correctJustification = justifications[k].text;
-                obj.explaination = justifications[k].explaination[0].text;
+                if (justifications[k].explaination[0]) {
+                  obj.explaination = justifications[k].explaination[0].text;
+                }
               }
             }
           }
@@ -110,7 +112,7 @@ export class QuizQuestion extends Component {
       showReport: true,
       quizReport: quizReport,
       score: score,
-      totalScore: totalScore
+      totalScore: totalScore,
     });
   };
 
@@ -148,7 +150,7 @@ export class QuizQuestion extends Component {
       <div>
         <Breadcrumbs
           style={{
-            marginLeft: "8px"
+            marginLeft: "8px",
           }}
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"

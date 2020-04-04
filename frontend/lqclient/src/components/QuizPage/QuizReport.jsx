@@ -16,7 +16,7 @@ export class QuizReport extends Component {
   state = {
     counter: 0,
     questions: [],
-    quizTitle: ""
+    quizTitle: "",
   };
   componentDidMount() {}
 
@@ -90,7 +90,7 @@ export class QuizReport extends Component {
     }
   };
 
-  showExplaination = (id, isCorrectJustification, checkedid, isCorrectAns) => {
+  showExplaination = (id, isCorrectJustification, checkedid) => {
     if (id === checkedid) {
       if (isCorrectJustification) {
         return false;
@@ -115,7 +115,7 @@ export class QuizReport extends Component {
       <div>
         <Breadcrumbs
           style={{
-            marginLeft: "8px"
+            marginLeft: "8px",
           }}
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
@@ -148,7 +148,7 @@ export class QuizReport extends Component {
               variant="subtitle2"
               style={{
                 display: "inline-block",
-                marginLeft: "5px"
+                marginLeft: "5px",
               }}
             >
               {this.props.score}/{this.props.totalScore}
@@ -174,7 +174,7 @@ export class QuizReport extends Component {
                   spacing={1}
                   style={{ justify: "space-between" }}
                 >
-                  {obj.answer.map(ans => (
+                  {obj.answer.map((ans) => (
                     <Grid item xs={12} sm={12} md={12}>
                       <ExpansionPanel>
                         <ExpansionPanelSummary
@@ -190,7 +190,7 @@ export class QuizReport extends Component {
                                   ans.id,
                                   ans.is_correct,
                                   obj.checkedAid
-                                )
+                                ),
                               }}
                             >
                               {ans.text}
@@ -204,7 +204,7 @@ export class QuizReport extends Component {
                                 variant="subtitle2"
                                 style={{
                                   display: "inline-block",
-                                  marginLeft: "5px"
+                                  marginLeft: "5px",
                                 }}
                               >
                                 {this.showUserAnswer(
@@ -221,7 +221,7 @@ export class QuizReport extends Component {
                             <Typography color="textPrimary" variant="subtitle2">
                               Justifications
                             </Typography>
-                            {ans.justifications.map(just => (
+                            {ans.justifications.map((just) => (
                               <Typography
                                 style={{
                                   fontSize: "15px",
@@ -231,7 +231,7 @@ export class QuizReport extends Component {
                                     just.is_correct,
                                     obj.checkedJustId,
                                     ans.is_correct
-                                  )
+                                  ),
                                 }}
                               >
                                 {just.text}
@@ -251,7 +251,7 @@ export class QuizReport extends Component {
                                     style={{
                                       display: "inline-block",
                                       fontSize: "15px",
-                                      marginLeft: "8px"
+                                      marginLeft: "8px",
                                     }}
                                   >
                                     <Typography
@@ -266,10 +266,12 @@ export class QuizReport extends Component {
                                       variant="subtitle2"
                                       style={{
                                         display: "inline-block",
-                                        marginLeft: "5px"
+                                        marginLeft: "5px",
                                       }}
                                     >
-                                      {just.explaination[0].text}
+                                      {just.explaination[0]
+                                        ? just.explaination[0].text
+                                        : ""}
                                     </Typography>
                                   </Typography>
                                 ) : null}
