@@ -20,33 +20,42 @@ export class QuizReport extends Component {
   };
   componentDidMount() {}
 
-  getAnswerColor = (ansid, isCorrectAns, checkedAid) => {
+  getAnswerStyles = (ansid, isCorrectAns, checkedAid) => {
+    var answerStyles = {};
     if (ansid === checkedAid) {
+      answerStyles.color = "white";
+      answerStyles.padding = "4px 6px";
+      answerStyles.backgroundColor = "lightGrey";
+      answerStyles.borderRadius = "3px";
       if (isCorrectAns) {
-        return "green";
+        answerStyles.color = "green";
       } else {
-        return "red";
+        answerStyles.color = "red";
       }
     } else if (isCorrectAns) {
-      return "green";
+      answerStyles.color = "green";
     }
+    return answerStyles;
   };
 
-  getJustificationColor = (
-    id,
-    isCorrectJustification,
-    checkedid,
-    isCorrectAns
-  ) => {
+  getJustificationStyles = (id, isCorrectJustification, checkedid) => {
+    var justificationStyles = {};
+    justificationStyles.fontSize = "15px";
+    justificationStyles.marginTop = "8px";
     if (id === checkedid) {
+      justificationStyles.color = "white";
+      justificationStyles.padding = "4px 6px";
+      justificationStyles.backgroundColor = "lightGrey";
+      justificationStyles.borderRadius = "3px";
       if (isCorrectJustification) {
-        return "green";
+        justificationStyles.color = "green";
       } else {
-        return "red";
+        justificationStyles.color = "red";
       }
     } else if (isCorrectJustification) {
-      return "green";
+      justificationStyles.color = "green";
     }
+    return justificationStyles;
   };
 
   getAnswerIcons = (ansid, isCorrectAns, checkedAid) => {
@@ -102,10 +111,10 @@ export class QuizReport extends Component {
     }
   };
 
-  showUserAnswer = (ansid, isCorrectAns, checkedAid) => {
-    if (ansid === checkedAid) {
-      return "-Your Answer";
-    } else if (isCorrectAns) {
+  showUserChoice = (id, isCorrect, checkedId, isAns) => {
+    if (id === checkedId) {
+      return isAns ? "-Your Answer" : "-Your Justification";
+    } else if (isCorrect) {
       return "";
     }
   };
@@ -185,13 +194,11 @@ export class QuizReport extends Component {
                         >
                           <Typography variant="body2">
                             <div
-                              style={{
-                                color: this.getAnswerColor(
-                                  ans.id,
-                                  ans.is_correct,
-                                  obj.checkedAid
-                                ),
-                              }}
+                              style={this.getAnswerStyles(
+                                ans.id,
+                                ans.is_correct,
+                                obj.checkedAid
+                              )}
                             >
                               {ans.text}
                               {this.getAnswerIcons(
@@ -200,83 +207,97 @@ export class QuizReport extends Component {
                                 obj.checkedAid
                               )}
                               <Typography
-                                color="textSecondary"
+                                color="textPrimary"
                                 variant="subtitle2"
                                 style={{
                                   display: "inline-block",
                                   marginLeft: "5px",
                                 }}
                               >
-                                {this.showUserAnswer(
+                                {this.showUserChoice(
                                   ans.id,
                                   ans.is_correct,
-                                  obj.checkedAid
+                                  obj.checkedAid,
+                                  true
                                 )}
                               </Typography>
                             </div>
                           </Typography>
                         </ExpansionPanelSummary>
-                        <ExpansionPanelDetails style={{ marginLeft: "15px" }}>
+                        <ExpansionPanelDetails>
                           <Typography color="textPrimary" variant="body2">
                             <Typography color="textPrimary" variant="subtitle2">
                               Justifications
                             </Typography>
-                            {ans.justifications.map((just) => (
-                              <Typography
-                                style={{
-                                  fontSize: "15px",
-                                  marginTop: "8px",
-                                  color: this.getJustificationColor(
-                                    just.id,
-                                    just.is_correct,
-                                    obj.checkedJustId,
-                                    ans.is_correct
-                                  ),
-                                }}
-                              >
-                                {just.text}
-                                {this.getJustificationIcons(
-                                  just.id,
-                                  just.is_correct,
-                                  obj.checkedJustId,
-                                  ans.is_correct
-                                )}
-                                {this.showExplaination(
-                                  just.id,
-                                  just.is_correct,
-                                  obj.checkedJustId,
-                                  ans.is_correct
-                                ) ? (
-                                  <Typography
-                                    style={{
-                                      display: "inline-block",
-                                      fontSize: "15px",
-                                      marginLeft: "8px",
-                                    }}
-                                  >
-                                    <Typography
-                                      color="textPrimary"
-                                      variant="subtitle2"
-                                      style={{ display: "inline-block" }}
+                            <ul>
+                              {ans.justifications.map((just) => (
+                                <li>
+                                  <Typography>
+                                    <div
+                                      style={this.getJustificationStyles(
+                                        just.id,
+                                        just.is_correct,
+                                        obj.checkedJustId
+                                      )}
                                     >
-                                      justification wrong because:
-                                    </Typography>
-                                    <Typography
-                                      color="textSecondary"
-                                      variant="subtitle2"
-                                      style={{
-                                        display: "inline-block",
-                                        marginLeft: "5px",
-                                      }}
-                                    >
-                                      {just.explaination[0]
-                                        ? just.explaination[0].text
-                                        : ""}
-                                    </Typography>
+                                      {just.text}
+                                      {this.getJustificationIcons(
+                                        just.id,
+                                        just.is_correct,
+                                        obj.checkedJustId
+                                      )}
+                                      <Typography
+                                        color="textPrimary"
+                                        variant="subtitle2"
+                                        style={{
+                                          display: "inline-block",
+                                          marginLeft: "5px",
+                                        }}
+                                      >
+                                        {this.showUserChoice(
+                                          just.id,
+                                          just.is_correct,
+                                          obj.checkedJustId,
+                                          false
+                                        )}
+                                      </Typography>
+                                    </div>
+                                    {this.showExplaination(
+                                      just.id,
+                                      just.is_correct,
+                                      obj.checkedJustId
+                                    ) ? (
+                                      <Typography
+                                        style={{
+                                          display: "inline-block",
+                                          fontSize: "15px",
+                                        }}
+                                      >
+                                        <Typography
+                                          color="textPrimary"
+                                          variant="subtitle2"
+                                          style={{ display: "inline-block" }}
+                                        >
+                                          Justification wrong because:
+                                          <Typography
+                                            color="textSecondary"
+                                            variant="subtitle2"
+                                            style={{
+                                              display: "inline-block",
+                                              marginLeft: "8px",
+                                            }}
+                                          >
+                                            {just.explaination[0]
+                                              ? just.explaination[0].text
+                                              : ""}
+                                          </Typography>
+                                        </Typography>
+                                      </Typography>
+                                    ) : null}
                                   </Typography>
-                                ) : null}
-                              </Typography>
-                            ))}
+                                </li>
+                              ))}
+                            </ul>
                           </Typography>
                         </ExpansionPanelDetails>
                       </ExpansionPanel>
