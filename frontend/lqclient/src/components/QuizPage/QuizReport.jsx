@@ -172,9 +172,79 @@ export class QuizReport extends Component {
                 aria-label="Expand"
                 aria-controls={obj.label}
                 id={obj.id}
+                fullWidth
               >
                 <Typography>
                   {index + 1}. {obj.label}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  style={{
+                    marginLeft: "10px",
+                    marginTop: "2px",
+                    display: "inline-flex",
+                  }}
+                >
+                  You chose
+                  {this.props.quizReport[index].isCorrectAns ? (
+                    <Typography
+                      variant="subtitle2"
+                      style={{
+                        color: "green",
+                        float: "right",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      <CheckCircleIcon
+                        style={{ marginRight: "3px", fontSize: "small" }}
+                      />
+                      Answer
+                    </Typography>
+                  ) : (
+                    <Typography
+                      variant="subtitle2"
+                      style={{
+                        color: "red",
+                        float: "right",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      <CancelIcon
+                        style={{ marginRight: "3px", fontSize: "small" }}
+                      />
+                      Answer
+                    </Typography>
+                  )}
+                  {this.props.quizReport[index].isCorrectJust ? (
+                    <Typography
+                      variant="subtitle2"
+                      style={{
+                        color: "green",
+                        float: "right",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      <CheckCircleIcon
+                        style={{ marginRight: "3px", fontSize: "small" }}
+                      />
+                      Justification
+                    </Typography>
+                  ) : (
+                    <Typography
+                      variant="subtitle2"
+                      style={{
+                        color: "red",
+                        float: "right",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      <CancelIcon
+                        style={{ marginRight: "3px", fontSize: "small" }}
+                      />
+                      Justification
+                    </Typography>
+                  )}
                 </Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
@@ -309,7 +379,18 @@ export class QuizReport extends Component {
           ) : (
             <Paper style={{ padding: "12px 25px", marginTop: "15px" }}>
               <Typography>
-                {index + 1}. {obj.label} - Not Attempted
+                {index + 1}. {obj.label} -
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  style={{
+                    display: "inline-block",
+                    marginLeft: "5px",
+                  }}
+                >
+                  {" "}
+                  Not Attempted{" "}
+                </Typography>
               </Typography>
             </Paper>
           )
