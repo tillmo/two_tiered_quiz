@@ -176,75 +176,75 @@ export class QuizReport extends Component {
               >
                 <Typography>
                   {index + 1}. {obj.label}
-                </Typography>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  style={{
-                    marginLeft: "10px",
-                    marginTop: "2px",
-                    display: "inline-flex",
-                  }}
-                >
-                  You chose
-                  {this.props.quizReport[index].isCorrectAns ? (
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        color: "green",
-                        float: "right",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      <CheckCircleIcon
-                        style={{ marginRight: "3px", fontSize: "small" }}
-                      />
-                      Answer
-                    </Typography>
-                  ) : (
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        color: "red",
-                        float: "right",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      <CancelIcon
-                        style={{ marginRight: "3px", fontSize: "small" }}
-                      />
-                      Answer
-                    </Typography>
-                  )}
-                  {this.props.quizReport[index].isCorrectJust ? (
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        color: "green",
-                        float: "right",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      <CheckCircleIcon
-                        style={{ marginRight: "3px", fontSize: "small" }}
-                      />
-                      Justification
-                    </Typography>
-                  ) : (
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        color: "red",
-                        float: "right",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      <CancelIcon
-                        style={{ marginRight: "3px", fontSize: "small" }}
-                      />
-                      Justification
-                    </Typography>
-                  )}
+                  <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    style={{
+                      marginLeft: "10px",
+                      marginTop: "2px",
+                      display: "inline-flex",
+                    }}
+                  >
+                    You chose
+                    {this.props.quizReport[index].isCorrectAns ? (
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          color: "green",
+                          float: "right",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <CheckCircleIcon
+                          style={{ marginRight: "3px", fontSize: "small" }}
+                        />
+                        Answer
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          color: "red",
+                          float: "right",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <CancelIcon
+                          style={{ marginRight: "3px", fontSize: "small" }}
+                        />
+                        Answer
+                      </Typography>
+                    )}
+                    {this.props.quizReport[index].isCorrectJust ? (
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          color: "green",
+                          float: "right",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <CheckCircleIcon
+                          style={{ marginRight: "3px", fontSize: "small" }}
+                        />
+                        Justification
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          color: "red",
+                          float: "right",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <CancelIcon
+                          style={{ marginRight: "3px", fontSize: "small" }}
+                        />
+                        Justification
+                      </Typography>
+                    )}
+                  </Typography>
                 </Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
