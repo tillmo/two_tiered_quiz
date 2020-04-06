@@ -169,23 +169,12 @@ export class QuizQuestion extends Component {
           spacing={1}
           style={{ justify: "space-between", marginTop: "10px" }}
         >
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={12}>
             <Typography variant="h6" color="textPrimary">
               {this.state.quizTitle} Quiz
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={this.openQuizSubmitConfirmDialog}
-              endIcon={<AssignmentTurnedInIcon />}
-            >
-              Submit Quiz
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={12} md={3}>
+          <Grid item xs={7} sm={7} md={7}>
             <Button
               variant="contained"
               color={counter !== 0 ? "primary" : "disabled"}
@@ -200,12 +189,29 @@ export class QuizQuestion extends Component {
               variant="contained"
               color={counter < noOfQuestions ? "primary" : "disabled"}
               size="small"
-              style={{ marginLeft: "8px", float: "right" }}
+              style={{ marginLeft: "10px" }}
               onClick={this.nextQuestion}
               disabled={counter >= noOfQuestions}
               endIcon={<KeyboardArrowRightIcon />}
             >
               Next
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={5} md={5}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{
+                float: "right",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              onClick={this.openQuizSubmitConfirmDialog}
+              endIcon={<AssignmentTurnedInIcon />}
+            >
+              Submit Quiz
             </Button>
           </Grid>
 
