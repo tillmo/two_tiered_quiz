@@ -14,16 +14,19 @@
 from django.db import transaction
 from QuizBoard.models import Quiz, Question, Answer, Response, QuizTakers, Justifications, Explaination
 
-@transaction.atomic
-def read_quiz(file):
+def read_quiz_file(file):
     print('Reading {0} into database'.format(file))
     with open(file) as f:
+        read_quiz(f.read())
+        
+@transaction.atomic
+def read_quiz(quiz_str):
         quiz = None
         question = None
         answer = None
         just = None
         try:
-            for line in f:
+            for line in quiz_str.splitlines():
                 line = line.strip()
                 if len(line)==0: # empty line
                     continue
@@ -59,7 +62,7 @@ def read_quiz(file):
                 elif prefix=='e':
                     Explaination.objects.create(justification=just,text=contents)
                 else:
-                    print("Ignoring unknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
+                    raise Exception("Unknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
         except Exception as e:
             print("Wrong line: {0}".format(line))
             print(e)
