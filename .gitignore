@@ -17,3 +17,4 @@ python_modules/
 tmp/
 build/
 __pycache__/
+frontend/lqclient/.env.local
