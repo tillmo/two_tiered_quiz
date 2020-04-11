@@ -1,4 +1,6 @@
 LOGFILE = '/path/to/quiz.log'
+LOGLEVEL = 'WARNING'
+# possible log levels: CRITICAL, ERROR, WARNING, INFO, DEBUG
 
 DATABASES = {
 'default': {

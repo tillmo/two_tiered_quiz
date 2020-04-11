@@ -149,6 +149,7 @@ ACCOUNT_EMAIL_REQUIRED = False
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 LOGFILE = '/tmp/quiz.log'
+LOGLEVEL = 'DEBUG'
 
 # local settings can override and extend global settings
 
@@ -178,7 +179,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'INFO',
+            'level': LOGLEVEL,
             'propagate': True,
         },
     },
