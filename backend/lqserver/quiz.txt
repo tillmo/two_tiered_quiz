@@ -1,0 +1,40 @@
+# some sample quiz skeleton
+# use itas a template to create your own quiz
+# read it in with:
+#     python3 manage.py add_quiz quiz.txt
+
+quiz:Name of quiz
+d:Description
+q:Question 1
+a:Answer 1*
+# correct answers are marked with an asterisk* 
+j:Justification 1
+e:Explanation 1
+j:Justification 2
+e:Explanation 2
+j:Justification 3*
+# correct justifications are marked with an asterisk* 
+# correct justifications do not have an explanation
+a:Answer 2
+j:Justification 4
+e:Explanation 4
+j:Justification 5
+e:Explanation 5
+j:Justification 6
+e:Explanation 6
+q:Question 2
+a:Answer 3*
+j:Justification 7*
+j:Justification 8
+e:Explanation 8
+j:Justification 9
+e:Explanation 9
+a:Answer 4
+j:Justification 10
+e:Explanation 10
+j:Justification 11
+e:Explanation 11
+j:Justification 12
+e:Explanation 12
+
+# here, more quizzes are possible
