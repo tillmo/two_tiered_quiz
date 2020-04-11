@@ -68,7 +68,7 @@ export class Login extends Component {
     e.preventDefault();
     this.setState({ openBackDrop: true });
     axios
-      .post("http://127.0.0.1:8000/rest-auth/login/", {
+      .post(process.env.REACT_APP_BACKEND_URL+"/rest-auth/login/", {
         username: this.state.username,
         password: this.state.password
       })

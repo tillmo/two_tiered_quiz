@@ -30,7 +30,7 @@ export class QuizQuestion extends Component {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
-      const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
+      const getUrl = process.env.REACT_APP_BACKEND_URL + "/api/" + this.props.match.params.id;
       axios.get(getUrl).then((res) => {
         let questions = res.data.question;
         for (var i = 0; i < questions.length; i++) {

@@ -17,7 +17,7 @@ export class QuizDescription extends Component {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
-      axios.get("http://127.0.0.1:8000/api/").then(res => {
+      axios.get(process.env.REACT_APP_BACKEND_URL+"/api/").then(res => {
         this.setState({ cardDetails: res.data });
       });
     }

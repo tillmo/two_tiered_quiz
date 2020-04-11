@@ -72,7 +72,7 @@ export class SignUp extends Component {
     this.setState({ openBackDrop: true });
     axios
       .post(
-        "http://127.0.0.1:8000/rest-auth/registration/",
+        process.env.REACT_APP_BACKEND_URL+"/rest-auth/registration/",
         this.state.formData
       )
       .then((res) => {
