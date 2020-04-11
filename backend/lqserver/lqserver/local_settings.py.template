@@ -2,9 +2,12 @@ LOGFILE = '/path/to/quiz.log'
 LOGLEVEL = 'WARNING'
 # possible log levels: CRITICAL, ERROR, WARNING, INFO, DEBUG
 
+DEBUG = False  # production
+ALLOWED_HOSTS = ['*'] # we must serve to anyone's browser
+
 DATABASES = {
 'default': {
-    'ENGINE': 'django.db.backends.mysql', 
+    'ENGINE': 'django.db.backends.mysql', # also works for MariaDB
     'NAME': 'DB_NAME',
     'USER': 'DB_USER',
     'PASSWORD': 'DB_PASSWORD',
