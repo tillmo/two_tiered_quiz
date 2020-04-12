@@ -33,7 +33,7 @@ export class QuizReport extends Component {
       await createReportService(quizTaker)
         .then(async (res) => {
           let responses = this._prepareResponses(res.data[0]);
-          await createResponseService(responses);
+          if (responses.length) await createResponseService(responses);
         })
         .catch((err) => {
           console.log("Failed Creating quiztaker");
@@ -88,11 +88,13 @@ export class QuizReport extends Component {
     var responses = [];
     this.props.questions.forEach(function (question) {
       var response = {};
-      response.quiztaker = quizData.id;
-      response.question = question.id;
-      response.answer = question.checkedAid;
-      response.justification = question.checkedJustId;
-      responses.push(response);
+      if (question.checkedAid && question.checkedJustId) {
+        response.quiztaker = quizData.id;
+        response.question = question.id;
+        response.answer = question.checkedAid;
+        response.justification = question.checkedJustId;
+        responses.push(response);
+      }
     });
     return responses;
   };
@@ -102,13 +104,15 @@ export class QuizReport extends Component {
     var updateResponses = [];
     this.props.questions.forEach((question) => {
       var response = {};
-      response.quiztaker = this.props.quizTakerId;
-      response.question = question.id;
-      response.answer = question.checkedAid;
-      response.justification = question.checkedJustId;
-      if (question.toUpdate) updateResponses.push(response);
-      if (question.isAttempted && !question.toUpdate)
-        newResponses.push(response);
+      if (question.checkedAid && question.checkedJustId) {
+        response.quiztaker = this.props.quizTakerId;
+        response.question = question.id;
+        response.answer = question.checkedAid;
+        response.justification = question.checkedJustId;
+        if (question.toUpdate) updateResponses.push(response);
+        if (question.isAttempted && !question.toUpdate)
+          newResponses.push(response);
+      }
     });
     return { newResponses, updateResponses };
   };
