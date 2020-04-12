@@ -62,15 +62,19 @@ class QuizTakers(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     correct_answers = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
+    attempted = models.BooleanField(default=False)
+    score = models.IntegerField(default=0)
+    order = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def  __str__(self):
         return self.user.username
 
-class Response(models.Model):
+class Responses(models.Model):
     quiztaker = models.ForeignKey(QuizTakers, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer,on_delete=models.CASCADE,null=True,blank=True)
+    justification = models.ForeignKey(Justifications,on_delete=models.CASCADE,null=True,blank=True)
 
     def __str__(self):
         return self.question.label

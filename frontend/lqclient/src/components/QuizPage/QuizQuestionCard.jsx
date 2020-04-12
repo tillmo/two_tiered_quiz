@@ -12,18 +12,16 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
 const useStyles = makeStyles({
-  root: {
-    
-  },
+  root: {},
   media: {
-    height: 200
-  }
+    height: 200,
+  },
 });
 
-const QuizQuestionCard = props => {
+const QuizQuestionCard = (props) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(
-    props.question.checkedAns ? props.question.checkedAns : ""
+    props.question.checkedAid ? props.question.checkedAid : -1
   );
   const [justificationvalue, setJustificationValue] = React.useState(
     props.question.checkedJustId ? props.question.checkedJustId : -1
@@ -32,23 +30,24 @@ const QuizQuestionCard = props => {
     props.question.checkedAid ? props.question.checkedAid : -1
   );
 
-  const handleChange = event => {
-    setValue(event.target.value);
+  const handleJustificationChange = (justId, ansId, qno, ans, just) => (
+    event
+  ) => {
+    if (!props.question.toUpdate) {
+      setJustificationValue(justId);
+      props.updateCheckedAnwers(qno, ansId, ans, justId, just, false);
+    } else {
+      event.stopPropagation();
+    }
   };
 
-  const handleJustificationChange = (
-    justId,
-    ansId,
-    qno,
-    ans,
-    just
-  ) => event => {
-    setJustificationValue(justId);
-    props.updateCheckedAnwers(qno, ansId, ans, justId, just);
-  };
-
-  const handleExpansionChange = panelId => event => {
-    setExpandedValue(panelId);
+  const handleExpansionChange = (panelId, qno, ans) => (event) => {
+    if (!props.question.toUpdate) {
+      setExpandedValue(panelId);
+      props.updateCheckedAnwers(qno, panelId, ans, 0, "", true);
+    } else {
+      event.stopPropagation();
+    }
   };
 
   return (
@@ -60,10 +59,10 @@ const QuizQuestionCard = props => {
         <RadioGroup
           aria-label={props.question.label}
           name={props.question.label}
-          value={value}
-          onChange={handleChange}
+          value={isExpanded}
+          //onChange = {handleChange}
         >
-          {props.question.answer.map(ans => (
+          {props.question.answer.map((ans) => (
             <ExpansionPanel expanded={isExpanded === ans.id}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -74,11 +73,24 @@ const QuizQuestionCard = props => {
                 <Typography color="textPrimary" variant="subtitle2">
                   <FormControlLabel
                     aria-label="Expand"
-                    onClick={handleExpansionChange(ans.id)}
+                    onClick={handleExpansionChange(
+                      ans.id,
+                      props.quesNo,
+                      ans.text
+                    )}
                     //onFocus={event => event.stopPropagation()}
-                    control={<Radio />}
-                    value={ans.text}
-                    label={<span style={{ fontSize: "15px" }}>{ans.text}</span>}
+                    control={<Radio disabled={props.question.toUpdate} />}
+                    value={ans.id}
+                    disabled={props.question.toUpdate}
+                    label={
+                      <span style={{ fontSize: "15px" }}>
+                        {ans.text}
+                        {props.question.toUpdate &&
+                        ans.id === props.question.checkedAid
+                          ? "  -Your Answer"
+                          : ""}
+                      </span>
+                    }
                   />
                 </Typography>
               </ExpansionPanelSummary>
@@ -92,7 +104,7 @@ const QuizQuestionCard = props => {
                     name={ans.text}
                     value={justificationvalue}
                   >
-                    {ans.justifications.map(just => (
+                    {ans.justifications.map((just) => (
                       <FormControlLabel
                         aria-label="Expand"
                         onClick={handleJustificationChange(
@@ -103,10 +115,22 @@ const QuizQuestionCard = props => {
                           just.text
                         )}
                         //onFocus={event => event.stopPropagation()}
-                        control={<Radio name={ans.text} />}
+                        control={
+                          <Radio
+                            name={ans.text}
+                            disabled={props.question.toUpdate}
+                          />
+                        }
                         value={just.id}
+                        disabled={props.question.toUpdate}
                         label={
-                          <span style={{ fontSize: "15px" }}>{just.text}</span>
+                          <span style={{ fontSize: "15px" }}>
+                            {just.text}
+                            {props.question.toUpdate &&
+                            just.id === props.question.checkedJustId
+                              ? "  -Your Justification"
+                              : ""}
+                          </span>
                         }
                       />
                     ))}

@@ -13,6 +13,11 @@ import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import QuizReport from "./QuizReport";
 import QuizSubmitConfirmDialog from "./QuizSubmitConfirmDialog";
 import { HasSessionExpired } from "../Utils/LoginUtils.js";
+import {
+  getQuizService,
+  getQuizTakerResponsesService,
+} from "../Services/AppServices.js";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export class QuizQuestion extends Component {
   state = {
@@ -24,22 +29,52 @@ export class QuizQuestion extends Component {
     score: 0,
     totalScore: 0,
     openConfirmDialog: false,
+    openSnackBar: false,
+    errorMessage: "",
   };
 
   componentDidMount() {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
-      const getUrl = "http://127.0.0.1:8000/api/" + this.props.match.params.id;
-      axios.get(getUrl).then((res) => {
+      getQuizService(this.props.match.params.id).then(async (res) => {
         let questions = res.data.question;
+        let responseData;
+        if (this.props.match.params.quizTakerId!=="0") {
+          responseData = await getQuizTakerResponsesService(
+            this.props.match.params.quizTakerId
+          );
+        }
+        console.log(responseData);
         for (var i = 0; i < questions.length; i++) {
           questions[i].isAttempted = false;
+          questions[i].toUpdate = false;
+          questions[i].responseId = 0;
+        }
+        if (responseData) {
+          const responses = responseData.responses;
+          for (var i = 0; i < questions.length; i++) {
+            const index = responses.findIndex(
+              (response) => response.question === questions[i].id
+            );
+            if (index !== -1) {
+              questions[i].isAttempted = true;
+              questions[i].checkedAid = responses[index].answer;
+              questions[i].checkedJustId = responses[index].justification;
+              questions[i].toUpdate = true;
+              questions[i].responseId = responses[index].id;
+            }
+          }
         }
         this.setState({
           quizTitle: res.data.name,
           questions: questions,
         });
+
+        if (this.props.match.params.isQuizComplete==="COMPLETED") {
+          this.handleSubmitQuiz();
+        }
+
       });
     }
   }
@@ -63,6 +98,7 @@ export class QuizQuestion extends Component {
     questions[qno].checkedAns = ans;
     questions[qno].checkedJustId = justId;
     questions[qno].checkedJust = just;
+
     this.setState({ cardDetails: questions });
   };
 
@@ -116,17 +152,43 @@ export class QuizQuestion extends Component {
     });
   };
 
+  _hasAllJustificationsSelected = () => {
+    const questions = this.state.questions;
+    let isJustificationNotSelected = false;
+    for (var i = 0; i < questions.length; i++) {
+      if (questions[i].checkedAid) {
+        if (!questions[i].checkedJustId) {
+          isJustificationNotSelected = true;
+          break;
+        }
+      }
+    }
+    return isJustificationNotSelected;
+  };
+
   openQuizSubmitConfirmDialog = () => {
-    this.setState({ openConfirmDialog: true });
+    if (this._hasAllJustificationsSelected()) {
+      this.setState({
+        openSnackBar: true,
+        errorMessage: "Please select justifications for selected answers before submit ",
+      });
+    } else {
+      this.setState({ openConfirmDialog: true });
+    }
   };
 
   handleDialogClose = () => {
     this.setState({ openConfirmDialog: false });
   };
 
+  handleClose = () => {
+    this.setState({ openSnackBar: false, errorMessage: "" });
+  };
+
   render() {
     const counter = this.state.counter;
     const noOfQuestions = this.state.questions.length - 1;
+    const { openSnackBar, errorMessage } = this.state;
     if (this.state.questions.length === 0) {
       return (
         <Typography variant="h6" color="textPrimary">
@@ -138,16 +200,26 @@ export class QuizQuestion extends Component {
     if (this.state.showReport) {
       return (
         <QuizReport
+          quizId={this.props.match.params.id}
           quizTitle={this.state.quizTitle}
           quizReport={this.state.quizReport}
           score={this.state.score}
           totalScore={this.state.totalScore}
           questions={this.state.questions}
+          quizTakerId={this.props.match.params.quizTakerId}
         />
       );
     }
+
     return (
       <div>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          autoHideDuration={6000}
+          open={openSnackBar}
+          onClose={this.handleClose}
+          message={errorMessage}
+        />
         <Breadcrumbs
           style={{
             marginLeft: "8px",

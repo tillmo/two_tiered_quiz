@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from QuizBoard.models import Quiz, Question, Answer, Response, QuizTakers, Justifications, Explaination
+from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
 
 class ExplainationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,3 +56,26 @@ class QuizListSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = '__all__'
 
+
+class ResponseSerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = Responses
+        fields = '__all__'
+
+
+class QuizTakerResponseSerializer(serializers.ModelSerializer):
+    responses = serializers.SerializerMethodField() 
+
+    class Meta:
+            model = QuizTakers
+            fields = '__all__'
+
+    def get_responses(self, obj):
+        return [ResponseSerialzer(s).data for s in obj.responses_set.all()]
+
+
+class QuizTakerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+            model = QuizTakers
+            fields = '__all__'

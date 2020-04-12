@@ -20,7 +20,7 @@ export const HasSessionExpired = () => {
 export const getErrorMessage = (err) => {
   let errorMessage = "";
   if (err.response && err.response.data) {
-    if (err.response.status >= 500 && err.response.status < 600) {
+    if (err.response.status >= 403 && err.response.status < 600) {
       errorMessage = "Request cannot be processed";
     } else {
       errorMessage = Object.entries(err.response.data).map(

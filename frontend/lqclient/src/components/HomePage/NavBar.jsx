@@ -338,7 +338,7 @@ const NavBar = props => {
         <div className={classes.toolbar} />
 
         <Route path={props.match.url + "/"} exact component={QuizDescription} />
-        <Route path={props.match.url + "/quiz/:id"} component={QuizQuestion} />
+        <Route path={props.match.url + "/quiz/:id/:quizTakerId/:isQuizComplete"} component={QuizQuestion} />
       </main>
     </div>
   );
