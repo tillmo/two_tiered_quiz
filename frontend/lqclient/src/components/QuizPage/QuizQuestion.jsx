@@ -40,7 +40,7 @@ export class QuizQuestion extends Component {
       getQuizService(this.props.match.params.id).then(async (res) => {
         let questions = res.data.question;
         let responseData;
-        if (this.props.match.params.quizTakerId!=="0") {
+        if (this.props.match.params.quizTakerId !== "0") {
           responseData = await getQuizTakerResponsesService(
             this.props.match.params.quizTakerId
           );
@@ -71,10 +71,9 @@ export class QuizQuestion extends Component {
           questions: questions,
         });
 
-        if (this.props.match.params.isQuizComplete==="COMPLETED") {
+        if (this.props.match.params.isQuizComplete === "COMPLETED") {
           this.handleSubmitQuiz();
         }
-
       });
     }
   }
@@ -138,7 +137,11 @@ export class QuizQuestion extends Component {
           }
         }
       }
-      if (obj.checkedAid === obj.correctAid) {
+      if (
+        obj.checkedAid &&
+        obj.correctAid &&
+        obj.checkedAid === obj.correctAid
+      ) {
         score += 5;
         obj.isCorrectAns = true;
       }
@@ -170,7 +173,8 @@ export class QuizQuestion extends Component {
     if (this._hasAllJustificationsSelected()) {
       this.setState({
         openSnackBar: true,
-        errorMessage: "Please select justifications for selected answers before submit ",
+        errorMessage:
+          "Please select justifications for selected answers before submit ",
       });
     } else {
       this.setState({ openConfirmDialog: true });
