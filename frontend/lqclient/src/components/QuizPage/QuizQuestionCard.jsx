@@ -30,17 +30,24 @@ const QuizQuestionCard = (props) => {
     props.question.checkedAid ? props.question.checkedAid : -1
   );
 
-
   const handleJustificationChange = (justId, ansId, qno, ans, just) => (
     event
   ) => {
-    setJustificationValue(justId);
-    props.updateCheckedAnwers(qno, ansId, ans, justId, just, false);
+    if (!props.question.toUpdate) {
+      setJustificationValue(justId);
+      props.updateCheckedAnwers(qno, ansId, ans, justId, just, false);
+    } else {
+      event.stopPropagation();
+    }
   };
 
-  const handleExpansionChange = (panelId, qno, ans) => event=>{
-    setExpandedValue(panelId);
-    props.updateCheckedAnwers(qno, panelId, ans, 0, "", true);
+  const handleExpansionChange = (panelId, qno, ans) => (event) => {
+    if (!props.question.toUpdate) {
+      setExpandedValue(panelId);
+      props.updateCheckedAnwers(qno, panelId, ans, 0, "", true);
+    } else {
+      event.stopPropagation();
+    }
   };
 
   return (
@@ -72,8 +79,9 @@ const QuizQuestionCard = (props) => {
                       ans.text
                     )}
                     //onFocus={event => event.stopPropagation()}
-                    control={<Radio />}
+                    control={<Radio disabled={props.question.toUpdate} />}
                     value={ans.id}
+                    disabled={props.question.toUpdate}
                     label={<span style={{ fontSize: "15px" }}>{ans.text}</span>}
                   />
                 </Typography>
@@ -99,8 +107,14 @@ const QuizQuestionCard = (props) => {
                           just.text
                         )}
                         //onFocus={event => event.stopPropagation()}
-                        control={<Radio name={ans.text} />}
+                        control={
+                          <Radio
+                            name={ans.text}
+                            disabled={props.question.toUpdate}
+                          />
+                        }
                         value={just.id}
+                        disabled={props.question.toUpdate}
                         label={
                           <span style={{ fontSize: "15px" }}>{just.text}</span>
                         }
