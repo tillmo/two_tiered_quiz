@@ -12,7 +12,7 @@
 # ...
 
 from django.db import transaction
-from QuizBoard.models import Quiz, Question, Answer, Response, QuizTakers, Justifications, Explaination
+from QuizBoard.models import Quiz, Question, Answer, Justifications, Explaination
 
 def read_quiz_file(file):
     print('Reading {0} into database'.format(file))
