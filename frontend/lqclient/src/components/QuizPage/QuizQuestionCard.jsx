@@ -82,7 +82,15 @@ const QuizQuestionCard = (props) => {
                     control={<Radio disabled={props.question.toUpdate} />}
                     value={ans.id}
                     disabled={props.question.toUpdate}
-                    label={<span style={{ fontSize: "15px" }}>{ans.text}</span>}
+                    label={
+                      <span style={{ fontSize: "15px" }}>
+                        {ans.text}
+                        {props.question.toUpdate &&
+                        ans.id === props.question.checkedAid
+                          ? "  -Your Answer"
+                          : ""}
+                      </span>
+                    }
                   />
                 </Typography>
               </ExpansionPanelSummary>
@@ -116,7 +124,13 @@ const QuizQuestionCard = (props) => {
                         value={just.id}
                         disabled={props.question.toUpdate}
                         label={
-                          <span style={{ fontSize: "15px" }}>{just.text}</span>
+                          <span style={{ fontSize: "15px" }}>
+                            {just.text}
+                            {props.question.toUpdate &&
+                            just.id === props.question.checkedJustId
+                              ? "  -Your Justification"
+                              : ""}
+                          </span>
                         }
                       />
                     ))}
