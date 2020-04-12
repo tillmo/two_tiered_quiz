@@ -12,18 +12,16 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
 const useStyles = makeStyles({
-  root: {
-    
-  },
+  root: {},
   media: {
-    height: 200
-  }
+    height: 200,
+  },
 });
 
-const QuizQuestionCard = props => {
+const QuizQuestionCard = (props) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(
-    props.question.checkedAns ? props.question.checkedAns : ""
+    props.question.checkedAid ? props.question.checkedAid : -1
   );
   const [justificationvalue, setJustificationValue] = React.useState(
     props.question.checkedJustId ? props.question.checkedJustId : -1
@@ -32,23 +30,17 @@ const QuizQuestionCard = props => {
     props.question.checkedAid ? props.question.checkedAid : -1
   );
 
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
 
-  const handleJustificationChange = (
-    justId,
-    ansId,
-    qno,
-    ans,
-    just
-  ) => event => {
+  const handleJustificationChange = (justId, ansId, qno, ans, just) => (
+    event
+  ) => {
     setJustificationValue(justId);
-    props.updateCheckedAnwers(qno, ansId, ans, justId, just);
+    props.updateCheckedAnwers(qno, ansId, ans, justId, just, false);
   };
 
-  const handleExpansionChange = panelId => event => {
+  const handleExpansionChange = (panelId, qno, ans) => event=>{
     setExpandedValue(panelId);
+    props.updateCheckedAnwers(qno, panelId, ans, 0, "", true);
   };
 
   return (
@@ -60,10 +52,10 @@ const QuizQuestionCard = props => {
         <RadioGroup
           aria-label={props.question.label}
           name={props.question.label}
-          value={value}
-          onChange={handleChange}
+          value={isExpanded}
+          //onChange = {handleChange}
         >
-          {props.question.answer.map(ans => (
+          {props.question.answer.map((ans) => (
             <ExpansionPanel expanded={isExpanded === ans.id}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -74,10 +66,14 @@ const QuizQuestionCard = props => {
                 <Typography color="textPrimary" variant="subtitle2">
                   <FormControlLabel
                     aria-label="Expand"
-                    onClick={handleExpansionChange(ans.id)}
+                    onClick={handleExpansionChange(
+                      ans.id,
+                      props.quesNo,
+                      ans.text
+                    )}
                     //onFocus={event => event.stopPropagation()}
                     control={<Radio />}
-                    value={ans.text}
+                    value={ans.id}
                     label={<span style={{ fontSize: "15px" }}>{ans.text}</span>}
                   />
                 </Typography>
@@ -92,7 +88,7 @@ const QuizQuestionCard = props => {
                     name={ans.text}
                     value={justificationvalue}
                   >
-                    {ans.justifications.map(just => (
+                    {ans.justifications.map((just) => (
                       <FormControlLabel
                         aria-label="Expand"
                         onClick={handleJustificationChange(

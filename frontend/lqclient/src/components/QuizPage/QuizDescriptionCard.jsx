@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,6 +9,10 @@ import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
 import EventNoteIcon from "@material-ui/icons/EventNote";
+import {
+  getquiztakerdetailsService,
+  getUserDetailsService,
+} from "../Services/AppServices.js";
 
 const useStyles = makeStyles({
   root: {
@@ -16,26 +20,57 @@ const useStyles = makeStyles({
     maxWidth: 630,
     borderLeft: "solild",
     borderLeftWidth: "3px",
-    borderLeftColor: "#1976d2",
+    borderLeftColor: "#3f51b5",
     borderLeftStyle: "solid",
     borderRadius: "1px",
-    minHeight: "190px"
+    minHeight: "190px",
   },
   media: {
-    height: 140
+    height: 140,
   },
   actions: {
     marginTop: "15px",
     marginLeft: "20px",
-    backgroundColor: "#1976d2",
-    color: "white"
-  }
+    backgroundColor: "#3f51b5",
+    color: "white",
+  },
 });
 
-const QuizDescriptionCard = props => {
+const QuizDescriptionCard = (props) => {
   const classes = useStyles();
+  const [buttonText, setButtonText] = useState("");
+  const [quizTakerId, setQuizTakerId] = useState(0);
 
-  const formatDate = createdDate => {
+  useEffect(() => {
+    let userId, quiztakerdetails;
+    const getUserDetails = async () => {
+      await getUserDetailsService().then(async (res) => {
+        userId = res.data.pk;
+        await getquiztakerdetailsService(props.cardDetail.id, userId).then(
+          (res) => {
+            quiztakerdetails = res.data[0];
+            if (quiztakerdetails) {
+              setQuizTakerId(quiztakerdetails.id);
+            }
+            if (
+              quiztakerdetails &&
+              quiztakerdetails.attempted &&
+              quiztakerdetails.completed
+            ) {
+              setButtonText("COMPLETED");
+            } else if (quiztakerdetails && quiztakerdetails.attempted) {
+              setButtonText("CONTINUE");
+            } else {
+              setButtonText("START");
+            }
+          }
+        );
+      });
+    };
+    getUserDetails();
+  }, []);
+
+  const formatDate = (createdDate) => {
     var options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(createdDate).toLocaleDateString([], options);
   };
@@ -89,9 +124,9 @@ const QuizDescriptionCard = props => {
             >
               <Link
                 style={{ color: "white", textDecoration: "none" }}
-                to={"quiz/" + props.cardDetail.id}
+                to={"quiz/" + props.cardDetail.id+"/"+quizTakerId+"/"+buttonText}
               >
-                start
+                {buttonText}
               </Link>
             </Button>
           </Grid>

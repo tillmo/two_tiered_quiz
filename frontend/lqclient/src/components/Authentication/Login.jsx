@@ -13,12 +13,13 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 import Snackbar from "@material-ui/core/Snackbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { HasSessionExpired, getErrorMessage} from "../Utils/LoginUtils.js";
+import { HasSessionExpired, getErrorMessage } from "../Utils/LoginUtils.js";
+import { getLoginService } from "../Services/AppServices.js";
 
 export class Login extends Component {
   state = {
@@ -29,7 +30,7 @@ export class Login extends Component {
     isUserLoggedIn: false,
     openSnackBar: false,
     errorMessage: "",
-    openBackDrop: false
+    openBackDrop: false,
   };
 
   componentDidMount() {
@@ -38,49 +39,43 @@ export class Login extends Component {
     }
   }
 
-  handle_username_change = e => {
+  handle_username_change = (e) => {
     const value = e.target.value;
     this.setState({
-      username: value
+      username: value,
     });
   };
 
-  handle_password_change = e => {
+  handle_password_change = (e) => {
     const value = e.target.value;
     this.setState({
-      password: value
+      password: value,
     });
   };
 
   handleClick = () => {
     this.setState({
-      open: true
+      open: true,
     });
   };
 
-  handleClose = (event, reason) => {
-    this.setState({
-      open: false
-    });
-  };
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.setState({ openBackDrop: true });
-    axios
-      .post("http://127.0.0.1:8000/rest-auth/login/", {
-        username: this.state.username,
-        password: this.state.password
-      })
-      .then(res => {
+    getLoginService({
+      username: this.state.username,
+      password: this.state.password,
+    })
+      .then((res) => {
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
         this.setState({
           isToken: true,
-          openBackDrop: false
+          openBackDrop: false,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         var errorMessage = getErrorMessage(err);
         this.setState({
           openBackDrop: false,
@@ -122,7 +117,7 @@ export class Login extends Component {
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             Logik Quiz
@@ -134,7 +129,7 @@ export class Login extends Component {
               style={{
                 justify: "space-between",
                 marginTop: "10px",
-                padding: "10px"
+                padding: "10px",
               }}
             >
               <Grid item xs={12} sm={12} md={12}>
@@ -144,7 +139,7 @@ export class Login extends Component {
                     style={{
                       marginLeft: "5px",
                       fontSize: "medium",
-                      color: "#1976d2"
+                      color: "#1976d2",
                     }}
                   />
                 </Typography>

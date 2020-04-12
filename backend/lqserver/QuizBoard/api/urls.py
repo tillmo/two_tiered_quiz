@@ -8,15 +8,27 @@ from .views import (
     QuestionCreateView, 
     AnswerCreateView,
     JustificationsCreateView,
-    ExplainationsCreateView
+    ExplainationsCreateView,
+    QuizTakerCreateView,
+    ResponseCreateView,
+    QuizTakerRetrieveView,
+    QuizTakerListView,
+    QuizTakerUpdateView,
+    ResponsesUpdateView
 )
 
 urlpatterns = [
     path('', QuizListView.as_view()),
     path('create/', QuizCreateView.as_view()),
-    path('createQuestion/', QuestionCreateView.as_view()),
-    path('createAnswer/', AnswerCreateView.as_view()),
-    path('createJustification/', JustificationsCreateView.as_view()),
-    path('createExplaination/', ExplainationsCreateView.as_view()),
+    path('createquestion/', QuestionCreateView.as_view()),
+    path('createanswer/', AnswerCreateView.as_view()),
+    path('createjustification/', JustificationsCreateView.as_view()),
+    path('createexplaination/', ExplainationsCreateView.as_view()),
+    path('createreport/', QuizTakerCreateView.as_view()),
+    path('createresponse/', ResponseCreateView.as_view()),
+    path('getresponses/<pk>', QuizTakerRetrieveView.as_view()),
+    path('getquiztaker/<int:quiz>/<int:user>/', QuizTakerListView.as_view()),
+    path('updatequiztaker/<pk>', QuizTakerUpdateView.as_view()),
+    path('updateresponses/', ResponsesUpdateView.as_view()),
     path('<pk>', QuizRetrieveView.as_view()),
 ]

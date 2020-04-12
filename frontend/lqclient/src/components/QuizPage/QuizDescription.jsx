@@ -7,17 +7,18 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { HasSessionExpired } from "../Utils/LoginUtils.js";
+import { getQuizListService } from "../Services/AppServices.js";
 
 export class QuizDescription extends Component {
   state = {
-    cardDetails: []
+    cardDetails: [],
   };
 
   componentDidMount() {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
-      axios.get("http://127.0.0.1:8000/api/").then(res => {
+      getQuizListService().then((res) => {
         this.setState({ cardDetails: res.data });
       });
     }
@@ -30,7 +31,7 @@ export class QuizDescription extends Component {
           <Grid item xs={12} sm={12} md={12}>
             <Breadcrumbs
               style={{
-                marginLeft: "8px"
+                marginLeft: "8px",
               }}
               separator={<NavigateNextIcon fontSize="small" />}
               aria-label="breadcrumb"
@@ -47,7 +48,7 @@ export class QuizDescription extends Component {
           </Grid>
         </Grid>
         <Grid container spacing={1} style={{ justify: "space-between" }}>
-          {this.state.cardDetails.map(cards => (
+          {this.state.cardDetails.map((cards) => (
             <Grid item xs={12} sm={12} md={6} key={cards.id}>
               <QuizDescriptionCard key={cards.id} cardDetail={cards} />
             </Grid>

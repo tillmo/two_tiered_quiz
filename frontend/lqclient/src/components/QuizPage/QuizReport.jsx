@@ -11,14 +11,107 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
+import {
+  getUserDetailsService,
+  createReportService,
+  createResponseService,
+  updateQuizReportService,
+  updateResponseService,
+} from "../Services/AppServices.js";
 
 export class QuizReport extends Component {
   state = {
     counter: 0,
     questions: [],
     quizTitle: "",
+    numOfCorrectAnswers: 0,
   };
-  componentDidMount() {}
+
+  async componentDidMount() {
+    let quizTaker = await this._getQuizTakerDetails();
+    if (this.props.quizTakerId === "0") {
+      await createReportService(quizTaker)
+        .then(async (res) => {
+          let responses = this._prepareResponses(res.data[0]);
+          await createResponseService(responses);
+        })
+        .catch((err) => {
+          console.log("Failed Creating quiztaker");
+        });
+    } else {
+      await updateQuizReportService(quizTaker[0], this.props.quizTakerId).then(
+        async (res) => {
+          let responses = this._prepareUpdatedResponses();
+          if (responses.newResponses.length)
+            await createResponseService(responses.newResponses);
+          if (responses.updateResponses.length)
+            await updateResponseService(responses.updateResponses);
+        }
+      );
+    }
+  }
+
+  _getQuizTakerDetails = async () => {
+    var quizTaker = {};
+    await getUserDetailsService().then((res) => {
+      quizTaker.user = res.data.pk;
+    });
+    quizTaker.quiz = this.props.quizId;
+    quizTaker.order = 0;
+    quizTaker.score = this.props.score;
+    quizTaker.completed = this._hasQuizCompleted();
+    quizTaker.attempted = true;
+    quizTaker.correct_answers = this.state.numOfCorrectAnswers;
+    if (this.props.quizTakerId !== "0") {
+      quizTaker.quizTaker = this.props.quizTakerId;
+    }
+    return [quizTaker];
+  };
+
+  _hasQuizCompleted = () => {
+    const numOfQues = this.props.questions.length;
+    let numOfQuesAnswered = 0;
+    let correctAnswers = 0;
+    this.props.questions.forEach((question, index) => {
+      if (question.checkedAid) {
+        numOfQuesAnswered++;
+      }
+      if (this.props.quizReport[index].isCorrectAns) {
+        correctAnswers++;
+      }
+    });
+    this.setState({ numOfCorrectAnswers: correctAnswers });
+    return numOfQues === numOfQuesAnswered ? true : false;
+  };
+
+  _prepareResponses = (quizData) => {
+    var responses = [];
+    this.props.questions.forEach(function (question) {
+      var response = {};
+      response.quiztaker = quizData.id;
+      response.question = question.id;
+      response.answer = question.checkedAid;
+      response.justification = question.checkedJustId;
+      responses.push(response);
+    });
+    return responses;
+  };
+
+  _prepareUpdatedResponses = () => {
+    var newResponses = [];
+    var updateResponses = [];
+    this.props.questions.forEach((question) => {
+      var response = {};
+      response.quiztaker = this.props.quizTakerId;
+      response.question = question.id;
+      response.answer = question.checkedAid;
+      response.justification = question.checkedJustId;
+      if (question.toUpdate) updateResponses.push(response);
+      if (question.isAttempted && !question.toUpdate)
+        newResponses.push(response);
+    });
+    return { newResponses, updateResponses };
+  };
 
   getAnswerStyles = (ansid, isCorrectAns, checkedAid) => {
     var answerStyles = {};
