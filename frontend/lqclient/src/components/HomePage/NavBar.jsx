@@ -263,7 +263,7 @@ const NavBar = props => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Logik-Quiz
+            {process.env.REACT_APP_TITLE}
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>

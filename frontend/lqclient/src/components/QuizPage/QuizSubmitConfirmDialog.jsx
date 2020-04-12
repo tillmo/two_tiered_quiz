@@ -5,9 +5,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import {translate} from 'react-i18next';
 
 export class QuizSubmitConfirmDialog extends Component {
     render() {
+        const { t } = this.props;
         return (
             <div>
                 <Dialog
@@ -16,7 +18,7 @@ export class QuizSubmitConfirmDialog extends Component {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Submit Quiz</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('submit_quiz', { framework: "react-i18next" })}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Once the Quiz is submitted you cannot make the changes again.
@@ -37,4 +39,4 @@ export class QuizSubmitConfirmDialog extends Component {
     }
 }
 
-export default QuizSubmitConfirmDialog
+export default translate('common')(QuizSubmitConfirmDialog)
