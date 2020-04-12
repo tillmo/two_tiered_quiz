@@ -2,6 +2,11 @@ LOGFILE = '/path/to/quiz.log'
 LOGLEVEL = 'WARNING'
 # possible log levels: CRITICAL, ERROR, WARNING, INFO, DEBUG
 
+SECRET_KEY = 'please generate one!'
+# you can generate a secret key with the following two python3 lines:
+# from django.core.management.utils import get_random_secret_key
+# print(get_random_secret_key())
+
 DEBUG = False  # production
 ALLOWED_HOSTS = ['*'] # we must serve to anyone's browser
 
