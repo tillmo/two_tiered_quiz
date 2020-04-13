@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import Button from "@material-ui/core/Button";
 import QuizQuestionCard from "./QuizQuestionCard";
 import Grid from "@material-ui/core/Grid";
@@ -54,16 +53,17 @@ export class QuizQuestion extends Component {
         }
         if (responseData) {
           const responses = responseData.responses;
-          for (var i = 0; i < questions.length; i++) {
+          for (var j = 0; j < questions.length; j++) {
+            const questionId = questions[j].id;
             const index = responses.findIndex(
-              (response) => response.question === questions[i].id
+              (response) => response.question === questionId
             );
             if (index !== -1) {
-              questions[i].isAttempted = true;
-              questions[i].checkedAid = responses[index].answer;
-              questions[i].checkedJustId = responses[index].justification;
-              questions[i].toUpdate = true;
-              questions[i].responseId = responses[index].id;
+              questions[j].isAttempted = true;
+              questions[j].checkedAid = responses[index].answer;
+              questions[j].checkedJustId = responses[index].justification;
+              questions[j].toUpdate = true;
+              questions[j].responseId = responses[index].id;
             }
           }
         }
@@ -72,7 +72,7 @@ export class QuizQuestion extends Component {
           questions: questions,
         });
 
-        if (this.props.match.params.isQuizComplete === "COMPLETED") {
+        if (this.props.match.params.isQuizComplete === this.props.t("COMPLETED")) {
           this.handleSubmitQuiz();
         }
       });

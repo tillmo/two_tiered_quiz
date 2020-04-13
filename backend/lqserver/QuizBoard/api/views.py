@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import permissions, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import (
     ListAPIView,
@@ -15,16 +16,19 @@ from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, J
 class QuizListView(ListAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizListSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 
 class QuizRetrieveView(RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 
 class QuizCreateView(ListCreateAPIView):
     queryset = Quiz.objects.none()
     serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_queryset(self):
         queryset = Quiz.objects.all()
@@ -46,23 +50,28 @@ class QuizCreateView(ListCreateAPIView):
 class QuestionCreateView(CreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 
 class AnswerCreateView(CreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 class JustificationsCreateView(CreateAPIView):
     queryset = Justifications.objects.all()
     serializer_class = JustificationsSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 class ExplainationsCreateView(CreateAPIView):
     queryset = Explaination.objects.all()
     serializer_class = ExplainationSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 class QuizTakerCreateView(ListCreateAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
     
     def get_queryset(self):
         queryset = QuizTakers.objects.all()
@@ -86,11 +95,13 @@ class QuizTakerCreateView(ListCreateAPIView):
 class QuizTakerRetrieveView(RetrieveAPIView):
     queryset = QuizTakers.objects.all()
     serializer_class = QuizTakerResponseSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 
 class ResponseCreateView(ListCreateAPIView):
     queryset = Responses.objects.none()
     serializer_class = ResponseSerialzer
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_queryset(self):
         queryset = Responses.objects.all()
@@ -115,6 +126,7 @@ class ResponseCreateView(ListCreateAPIView):
 
 class QuizTakerListView(ListAPIView):
     serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_queryset(self):
         user = self.kwargs['user']
@@ -131,6 +143,7 @@ class QuizTakerListView(ListAPIView):
 class QuizTakerUpdateView(UpdateAPIView):
     queryset = QuizTakers.objects.all()
     serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
     # def update(self, request, *args, **kwargs):
     #     instance = self.get_object()
@@ -146,6 +159,7 @@ class QuizTakerUpdateView(UpdateAPIView):
 class ResponsesUpdateView(UpdateAPIView):
     queryset = Responses.objects.none()
     serializer_class = ResponseSerialzer
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_queryset(self):
         queryset = Responses.objects.all()
