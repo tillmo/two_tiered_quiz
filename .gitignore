@@ -19,3 +19,4 @@ build/
 __pycache__/
 backend/lqserver/db.sqlite3
 frontend/lqclient/.env.local
+backend/lqserver/lqserver/local_settings.py

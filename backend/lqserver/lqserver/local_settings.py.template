@@ -1,0 +1,27 @@
+LOGFILE = '/path/to/quiz.log'
+LOGLEVEL = 'WARNING'
+# possible log levels: CRITICAL, ERROR, WARNING, INFO, DEBUG
+
+SECRET_KEY = 'please generate one!'
+# you can generate a secret key with the following two python3 lines:
+# from django.core.management.utils import get_random_secret_key
+# print(get_random_secret_key())
+
+DEBUG = False  # production
+ALLOWED_HOSTS = ['*'] # we must serve to anyone's browser
+
+# use 4 spaces indentation here, no tabs
+DATABASES = {
+'default': {
+    'ENGINE': 'django.db.backends.mysql', # also works for MariaDB
+    'NAME': 'DB_NAME',
+    'USER': 'DB_USER',
+    'PASSWORD': 'DB_PASSWORD',
+    'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+    'PORT': '3306',
+    'OPTIONS': {
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        'charset': 'utf8mb4',
+    }
+} }
+
