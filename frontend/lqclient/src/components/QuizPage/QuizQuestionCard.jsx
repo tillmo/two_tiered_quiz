@@ -10,6 +10,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import {translate} from 'react-i18next';
 
 const useStyles = makeStyles({
   root: {},
@@ -87,7 +88,7 @@ const QuizQuestionCard = (props) => {
                         {ans.text}
                         {props.question.toUpdate &&
                         ans.id === props.question.checkedAid
-                          ? "  -Your Answer"
+                          ? "  "+props.t("-Your Answer")
                           : ""}
                       </span>
                     }
@@ -97,7 +98,7 @@ const QuizQuestionCard = (props) => {
               <ExpansionPanelDetails style={{ marginLeft: "25px" }}>
                 <Typography color="textSecondary" variant="body2">
                   <Typography color="textPrimary" variant="subtitle2">
-                    Justifications
+                    {props.t("Justifications")}
                   </Typography>
                   <RadioGroup
                     aria-label={ans.text}
@@ -128,7 +129,7 @@ const QuizQuestionCard = (props) => {
                             {just.text}
                             {props.question.toUpdate &&
                             just.id === props.question.checkedJustId
-                              ? "  -Your Justification"
+                              ? "  "+props.t("-Your Justification")
                               : ""}
                           </span>
                         }
@@ -145,4 +146,4 @@ const QuizQuestionCard = (props) => {
   );
 };
 
-export default QuizQuestionCard;
+export default translate('common')(QuizQuestionCard);

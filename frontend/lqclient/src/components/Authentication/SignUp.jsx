@@ -14,6 +14,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getErrorMessage } from "../Utils/LoginUtils.js";
 import { getSignUpService } from "../Services/AppServices.js";
+import {translate} from 'react-i18next';
 
 export class SignUp extends Component {
   state = {
@@ -93,6 +94,7 @@ export class SignUp extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const { email, password1, password2 } = this.state.formData;
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
     return (
@@ -132,7 +134,7 @@ export class SignUp extends Component {
             >
               <Grid item xs={12} sm={12} md={12}>
                 <Typography component="h2" variant="h6">
-                  Sign Up
+                  {t("Sign Up")}
                   <LockOutlinedIcon
                     style={{
                       marginLeft: "5px",
@@ -146,7 +148,7 @@ export class SignUp extends Component {
                 <TextField
                   fullWidth
                   id="outlined-basic"
-                  label="username"
+                  label={t("username")}
                   variant="outlined"
                   value={this.state.formData.username}
                   onChange={this.handle_username_change}
@@ -156,7 +158,7 @@ export class SignUp extends Component {
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   id="outlined-email-input"
-                  label="email"
+                  label={t("email")}
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -171,7 +173,7 @@ export class SignUp extends Component {
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   fullWidth
-                  label="password"
+                  label={t("password")}
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
@@ -183,7 +185,7 @@ export class SignUp extends Component {
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   fullWidth
-                  label="confirm password"
+                  label={t("confirm password")}
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
@@ -198,12 +200,12 @@ export class SignUp extends Component {
                   color="primary"
                   onClick={this.handleLogin}
                 >
-                  Sign Up
+                  {t("Sign Up")}
                 </Button>
               </Grid>
               <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "15px" }}>
                 <Link href="/" variant="body2" style={{ marginLeft: "60px" }}>
-                  {"Go to Login Page"}
+                  {t("Go to Login Page")}
                 </Link>
               </Grid>
             </Grid>
@@ -214,4 +216,4 @@ export class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default translate('common')(SignUp);

@@ -18,6 +18,7 @@ import {
   updateQuizReportService,
   updateResponseService,
 } from "../Services/AppServices.js";
+import {translate} from 'react-i18next';
 
 export class QuizReport extends Component {
   state = {
@@ -209,14 +210,16 @@ export class QuizReport extends Component {
   };
 
   showUserChoice = (id, isCorrect, checkedId, isAns) => {
+    const { t } = this.props;
     if (id === checkedId) {
-      return isAns ? "-Your Answer" : "-Your Justification";
+      return isAns ? t("-Your Answer") : t("-Your Justification");
     } else if (isCorrect) {
       return "";
     }
   };
 
   render() {
+    const { t } = this.props;
     return (
       <div>
         <Breadcrumbs
@@ -228,11 +231,11 @@ export class QuizReport extends Component {
         >
           <Typography variant="subtitle2">
             <Link color="inherit" href="/">
-              Home
+              {t("Home")}
             </Link>
           </Typography>
           <Typography variant="subtitle2" color="textPrimary">
-            Quiz Report
+            {t("Quiz Report")}
           </Typography>
         </Breadcrumbs>
         <Grid
@@ -242,13 +245,13 @@ export class QuizReport extends Component {
         >
           <Grid item xs={12} sm={12} md={8}>
             <Typography variant="h6" color="textPrimary">
-              {this.props.quizTitle} Quiz Report
+              {this.props.quizTitle} {t("Quiz Report")}
             </Typography>
           </Grid>
         </Grid>
         <Paper style={{ padding: "10px", marginTop: "15px" }}>
           <Typography color="textPrimary" variant="subtitle2">
-            Result:
+            {t("Result:")}
             <Typography
               color="textSecondary"
               variant="subtitle2"
@@ -282,7 +285,7 @@ export class QuizReport extends Component {
                       display: "inline-flex",
                     }}
                   >
-                    You chose
+                    {t("You chose")}
                     {this.props.quizReport[index].isCorrectAns ? (
                       <Typography
                         variant="subtitle2"
@@ -295,7 +298,7 @@ export class QuizReport extends Component {
                         <CheckCircleIcon
                           style={{ marginRight: "3px", fontSize: "small" }}
                         />
-                        Answer
+                        {t("Answer")}
                       </Typography>
                     ) : (
                       <Typography
@@ -309,7 +312,7 @@ export class QuizReport extends Component {
                         <CancelIcon
                           style={{ marginRight: "3px", fontSize: "small" }}
                         />
-                        Answer
+                        {t("Answer")}
                       </Typography>
                     )}
                     {this.props.quizReport[index].isCorrectJust ? (
@@ -324,7 +327,7 @@ export class QuizReport extends Component {
                         <CheckCircleIcon
                           style={{ marginRight: "3px", fontSize: "small" }}
                         />
-                        Justification
+                        {t("Justification")}
                       </Typography>
                     ) : (
                       <Typography
@@ -338,7 +341,7 @@ export class QuizReport extends Component {
                         <CancelIcon
                           style={{ marginRight: "3px", fontSize: "small" }}
                         />
-                        Justification
+                        {t("Justification")}
                       </Typography>
                     )}
                   </Typography>
@@ -394,7 +397,7 @@ export class QuizReport extends Component {
                         <ExpansionPanelDetails>
                           <Typography color="textPrimary" variant="body2">
                             <Typography color="textPrimary" variant="subtitle2">
-                              Justifications
+                              {t("Justifications")}
                             </Typography>
                             <ul>
                               {ans.justifications.map((just) => (
@@ -445,7 +448,7 @@ export class QuizReport extends Component {
                                           variant="subtitle2"
                                           style={{ display: "inline-block" }}
                                         >
-                                          Justification wrong because:
+                                          {t("Justification wrong because")}:
                                           <Typography
                                             color="textSecondary"
                                             variant="subtitle2"
@@ -486,7 +489,7 @@ export class QuizReport extends Component {
                   }}
                 >
                   {" "}
-                  Not Attempted{" "}
+                  {t("Not Attempted")}{" "}
                 </Typography>
               </Typography>
             </Paper>
@@ -497,4 +500,4 @@ export class QuizReport extends Component {
   }
 }
 
-export default QuizReport;
+export default translate('common')(QuizReport);

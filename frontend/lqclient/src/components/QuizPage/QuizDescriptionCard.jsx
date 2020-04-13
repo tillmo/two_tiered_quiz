@@ -13,6 +13,7 @@ import {
   getquiztakerdetailsService,
   getUserDetailsService,
 } from "../Services/AppServices.js";
+import {translate} from 'react-i18next';
 
 const useStyles = makeStyles({
   root: {
@@ -43,6 +44,7 @@ const QuizDescriptionCard = (props) => {
 
   useEffect(() => {
     let userId, quiztakerdetails;
+    const { t } = props;
     const getUserDetails = async () => {
       await getUserDetailsService().then(async (res) => {
         userId = res.data.pk;
@@ -57,11 +59,11 @@ const QuizDescriptionCard = (props) => {
               quiztakerdetails.attempted &&
               quiztakerdetails.completed
             ) {
-              setButtonText("COMPLETED");
+              setButtonText(t("COMPLETED"));
             } else if (quiztakerdetails && quiztakerdetails.attempted) {
-              setButtonText("CONTINUE");
+              setButtonText(t("CONTINUE"));
             } else {
-              setButtonText("START");
+              setButtonText(t("START"));
             }
           }
         );
@@ -94,7 +96,7 @@ const QuizDescriptionCard = (props) => {
           <Grid item xs={4} sm={4} md={4}>
             <div style={{ marginLeft: "13px" }}>
               <Typography variant="subtitle2" component="h2">
-                Created Date
+                {props.t("Created Date")}
               </Typography>
             </div>
             <Chip
@@ -107,7 +109,7 @@ const QuizDescriptionCard = (props) => {
           <Grid item xs={4} sm={4} md={4}>
             <div style={{ marginLeft: "15px" }}>
               <Typography variant="subtitle2" component="h2">
-                Questions in Quiz
+                {props.t("Questions in Quiz")}
               </Typography>
             </div>
             <div style={{ marginLeft: "40%", marginTop: "7px" }}>
@@ -136,4 +138,4 @@ const QuizDescriptionCard = (props) => {
   );
 };
 
-export default QuizDescriptionCard;
+export default translate('common')(QuizDescriptionCard);

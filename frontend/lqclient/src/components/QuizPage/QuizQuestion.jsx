@@ -18,6 +18,7 @@ import {
   getQuizTakerResponsesService,
 } from "../Services/AppServices.js";
 import Snackbar from "@material-ui/core/Snackbar";
+import {translate} from 'react-i18next';
 
 export class QuizQuestion extends Component {
   state = {
@@ -174,7 +175,7 @@ export class QuizQuestion extends Component {
       this.setState({
         openSnackBar: true,
         errorMessage:
-          "Please select justifications for selected answers before submit ",
+          this.props.t("Please select justifications for selected answers before submit"),
       });
     } else {
       this.setState({ openConfirmDialog: true });
@@ -190,13 +191,14 @@ export class QuizQuestion extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const counter = this.state.counter;
     const noOfQuestions = this.state.questions.length - 1;
     const { openSnackBar, errorMessage } = this.state;
     if (this.state.questions.length === 0) {
       return (
         <Typography variant="h6" color="textPrimary">
-          No Questions
+          {t("No Questions")}
         </Typography>
       );
     }
@@ -233,11 +235,11 @@ export class QuizQuestion extends Component {
         >
           <Typography variant="subtitle2">
             <Link color="inherit" href="/">
-              Home
+              {t("Home")}
             </Link>
           </Typography>
           <Typography variant="subtitle2" color="textPrimary">
-            {this.state.quizTitle} Quiz
+            {this.state.quizTitle} {t("Quiz")}
           </Typography>
         </Breadcrumbs>
         <Grid
@@ -247,7 +249,7 @@ export class QuizQuestion extends Component {
         >
           <Grid item xs={12} sm={12} md={12}>
             <Typography variant="h6" color="textPrimary">
-              {this.state.quizTitle} Quiz
+              {this.state.quizTitle} {t("Quiz")}
             </Typography>
           </Grid>
           <Grid item xs={7} sm={7} md={7}>
@@ -259,7 +261,7 @@ export class QuizQuestion extends Component {
               onClick={this.previousQuestion}
               startIcon={<KeyboardArrowLeftIcon />}
             >
-              Back
+              {t("Back")}
             </Button>
             <Button
               variant="contained"
@@ -270,7 +272,7 @@ export class QuizQuestion extends Component {
               disabled={counter >= noOfQuestions}
               endIcon={<KeyboardArrowRightIcon />}
             >
-              Next
+              {t("Next")}
             </Button>
           </Grid>
           <Grid item xs={5} sm={5} md={5}>
@@ -287,7 +289,7 @@ export class QuizQuestion extends Component {
               onClick={this.openQuizSubmitConfirmDialog}
               endIcon={<AssignmentTurnedInIcon />}
             >
-              Submit Quiz
+              {t("Submit Quiz")}
             </Button>
           </Grid>
 
@@ -310,4 +312,4 @@ export class QuizQuestion extends Component {
   }
 }
 
-export default QuizQuestion;
+export default translate('common')(QuizQuestion);

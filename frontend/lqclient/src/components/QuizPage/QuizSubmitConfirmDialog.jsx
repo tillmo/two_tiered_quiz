@@ -18,19 +18,18 @@ export class QuizSubmitConfirmDialog extends Component {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{t('submit_quiz', { framework: "react-i18next" })}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t("Submit Quiz")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Once the Quiz is submitted you cannot make the changes again.
-            Do you want to submit quiz?
+            {t("Once the Quiz is submitted you cannot make the changes again. Do you want to submit quiz?")}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleClose} color="primary">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button onClick={this.props.submitQuiz} color="primary" autoFocus>
-            Submit Quiz
+            {t("Submit Quiz")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -20,6 +20,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { HasSessionExpired, getErrorMessage } from "../Utils/LoginUtils.js";
 import { getLoginService } from "../Services/AppServices.js";
+import {translate} from 'react-i18next';
 
 export class Login extends Component {
   state = {
@@ -90,6 +91,7 @@ export class Login extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
     if (this.state.isUserLoggedIn) {
       return <Redirect to="/app/" />;
@@ -120,7 +122,7 @@ export class Login extends Component {
               alignItems: "center",
             }}
           >
-            Logik Quiz
+            {process.env.REACT_APP_TITLE}
           </Typography>
           <Paper>
             <Grid
@@ -134,7 +136,7 @@ export class Login extends Component {
             >
               <Grid item xs={12} sm={12} md={12}>
                 <Typography component="h2" variant="h6">
-                  Login
+                  {t("Login")}
                   <LockOutlinedIcon
                     style={{
                       marginLeft: "5px",
@@ -148,7 +150,7 @@ export class Login extends Component {
                 <TextField
                   style={{ width: "100%" }}
                   id="outlined-basic"
-                  label="username"
+                  label={t("username")}
                   variant="outlined"
                   value={this.state.username}
                   onChange={this.handle_username_change}
@@ -159,7 +161,7 @@ export class Login extends Component {
                 <TextField
                   style={{ width: "100%" }}
                   id="standard-password-input"
-                  label="password"
+                  label={t("password")}
                   type="password"
                   autoComplete="current-password"
                   variant="outlined"
@@ -174,7 +176,7 @@ export class Login extends Component {
                   color="primary"
                   onClick={this.handleLogin}
                 >
-                  Login
+                  {t("Login")}
                 </Button>
               </Grid>
               <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "15px" }}>
@@ -183,7 +185,7 @@ export class Login extends Component {
                   variant="body2"
                   style={{ marginLeft: "60px" }}
                 >
-                  {"Don't have an account? Sign Up"}
+                  {t("Don't have an account? Sign Up")}
                 </Link>
               </Grid>
             </Grid>
@@ -194,4 +196,4 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+export default translate('common')(Login);
