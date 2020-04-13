@@ -31,6 +31,8 @@ import QuizQuestion from "../QuizPage/QuizQuestion";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {translate} from 'react-i18next';
 
+function t(arg) { return arg }
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -203,7 +205,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary=t("Weekly Quiz")
+            primary={t("Weekly Quiz")}
           />
         </ListItem>
         <ListItem button key={"archive"}>
@@ -212,7 +214,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary=t("Quizzes Available")
+            primary={t("Quizzes Available")}
           />
         </ListItem>
         <ListItem button key={"dashboard"}>
@@ -221,7 +223,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary=t("Dashboard")
+            primary={t("Dashboard")}
           />
         </ListItem>
         <ListItem button key={"checksample"}>
@@ -230,7 +232,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary=t("Check Sample")
+            primary={t("Check Sample")}
           />
         </ListItem>
       </List>
@@ -242,7 +244,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary=t("Report a problem")
+            primary={t("Report a problem")}
           />
         </ListItem>
       </List>

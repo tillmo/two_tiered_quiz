@@ -9,6 +9,7 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { HasSessionExpired } from "../Utils/LoginUtils.js";
 import { getQuizListService } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
+function t(arg) { return arg }
 
 export class QuizDescription extends Component {
   state = {

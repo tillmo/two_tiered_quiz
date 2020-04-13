@@ -20,6 +20,8 @@ import {
 } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
 
+function t(arg) { return arg }
+
 export class QuizReport extends Component {
   state = {
     counter: 0,

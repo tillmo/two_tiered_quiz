@@ -20,6 +20,8 @@ import {
 import Snackbar from "@material-ui/core/Snackbar";
 import {translate} from 'react-i18next';
 
+function t(arg) { return arg }
+
 export class QuizQuestion extends Component {
   state = {
     counter: 0,

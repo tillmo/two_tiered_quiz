@@ -22,6 +22,8 @@ import { HasSessionExpired, getErrorMessage } from "../Utils/LoginUtils.js";
 import { getLoginService } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
 
+function t(arg) { return arg }
+
 export class Login extends Component {
   state = {
     username: "",
@@ -175,7 +177,7 @@ export class Login extends Component {
                   color="primary"
                   onClick={this.handleLogin}
                 >
-                  {t("Login")
+                  {t("Login")}
                 </Button>
               </Grid>
               <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "15px" }}>

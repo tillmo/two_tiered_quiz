@@ -14,6 +14,7 @@ import {
   getUserDetailsService,
 } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
+function t(arg) { return arg }
 
 const useStyles = makeStyles({
   root: {

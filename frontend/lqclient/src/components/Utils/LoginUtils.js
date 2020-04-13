@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import {translate} from 'react-i18next';
+function t(arg) { return arg }
 
 export const HasSessionExpired = () => {
     var loggedInTime = localStorage.getItem("loggedinTime");
@@ -38,4 +39,4 @@ export const getErrorMessage = (err) => {
   return errorMessage;
 }
 
-export default {HasSessionExpired, translate('common')(getErrorMessage)};
+export default translate('common')({HasSessionExpired, getErrorMessage});
