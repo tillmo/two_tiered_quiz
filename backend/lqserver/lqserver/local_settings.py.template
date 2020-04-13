@@ -10,6 +10,7 @@ SECRET_KEY = 'please generate one!'
 DEBUG = False  # production
 ALLOWED_HOSTS = ['*'] # we must serve to anyone's browser
 
+# use 4 spaces indentation here, no tabs
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.mysql', # also works for MariaDB
