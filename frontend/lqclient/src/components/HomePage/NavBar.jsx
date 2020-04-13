@@ -29,6 +29,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import QuizDescription from "../QuizPage/QuizDescription";
 import QuizQuestion from "../QuizPage/QuizQuestion";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {translate} from 'react-i18next';
 
 const drawerWidth = 240;
 
@@ -144,9 +145,9 @@ const NavBar = props => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={logout}>logout</MenuItem>
+      <MenuItem onClick={handleMenuClose}>{t("Profile")}</MenuItem>
+      <MenuItem onClick={handleMenuClose}>{t("My account")}</MenuItem>
+      <MenuItem onClick={logout}>{t("logout")}</MenuItem>
     </Menu>
   );
 
@@ -202,7 +203,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary="Weekly Quiz"
+            primary=t("Weekly Quiz")
           />
         </ListItem>
         <ListItem button key={"archive"}>
@@ -211,7 +212,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary="Quizzes Available"
+            primary=t("Quizzes Available")
           />
         </ListItem>
         <ListItem button key={"dashboard"}>
@@ -220,7 +221,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary="Dashboard"
+            primary=t("Dashboard")
           />
         </ListItem>
         <ListItem button key={"checksample"}>
@@ -229,7 +230,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary="Check Sample"
+            primary=t("Check Sample")
           />
         </ListItem>
       </List>
@@ -241,7 +242,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary="Report a problem"
+            primary=t("Report a problem")
           />
         </ListItem>
       </List>
@@ -348,4 +349,4 @@ NavBar.propTypes = {
   container: PropTypes.any
 };
 
-export default NavBar;
+export default translate('common')(NavBar);

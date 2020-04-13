@@ -8,6 +8,7 @@ import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { HasSessionExpired } from "../Utils/LoginUtils.js";
 import { getQuizListService } from "../Services/AppServices.js";
+import {translate} from 'react-i18next';
 
 export class QuizDescription extends Component {
   state = {
@@ -38,11 +39,11 @@ export class QuizDescription extends Component {
             >
               <Typography variant="subtitle2">
                 <Link color="inherit" href="/">
-                  Home
+                  {t("Home")}
                 </Link>
               </Typography>
               <Typography variant="subtitle2" color="textPrimary">
-                Available Quizzes
+                {t("Available Quizzes")}
               </Typography>
             </Breadcrumbs>
           </Grid>
@@ -59,4 +60,4 @@ export class QuizDescription extends Component {
   }
 }
 
-export default QuizDescription;
+export default translate('common')(QuizDescription);
