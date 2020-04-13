@@ -20,8 +20,6 @@ import {
 } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
 
-function t(arg) { return arg }
-
 export class QuizReport extends Component {
   state = {
     counter: 0,
@@ -212,6 +210,7 @@ export class QuizReport extends Component {
   };
 
   showUserChoice = (id, isCorrect, checkedId, isAns) => {
+    const { t } = this.props;
     if (id === checkedId) {
       return isAns ? t("-Your Answer") : t("-Your Justification");
     } else if (isCorrect) {
@@ -220,6 +219,7 @@ export class QuizReport extends Component {
   };
 
   render() {
+    const { t } = this.props;
     return (
       <div>
         <Breadcrumbs

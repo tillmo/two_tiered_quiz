@@ -16,8 +16,6 @@ import { getErrorMessage } from "../Utils/LoginUtils.js";
 import { getSignUpService } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
 
-function t(arg) { return arg }
-
 export class SignUp extends Component {
   state = {
     formData: {
@@ -96,6 +94,7 @@ export class SignUp extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const { email, password1, password2 } = this.state.formData;
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
     return (

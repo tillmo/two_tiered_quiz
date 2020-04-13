@@ -1,7 +1,6 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import {translate} from 'react-i18next';
-function t(arg) { return arg }
 
 export const HasSessionExpired = () => {
     var loggedInTime = localStorage.getItem("loggedinTime");
@@ -23,7 +22,7 @@ export const getErrorMessage = (err) => {
   let errorMessage = "";
   if (err.response && err.response.data) {
     if (err.response.status >= 403 && err.response.status < 600) {
-	errorMessage = t("Request cannot be processed");
+	errorMessage = this.props.t("Request cannot be processed");
     } else {
       errorMessage = Object.entries(err.response.data).map(
         ([key, value]) => (

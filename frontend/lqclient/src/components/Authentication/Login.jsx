@@ -22,8 +22,6 @@ import { HasSessionExpired, getErrorMessage } from "../Utils/LoginUtils.js";
 import { getLoginService } from "../Services/AppServices.js";
 import {translate} from 'react-i18next';
 
-function t(arg) { return arg }
-
 export class Login extends Component {
   state = {
     username: "",
@@ -93,6 +91,7 @@ export class Login extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const { openSnackBar, errorMessage, openBackDrop } = this.state;
     if (this.state.isUserLoggedIn) {
       return <Redirect to="/app/" />;

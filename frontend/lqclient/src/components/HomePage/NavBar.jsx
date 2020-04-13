@@ -31,8 +31,6 @@ import QuizQuestion from "../QuizPage/QuizQuestion";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {translate} from 'react-i18next';
 
-function t(arg) { return arg }
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -137,6 +135,7 @@ const NavBar = props => {
   };
 
   const menuId = "primary-search-account-menu";
+  const { t } = this.props;
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}

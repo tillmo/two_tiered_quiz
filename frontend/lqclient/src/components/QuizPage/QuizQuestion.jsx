@@ -20,8 +20,6 @@ import {
 import Snackbar from "@material-ui/core/Snackbar";
 import {translate} from 'react-i18next';
 
-function t(arg) { return arg }
-
 export class QuizQuestion extends Component {
   state = {
     counter: 0,
@@ -177,7 +175,7 @@ export class QuizQuestion extends Component {
       this.setState({
         openSnackBar: true,
         errorMessage:
-          t("Please select justifications for selected answers before submit"),
+          this.props.t("Please select justifications for selected answers before submit"),
       });
     } else {
       this.setState({ openConfirmDialog: true });
@@ -193,6 +191,7 @@ export class QuizQuestion extends Component {
   };
 
   render() {
+    const { t } = this.props;
     const counter = this.state.counter;
     const noOfQuestions = this.state.questions.length - 1;
     const { openSnackBar, errorMessage } = this.state;
