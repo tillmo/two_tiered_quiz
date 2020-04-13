@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import QuizDescriptionCard from "./QuizDescriptionCard";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
