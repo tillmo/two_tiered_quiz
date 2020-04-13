@@ -448,7 +448,7 @@ export class QuizReport extends Component {
                                           variant="subtitle2"
                                           style={{ display: "inline-block" }}
                                         >
-                                          Justification wrong because:
+                                          {t("Justification wrong because:")}
                                           <Typography
                                             color="textSecondary"
                                             variant="subtitle2"

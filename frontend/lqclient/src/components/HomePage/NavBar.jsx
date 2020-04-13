@@ -135,7 +135,7 @@ const NavBar = props => {
   };
 
   const menuId = "primary-search-account-menu";
-  const { t } = this.props;
+  const { t } = props;
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}

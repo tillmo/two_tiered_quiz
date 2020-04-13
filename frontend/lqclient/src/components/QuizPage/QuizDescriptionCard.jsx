@@ -44,7 +44,7 @@ const QuizDescriptionCard = (props) => {
 
   useEffect(() => {
     let userId, quiztakerdetails;
-    const { t } = this.props;
+    const { t } = props;
     const getUserDetails = async () => {
       await getUserDetailsService().then(async (res) => {
         userId = res.data.pk;
@@ -96,7 +96,7 @@ const QuizDescriptionCard = (props) => {
           <Grid item xs={4} sm={4} md={4}>
             <div style={{ marginLeft: "13px" }}>
               <Typography variant="subtitle2" component="h2">
-                {this.props.t("Created Date")}
+                {props.t("Created Date")}
               </Typography>
             </div>
             <Chip
@@ -109,7 +109,7 @@ const QuizDescriptionCard = (props) => {
           <Grid item xs={4} sm={4} md={4}>
             <div style={{ marginLeft: "15px" }}>
               <Typography variant="subtitle2" component="h2">
-                {this.props.t("Questions in Quiz")}
+                {props.t("Questions in Quiz")}
               </Typography>
             </div>
             <div style={{ marginLeft: "40%", marginTop: "7px" }}>
