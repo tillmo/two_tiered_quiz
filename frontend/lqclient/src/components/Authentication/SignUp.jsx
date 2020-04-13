@@ -164,7 +164,6 @@ export class SignUp extends Component {
                   value={email}
                   onChange={this.handle_email_change}
                   fullWidth
-                  required
                 />
               </Grid>
 
