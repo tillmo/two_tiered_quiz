@@ -152,12 +152,13 @@ export class SignUp extends Component {
                   value={this.state.formData.username}
                   onChange={this.handle_username_change}
                   required
+                  autoComplete="off"
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   id="outlined-email-input"
-                  label={t("email")}
+                  label={t("email(optional)")}
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -165,7 +166,7 @@ export class SignUp extends Component {
                   value={email}
                   onChange={this.handle_email_change}
                   fullWidth
-                  required
+                  autoComplete="off"
                 />
               </Grid>
 

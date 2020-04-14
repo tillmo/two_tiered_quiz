@@ -154,6 +154,7 @@ export class Login extends Component {
                   value={this.state.username}
                   onChange={this.handle_username_change}
                   required
+                  autoComplete="off"
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
