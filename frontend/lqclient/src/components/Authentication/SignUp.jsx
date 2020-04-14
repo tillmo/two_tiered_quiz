@@ -158,7 +158,7 @@ export class SignUp extends Component {
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   id="outlined-email-input"
-                  label={t("email")}
+                  label={t("email(optional)")}
                   type="email"
                   name="email"
                   autoComplete="email"
