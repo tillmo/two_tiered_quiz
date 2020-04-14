@@ -1,5 +1,6 @@
 from rest_framework import serializers
-
+from rest_auth.registration.serializers import RegisterSerializer
+from allauth.account import app_settings as allauth_settings
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
 
 class ExplainationSerializer(serializers.ModelSerializer):
@@ -79,3 +80,8 @@ class QuizTakerSerializer(serializers.ModelSerializer):
     class Meta:
             model = QuizTakers
             fields = '__all__'
+            
+
+class RegistrationAllowEmptyEmailSerializer(RegisterSerializer):
+    email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED,
+                                   allow_blank=not allauth_settings.EMAIL_REQUIRED)

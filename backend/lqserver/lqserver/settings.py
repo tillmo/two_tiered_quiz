@@ -105,6 +105,10 @@ REST_FRAMEWORK = {
     'rest_framework.permissions.IsAuthenticated', )
 }
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'QuizBoard.api.serializers.RegistrationAllowEmptyEmailSerializer',
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -145,8 +149,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 CORS_ORIGIN_ALLOW_ALL = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_USERNAME_REQUIRED = True
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
