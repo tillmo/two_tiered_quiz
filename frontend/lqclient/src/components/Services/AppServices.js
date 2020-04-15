@@ -15,7 +15,9 @@ export const getSignUpService = (userDetails) => {
 };
 
 export const getUserDetailsService = () => {
-  return axios.get(url + "rest-auth/user/", { headers: getHeaders() });
+  return axios.get(url + "rest-auth/user/", { headers: getHeaders() }).then((res) => {
+    return res.data.pk;
+  });;
 };
 
 export const getQuizListService = () => {
@@ -34,8 +36,8 @@ export const createResponseService = (responses) => {
   return axios.post(url + "api/createresponse/", responses, { headers: getHeaders() });
 };
 
-export const getquiztakerdetailsService = (quizId, userId) => {
-  return axios.get(url + "api/getquiztaker/" + quizId + "/" + userId + "/", { headers: getHeaders() });
+export const getquiztakerdetailsService = (userId) => {
+  return axios.get(url + "api/getquiztaker/" + userId + "/", { headers: getHeaders() });
 };
 
 export const getQuizTakerResponsesService = (quizTakerId) => {

@@ -27,7 +27,7 @@ urlpatterns = [
     path('createreport/', QuizTakerCreateView.as_view()),
     path('createresponse/', ResponseCreateView.as_view()),
     path('getresponses/<pk>', QuizTakerRetrieveView.as_view()),
-    path('getquiztaker/<int:quiz>/<int:user>/', QuizTakerListView.as_view()),
+    path('getquiztaker/<int:user>/', QuizTakerListView.as_view()),
     path('updatequiztaker/<pk>', QuizTakerUpdateView.as_view()),
     path('updateresponses/', ResponsesUpdateView.as_view()),
     path('<pk>', QuizRetrieveView.as_view()),

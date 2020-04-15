@@ -130,11 +130,9 @@ class QuizTakerListView(ListAPIView):
 
     def get_queryset(self):
         user = self.kwargs['user']
-        quiz = self.kwargs['quiz']
         try:
-            quiz = Quiz.objects.get(id=quiz)
             user = User.objects.get(id=user)
-            queryset = QuizTakers.objects.filter(quiz=quiz, user=user)
+            queryset = QuizTakers.objects.filter(user=user)
         except (QuizTakers.DoesNotExist,Quiz.DoesNotExist,User.DoesNotExist):
             queryset = QuizTakers.objects.none()
         return queryset
