@@ -213,7 +213,7 @@ const NavBar = props => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary={t("Quizzes Available")}
+            primary={t("Available Quizzes")}
           />
         </ListItem>
         <ListItem button key={"dashboard"}>

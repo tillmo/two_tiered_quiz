@@ -160,7 +160,7 @@ export class QuizDescription extends Component {
               aria-label="breadcrumb"
             >
               <Typography variant="subtitle2" color="textPrimary">
-                {this.props.t("Quizzes Available")}
+                {this.props.t("Available Quizzes")}
               </Typography>
             </Breadcrumbs>
           </Grid>
