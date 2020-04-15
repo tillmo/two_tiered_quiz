@@ -154,7 +154,7 @@ export class QuizDescription extends Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
-        <TableContainer component={Paper} style={{ height: "460px" }}>
+        <TableContainer component={Paper} style={{ height: "422px" }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead style={tableStyles}>
               <TableRow>
@@ -195,7 +195,7 @@ export class QuizDescription extends Component {
                     <TableCell align="left">{row.quizQuesCount}</TableCell>
                     <TableCell align="left">{row.score}</TableCell>
                     <TableCell align="left">
-                      <Button
+                      <Button size="small"
                         style={{
                           marginLeft: "20px",
                           backgroundColor: "#3f51b5",
