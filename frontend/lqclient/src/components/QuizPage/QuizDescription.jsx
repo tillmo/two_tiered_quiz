@@ -21,7 +21,6 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import Button from "@material-ui/core/Button";
 import TablePagination from "@material-ui/core/TablePagination";
 
-
 export class QuizDescription extends Component {
   state = {
     cardDetails: [],
@@ -83,7 +82,27 @@ export class QuizDescription extends Component {
         )
       );
     });
+    rowData = this.rearrangeRowData(rowData);
     return rowData;
+  };
+
+  rearrangeRowData = (rowData) => {
+    let rows = [];
+    const startData = rowData.filter(
+      (row) => row.buttonText === this.props.t("START")
+    );
+    const continueData = rowData.filter(
+      (row) => row.buttonText === this.props.t("CONTINUE")
+    );
+    const completedData = rowData.filter(
+      (row) => row.buttonText === this.props.t("COMPLETED")
+    );
+    if (startData && startData.length !== 0) rows = rows.concat(startData);
+    if (continueData && continueData.length !== 0)
+      rows = rows.concat(continueData);
+    if (completedData && completedData.length !== 0)
+      rows = rows.concat(completedData);
+    return rows;
   };
 
   createData = (
@@ -128,6 +147,7 @@ export class QuizDescription extends Component {
       backgroundColor: "#3f51b5",
       color: "white",
     };
+    const { t } = this.props;
     return (
       <div>
         <Grid container spacing={1} style={{ justify: "space-between" }}>
@@ -161,16 +181,16 @@ export class QuizDescription extends Component {
                 <TableCell
                   style={{ backgroundColor: "#3f51b5", color: "white" }}
                 >
-                  Quiz
+                  {t("Quiz")}
                 </TableCell>
                 <TableCell align="left" style={tableStyles}>
-                  Description
+                  {t("Description")}
                 </TableCell>
                 <TableCell align="left" style={tableStyles}>
-                  Questions in quiz
+                  #
                 </TableCell>
                 <TableCell align="left" style={tableStyles}>
-                  score
+                  {t("Score")}
                 </TableCell>
                 <TableCell align="left" style={tableStyles}></TableCell>
               </TableRow>
@@ -195,7 +215,8 @@ export class QuizDescription extends Component {
                     <TableCell align="left">{row.quizQuesCount}</TableCell>
                     <TableCell align="left">{row.score}</TableCell>
                     <TableCell align="left">
-                      <Button size="small"
+                      <Button
+                        size="small"
                         style={{
                           marginLeft: "20px",
                           backgroundColor: "#3f51b5",
