@@ -54,9 +54,7 @@ export class QuizReport extends Component {
 
   _getQuizTakerDetails = async () => {
     var quizTaker = {};
-    await getUserDetailsService().then((res) => {
-      quizTaker.user = res.data.pk;
-    });
+    quizTaker.user = await getUserDetailsService();
     quizTaker.quiz = this.props.quizId;
     quizTaker.order = 0;
     quizTaker.score = this.props.score;
