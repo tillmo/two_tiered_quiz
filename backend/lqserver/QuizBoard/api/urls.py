@@ -14,7 +14,8 @@ from .views import (
     QuizTakerRetrieveView,
     QuizTakerListView,
     QuizTakerUpdateView,
-    ResponsesUpdateView
+    ResponsesUpdateView,
+    QuizWithoutFlagsRetrieveView
 )
 
 urlpatterns = [
@@ -31,4 +32,5 @@ urlpatterns = [
     path('updatequiztaker/<pk>', QuizTakerUpdateView.as_view()),
     path('updateresponses/', ResponsesUpdateView.as_view()),
     path('<pk>', QuizRetrieveView.as_view()),
+    path('getquiz/<pk>', QuizWithoutFlagsRetrieveView.as_view()),
 ]
