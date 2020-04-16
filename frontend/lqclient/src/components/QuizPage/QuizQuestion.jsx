@@ -17,7 +17,7 @@ import {
   getQuizTakerResponsesService,
 } from "../Services/AppServices.js";
 import Snackbar from "@material-ui/core/Snackbar";
-import {translate} from 'react-i18next';
+import { translate } from "react-i18next";
 
 export class QuizQuestion extends Component {
   state = {
@@ -50,6 +50,10 @@ export class QuizQuestion extends Component {
           questions[i].isAttempted = false;
           questions[i].toUpdate = false;
           questions[i].responseId = 0;
+          questions[i].checkedAid = 0;
+          questions[i].checkedAns = "";
+          questions[i].checkedJustId = 0;
+          questions[i].checkedJust = "";
         }
         if (responseData) {
           const responses = responseData.responses;
@@ -72,8 +76,10 @@ export class QuizQuestion extends Component {
           questions: questions,
         });
 
-        if (this.props.match.params.isQuizComplete === this.props.t("COMPLETED")) {
-          this.handleSubmitQuiz();
+        if (
+          this.props.match.params.isQuizComplete === this.props.t("COMPLETED")
+        ) {
+          this.setState({ showReport: true });
         }
       });
     }
@@ -99,61 +105,11 @@ export class QuizQuestion extends Component {
     questions[qno].checkedJustId = justId;
     questions[qno].checkedJust = just;
 
-    this.setState({ cardDetails: questions });
+    this.setState({ questions: questions });
   };
 
   handleSubmitQuiz = () => {
-    const questions = this.state.questions;
-    let quizReport = [];
-    let score = 0;
-    let totalScore = 10 * questions.length;
-    for (var i = 0; i < questions.length; i++) {
-      var obj = {};
-      obj.isCorrectAns = false;
-      obj.isCorrectJust = false;
-      obj.qno = i + 1;
-      obj.questionText = questions[i].label;
-      obj.checkedAnswer = questions[i].checkedAns;
-      obj.checkedJustification = questions[i].checkedJust;
-      obj.checkedAid = questions[i].checkedAid;
-      obj.checkedJustId = questions[i].checkedJustId;
-      var answers = questions[i].answer;
-      for (var j = 0; j < answers.length; j++) {
-        if (answers[j].is_correct) {
-          obj.correctAnswer = answers[j].text;
-          obj.correctAid = answers[j].id;
-          var justifications = answers[j].justifications;
-          for (var k = 0; k < justifications.length; k++) {
-            if (justifications[k].is_correct) {
-              if (obj.checkedJustId === justifications[k].id) {
-                score += 5;
-                obj.isCorrectJust = true;
-                obj.correctJustificationId = justifications[k].id;
-                obj.correctJustification = justifications[k].text;
-                if (justifications[k].explaination[0]) {
-                  obj.explaination = justifications[k].explaination[0].text;
-                }
-              }
-            }
-          }
-        }
-      }
-      if (
-        obj.checkedAid &&
-        obj.correctAid &&
-        obj.checkedAid === obj.correctAid
-      ) {
-        score += 5;
-        obj.isCorrectAns = true;
-      }
-      quizReport.push(obj);
-    }
-    this.setState({
-      showReport: true,
-      quizReport: quizReport,
-      score: score,
-      totalScore: totalScore,
-    });
+    this.setState({ showReport: true });
   };
 
   _hasAllJustificationsSelected = () => {
@@ -174,8 +130,9 @@ export class QuizQuestion extends Component {
     if (this._hasAllJustificationsSelected()) {
       this.setState({
         openSnackBar: true,
-        errorMessage:
-          this.props.t("Please select justifications for selected answers before submit"),
+        errorMessage: this.props.t(
+          "Please select justifications for selected answers before submit"
+        ),
       });
     } else {
       this.setState({ openConfirmDialog: true });
@@ -208,11 +165,10 @@ export class QuizQuestion extends Component {
         <QuizReport
           quizId={this.props.match.params.id}
           quizTitle={this.state.quizTitle}
-          quizReport={this.state.quizReport}
-          score={this.state.score}
-          totalScore={this.state.totalScore}
           questions={this.state.questions}
           quizTakerId={this.props.match.params.quizTakerId}
+          quizStatus={this.props.match.params.isQuizComplete}
+          history={this.props.history}
         />
       );
     }
@@ -312,4 +268,4 @@ export class QuizQuestion extends Component {
   }
 }
 
-export default translate('common')(QuizQuestion);
+export default translate("common")(QuizQuestion);

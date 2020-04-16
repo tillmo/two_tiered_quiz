@@ -11,7 +11,7 @@ from rest_framework.generics import (
     ListCreateAPIView,
 )
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
-from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer
+from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
 
 class QuizListView(ListAPIView):
     queryset = Quiz.objects.all()
@@ -175,3 +175,8 @@ class ResponsesUpdateView(UpdateAPIView):
             answers = Answer.objects.get(id=list_elt['answer'])
             justifications = Justifications.objects.get(id=list_elt['justification'])
             responses = Responses.objects.select_related().filter(quiztaker=qt, question=ques).update(answer=answers, justification = justifications)
+
+
+class QuizWithoutFlagsRetrieveView(RetrieveAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizWithoutFlagsSerializer

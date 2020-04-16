@@ -15,9 +15,11 @@ export const getSignUpService = (userDetails) => {
 };
 
 export const getUserDetailsService = () => {
-  return axios.get(url + "rest-auth/user/", { headers: getHeaders() }).then((res) => {
-    return res.data.pk;
-  });;
+  return axios
+    .get(url + "rest-auth/user/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data.pk;
+    });
 };
 
 export const getQuizListService = () => {
@@ -25,19 +27,25 @@ export const getQuizListService = () => {
 };
 
 export const getQuizService = (quizId) => {
-  return axios.get(url + "api/" + quizId, { headers: getHeaders() });
+  return axios.get(url + "api/getquiz/" + quizId, { headers: getHeaders() });
 };
 
 export const createReportService = (quizTaker) => {
-  return axios.post(url + "api/createreport/", quizTaker, { headers: getHeaders() });
+  return axios.post(url + "api/createreport/", quizTaker, {
+    headers: getHeaders(),
+  });
 };
 
 export const createResponseService = (responses) => {
-  return axios.post(url + "api/createresponse/", responses, { headers: getHeaders() });
+  return axios.post(url + "api/createresponse/", responses, {
+    headers: getHeaders(),
+  });
 };
 
 export const getquiztakerdetailsService = (userId) => {
-  return axios.get(url + "api/getquiztaker/" + userId + "/", { headers: getHeaders() });
+  return axios.get(url + "api/getquiztaker/" + userId + "/", {
+    headers: getHeaders(),
+  });
 };
 
 export const getQuizTakerResponsesService = (quizTakerId) => {
@@ -49,9 +57,21 @@ export const getQuizTakerResponsesService = (quizTakerId) => {
 };
 
 export const updateQuizReportService = (quizTaker, quizTakerId) => {
-  return axios.put(url + "api/updatequiztaker/" + quizTakerId, quizTaker, { headers: getHeaders() });
+  return axios.put(url + "api/updatequiztaker/" + quizTakerId, quizTaker, {
+    headers: getHeaders(),
+  });
 };
 
 export const updateResponseService = (responses) => {
-  return axios.put(url + "api/updateresponses/", responses, { headers: getHeaders() });
+  return axios.put(url + "api/updateresponses/", responses, {
+    headers: getHeaders(),
+  });
+};
+
+export const getQuizDetailService = (quizId) => {
+  return axios
+    .get(url + "api/" + quizId, { headers: getHeaders() })
+    .then((res) => {
+      return res.data.question;
+    });
 };

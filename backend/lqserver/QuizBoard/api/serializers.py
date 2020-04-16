@@ -85,3 +85,45 @@ class QuizTakerSerializer(serializers.ModelSerializer):
 class RegistrationAllowEmptyEmailSerializer(RegisterSerializer):
     email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED,
                                    allow_blank=not allauth_settings.EMAIL_REQUIRED)
+
+
+class JustificationsWithoutFlagsSerializer(serializers.ModelSerializer):
+    explaination = serializers.SerializerMethodField()
+    class Meta:
+        model = Justifications
+        fields = ('id', 'text','explaination')
+
+    def get_explaination(self, obj):
+        return [ExplainationSerializer(s).data for s in obj.explaination_set.all()]
+    
+
+
+class AnswerWithoutFlagsSerializer(serializers.ModelSerializer):
+    justifications = serializers.SerializerMethodField()
+    class Meta:
+        model = Answer
+        fields = ('id', 'text','justifications')
+
+    def get_justifications(self, obj):
+        return [JustificationsWithoutFlagsSerializer(s).data for s in obj.justifications_set.all()]
+
+
+class QuestionWithoutFlagsSerializer(serializers.ModelSerializer):
+    answer = serializers.SerializerMethodField()
+    class Meta:
+        model = Question
+        fields = ('id', 'label', 'answer')
+
+    def get_answer(self, obj):
+        return [AnswerWithoutFlagsSerializer(s).data for s in obj.answer_set.all()]
+
+
+class QuizWithoutFlagsSerializer(serializers.ModelSerializer):  
+    question = serializers.SerializerMethodField() 
+
+    class Meta:
+        model = Quiz
+        fields = '__all__'
+
+    def get_question(self, obj):
+        return [QuestionWithoutFlagsSerializer(s).data for s in obj.question_set.all()]
