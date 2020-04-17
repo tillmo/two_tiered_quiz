@@ -18,6 +18,5 @@ tmp/
 build/
 __pycache__/
 backend/db.sqlite3
-backend/quiz.txt
 frontend/.env.local
 backend/lqserver/local_settings.py
