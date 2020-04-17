@@ -17,6 +17,6 @@ python_modules/
 tmp/
 build/
 __pycache__/
-backend/lqserver/db.sqlite3
-frontend/lqclient/.env.local
-backend/lqserver/lqserver/local_settings.py
+backend/db.sqlite3
+frontend/.env.local
+backend/lqserver/local_settings.py
