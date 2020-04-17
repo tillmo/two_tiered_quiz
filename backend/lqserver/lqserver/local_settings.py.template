@@ -8,7 +8,7 @@ SECRET_KEY = 'please generate one!'
 # print(get_random_secret_key())
 
 DEBUG = False  # production
-ALLOWED_HOSTS = [] # set to intended HOST_NAMEs that serve this application
+ALLOWED_HOSTS = [] # set to intended IPs and FQDNs that serve this application
 
 # use 4 spaces indentation here, no tabs
 DATABASES = {
