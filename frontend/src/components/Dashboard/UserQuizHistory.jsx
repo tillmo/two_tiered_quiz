@@ -166,7 +166,7 @@ export class UserQuizHistory extends Component {
                         variant="contained"
                         endIcon={<PlayCircleOutlineIcon />}
                       >
-                        got to score list
+                        {t("go to score list")}
                       </Button>
                     </TableCell>
                   </TableRow>
