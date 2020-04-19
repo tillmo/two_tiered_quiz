@@ -10,6 +10,8 @@ from rest_framework.generics import (
     UpdateAPIView,
     ListCreateAPIView,
 )
+from django.db.models import Count
+from django.db.models import Max
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
 from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
 
@@ -180,3 +182,24 @@ class ResponsesUpdateView(UpdateAPIView):
 class QuizWithoutFlagsRetrieveView(RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizWithoutFlagsSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+
+class QuizTakerHistoryListView(ListAPIView):
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request): 
+        groupedQuiz = QuizTakers.objects.values('quiz','quiz__name').annotate(usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
+        return Response(groupedQuiz)
+
+
+class QuizScoresListView(ListAPIView):
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request, quiz): 
+        qt = Quiz.objects.get(id=quiz)  
+        groupedQuiz = QuizTakers.objects.filter(quiz=qt).values('quiz','user','quiz__name','score','user__username', 'completed')
+        return Response(groupedQuiz)
+       

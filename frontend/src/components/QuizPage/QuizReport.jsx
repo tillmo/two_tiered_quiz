@@ -311,7 +311,7 @@ export class QuizReport extends Component {
         >
           <Typography variant="subtitle2">
             <Link color="inherit" href="/">
-              {t("Home")}
+              {t("Available Quizzes")}
             </Link>
           </Typography>
           <Typography variant="subtitle2" color="textPrimary">

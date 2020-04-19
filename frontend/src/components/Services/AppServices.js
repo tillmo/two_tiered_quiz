@@ -75,3 +75,19 @@ export const getQuizDetailService = (quizId) => {
       return res.data.question;
     });
 };
+
+export const getUserQuizHistoryService = () => {
+  return axios
+    .get(url + "api/getuserquizhistory/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getScoresListService = (quizId) => {
+  return axios
+    .get(url + "api/getscorelist/" + quizId, { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};

@@ -28,8 +28,10 @@ import Badge from "@material-ui/core/Badge";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import QuizDescription from "../QuizPage/QuizDescription";
 import QuizQuestion from "../QuizPage/QuizQuestion";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {translate} from 'react-i18next';
+import UserQuizHistory from "../Dashboard/UserQuizHistory";
+import ScoresList from "../Dashboard/ScoresList";
 
 const drawerWidth = 240;
 
@@ -146,8 +148,6 @@ const NavBar = props => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>{t("Profile")}</MenuItem>
-      <MenuItem onClick={handleMenuClose}>{t("My account")}</MenuItem>
       <MenuItem onClick={logout}>{t("logout")}</MenuItem>
     </Menu>
   );
@@ -163,22 +163,6 @@ const NavBar = props => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -198,16 +182,11 @@ const NavBar = props => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button key={"WeeklyQuiz"}>
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText
-            classes={{ primary: classes.listItemStyle }}
-            primary={t("Weekly Quiz")}
-          />
-        </ListItem>
         <ListItem button key={"archive"}>
+        <Link
+                 style={{color:"inherit", display:"inline-flex", textDecoration: "none" }}
+                to={"/app/"}
+              >
           <ListItemIcon style={{ minWidth: "40px" }}>
             <StorageIcon />
           </ListItemIcon>
@@ -215,8 +194,13 @@ const NavBar = props => {
             classes={{ primary: classes.listItemStyle }}
             primary={t("Available Quizzes")}
           />
+          </Link>
         </ListItem>
         <ListItem button key={"dashboard"}>
+        <Link
+                style={{color:"inherit", display:"inline-flex", textDecoration: "none" }}
+                to={"/app/dashboard/"}
+              >
           <ListItemIcon style={{ minWidth: "40px" }}>
             <AssessmentIcon />
           </ListItemIcon>
@@ -224,20 +208,16 @@ const NavBar = props => {
             classes={{ primary: classes.listItemStyle }}
             primary={t("Dashboard")}
           />
-        </ListItem>
-        <ListItem button key={"checksample"}>
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <RateReviewIcon />
-          </ListItemIcon>
-          <ListItemText
-            classes={{ primary: classes.listItemStyle }}
-            primary={t("Check Sample")}
-          />
+          </Link>
         </ListItem>
       </List>
       <Divider />
       <List>
         <ListItem button key={"report"}>
+        <Link
+                style={{color:"inherit", display:"inline-flex", textDecoration: "none" }}
+                to={"/app/reportissue/"}
+              >
           <ListItemIcon style={{ minWidth: "40px" }}>
             <ReportIcon />
           </ListItemIcon>
@@ -245,6 +225,7 @@ const NavBar = props => {
             classes={{ primary: classes.listItemStyle }}
             primary={t("Report a problem")}
           />
+          </Link>
         </ListItem>
       </List>
     </div>
@@ -269,16 +250,6 @@ const NavBar = props => {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -341,6 +312,13 @@ const NavBar = props => {
 
         <Route path={props.match.url + "/"} exact component={QuizDescription} />
         <Route path={props.match.url + "/quiz/:id/:quizTakerId/:isQuizComplete"} component={QuizQuestion} />
+        <Route path={props.match.url + "/dashboard/"} exact component={UserQuizHistory} />
+        <Route path={props.match.url + "/dashboard/:quizId"} exact component={ScoresList} />
+        <Route path={props.match.url + "/reportissue/"} exact component={()=>{
+          window.location.href="https://github.com/tillmo/two_tiered_quiz/issues/new"
+          return null;
+        }} />
+        
       </main>
     </div>
   );
