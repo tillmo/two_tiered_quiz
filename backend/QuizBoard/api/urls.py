@@ -36,5 +36,5 @@ urlpatterns = [
     path('<pk>', QuizRetrieveView.as_view()),
     path('getquiz/<pk>', QuizWithoutFlagsRetrieveView.as_view()),
     path('getuserquizhistory/', QuizTakerHistoryListView.as_view()),
-    path('getscorelist/<int:quiz>', QuizScoresListView.as_view()),
+    path('getscorelist/', QuizScoresListView.as_view()),
 ]

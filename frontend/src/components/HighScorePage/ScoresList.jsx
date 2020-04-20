@@ -32,17 +32,16 @@ export class ScoresList extends Component {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
-      const response = await getScoresListService(
-        this.props.match.params.quizId
-      );
-      const rowData = this.prepareQuizTableData(response);
       const user = await getUserDetailsService();
+      const response = await getScoresListService();
+      const rowData = this.prepareQuizTableData(response);
+      
       const index = response.findIndex((res) => res.user === user);
       if (index !== -1) {
-        const score = response[index].score;
+        const score = response[index].totalScore;
         this.setState({ userScore: score });
       }
-      this.setState({ ScoresList: rowData, quizName: response[0].quiz__name });
+      this.setState({ ScoresList: rowData});
     }
   }
 
@@ -54,8 +53,7 @@ export class ScoresList extends Component {
           quiz.quiz,
           quiz.quiz__name,
           quiz.user__username,
-          quiz.score,
-          quiz.completed
+          quiz.totalScore,
         )
       );
     });
@@ -97,22 +95,15 @@ export class ScoresList extends Component {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Typography variant="subtitle2" color="textSecondary">
-            <Link
-              color="inherit"
-              to="/app/dashboard/"
-              style={{ textDecoration: "none" }}
-            >
-              {t("Dashboard")}
-            </Link>
-          </Typography>
           <Typography variant="subtitle2" color="textPrimary">
-            {this.state.quizName} {t("Quiz")} {t("Score List")}
+            
+              {t("High Score List")}
+            
           </Typography>
         </Breadcrumbs>
         <Paper style={{ padding: "10px", marginTop: "15px" }}>
           <Typography color="textPrimary" variant="subtitle2">
-            {t("Your score")}:
+            {t("Your total score")}:
             <Typography
               color="textSecondary"
               variant="subtitle2"
@@ -123,7 +114,7 @@ export class ScoresList extends Component {
             >
               {this.state.userScore !== -1
                 ? this.state.userScore
-                : t("Not Attempted")}
+                : t("Not attempted an quiz")}
             </Typography>{" "}
           </Typography>
         </Paper>
@@ -153,10 +144,7 @@ export class ScoresList extends Component {
                   {t("User")}
                 </TableCell>
                 <TableCell align="center" style={tableStyles}>
-                  {t("Quiz Status")}
-                </TableCell>
-                <TableCell align="center" style={tableStyles}>
-                  {t("Score")}
+                  {t("Total Score")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -173,14 +161,6 @@ export class ScoresList extends Component {
                     <Typography variant="subtitle2" color="textPrimary">
                       {row.username}
                     </Typography>
-                  </TableCell>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    TableCell
-                    align="center"
-                  >
-                    {row.status ? t("Completed") : t("On going")}
                   </TableCell>
                   <TableCell
                     component="th"

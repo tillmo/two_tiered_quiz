@@ -198,8 +198,7 @@ class QuizScoresListView(ListAPIView):
     serializer_class = QuizTakerSerializer
     permission_classes = [permissions.IsAuthenticated,]
 
-    def get(self, request, quiz): 
-        qt = Quiz.objects.get(id=quiz)  
-        groupedQuiz = QuizTakers.objects.filter(quiz=qt).values('quiz','user','quiz__name','score','user__username', 'completed')
+    def get(self, request):  
+        groupedQuiz = QuizTakers.objects.values('user','user__username').annotate(totalScore=Max('score')).order_by('-totalScore')
         return Response(groupedQuiz)
        
