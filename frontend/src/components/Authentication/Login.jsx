@@ -19,7 +19,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { HasSessionExpired, getErrorMessage } from "../Utils/LoginUtils.js";
 import { getLoginService } from "../Services/AppServices.js";
-import {translate} from 'react-i18next';
+import { translate } from "react-i18next";
 
 export class Login extends Component {
   state = {
@@ -59,7 +59,6 @@ export class Login extends Component {
     });
   };
 
-
   handleLogin = (e) => {
     e.preventDefault();
     this.setState({ openBackDrop: true });
@@ -70,6 +69,7 @@ export class Login extends Component {
       .then((res) => {
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
+        localStorage.setItem("username", this.state.username);
         this.setState({
           isToken: true,
           openBackDrop: false,
@@ -196,4 +196,4 @@ export class Login extends Component {
   }
 }
 
-export default translate('common')(Login);
+export default translate("common")(Login);

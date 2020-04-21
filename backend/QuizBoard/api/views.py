@@ -11,7 +11,8 @@ from rest_framework.generics import (
     ListCreateAPIView,
 )
 from django.db.models import Count
-from django.db.models import Max
+from django.db.models import Max, Sum
+from itertools import chain
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
 from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
 
@@ -195,10 +196,24 @@ class QuizTakerHistoryListView(ListAPIView):
 
 
 class QuizScoresListView(ListAPIView):
+    queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
     permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request):  
-        groupedQuiz = QuizTakers.objects.values('user','user__username').annotate(totalScore=Max('score')).order_by('-totalScore')
-        return Response(groupedQuiz)
+        topQuizTakers = []
+        topListIndex = 0
+        initialScore = 0
+        groupedScores = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).order_by('-totalScore')
+        for scores in groupedScores:
+            if scores['totalScore'] != initialScore:
+                initialScore = scores['totalScore']
+                topListIndex = topListIndex + 1
+                print(initialScore)
+                print(scores['totalScore'])
+                print(topListIndex)
+            if topListIndex >=11:
+                break
+            topQuizTakers.append(scores)
+        return Response(topQuizTakers)
        

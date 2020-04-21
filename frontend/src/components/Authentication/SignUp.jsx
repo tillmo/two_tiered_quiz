@@ -13,7 +13,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getErrorMessage } from "../Utils/LoginUtils.js";
 import { getSignUpService } from "../Services/AppServices.js";
-import {translate} from 'react-i18next';
+import { translate } from "react-i18next";
 
 export class SignUp extends Component {
   state = {
@@ -76,6 +76,7 @@ export class SignUp extends Component {
         this.setState({ openBackDrop: false });
         localStorage.setItem("token", res.data.key);
         localStorage.setItem("loggedinTime", Date.now());
+        localStorage.setItem("username", this.state.formData.username);
         this.props.history.push("/app/");
       })
       .catch((err) => {
@@ -216,4 +217,4 @@ export class SignUp extends Component {
   }
 }
 
-export default translate('common')(SignUp);
+export default translate("common")(SignUp);

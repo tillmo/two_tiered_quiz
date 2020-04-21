@@ -35,13 +35,13 @@ export class ScoresList extends Component {
       const user = await getUserDetailsService();
       const response = await getScoresListService();
       const rowData = this.prepareQuizTableData(response);
-      
+
       const index = response.findIndex((res) => res.user === user);
       if (index !== -1) {
         const score = response[index].totalScore;
         this.setState({ userScore: score });
       }
-      this.setState({ ScoresList: rowData});
+      this.setState({ ScoresList: rowData });
     }
   }
 
@@ -53,7 +53,7 @@ export class ScoresList extends Component {
           quiz.quiz,
           quiz.quiz__name,
           quiz.user__username,
-          quiz.totalScore,
+          quiz.totalScore
         )
       );
     });
@@ -96,9 +96,7 @@ export class ScoresList extends Component {
           aria-label="breadcrumb"
         >
           <Typography variant="subtitle2" color="textPrimary">
-            
-              {t("High Score List")}
-            
+            {t("High Score List")}
           </Typography>
         </Breadcrumbs>
         <Paper style={{ padding: "10px", marginTop: "15px" }}>
@@ -118,15 +116,6 @@ export class ScoresList extends Component {
             </Typography>{" "}
           </Typography>
         </Paper>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={this.state.ScoresList.length}
-          rowsPerPage={this.state.rowsPerPage}
-          page={this.state.page}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
         <TableContainer component={Paper} style={{ height: "422px" }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead style={tableStyles}>
@@ -149,10 +138,7 @@ export class ScoresList extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.ScoresList.slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-              ).map((row, index) => (
+              {this.state.ScoresList.map((row, index) => (
                 <TableRow key={row.quizId}>
                   <TableCell component="th" scope="row" align="center">
                     {index + 1}

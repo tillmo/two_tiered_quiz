@@ -179,6 +179,7 @@ const NavBar = (props) => {
       onClose={handleMobileMenuClose}
     >
       <MenuItem onClick={handleProfileMenuOpen}>
+        <p>{localStorage.getItem("username")}</p>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -187,7 +188,6 @@ const NavBar = (props) => {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -255,6 +255,7 @@ const NavBar = (props) => {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            <p>{localStorage.getItem("username")}</p>
             <IconButton
               edge="end"
               aria-label="account of current user"
