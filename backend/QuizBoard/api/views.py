@@ -198,22 +198,27 @@ class QuizTakerHistoryListView(ListAPIView):
 class QuizScoresListView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    # permission_classes = [permissions.IsAuthenticated,]
 
-    def get(self, request):  
-        topQuizTakers = []
-        topListIndex = 0
-        initialScore = 0
-        groupedScores = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).order_by('-totalScore')
-        for scores in groupedScores:
-            if scores['totalScore'] != initialScore:
-                initialScore = scores['totalScore']
-                topListIndex = topListIndex + 1
-                print(initialScore)
-                print(scores['totalScore'])
-                print(topListIndex)
-            if topListIndex >=11:
+    def get(self, request, user):  
+        groupedScores = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).order_by('-totalScore')[:10]
+        lastQuizTaker = groupedScores[len(groupedScores)-1]
+        groupedScores = list(groupedScores)
+        while True:
+            index = 0
+            indexList =[]
+            deleted = False
+            for quizTaker in groupedScores:
+                if lastQuizTaker['totalScore'] == quizTaker['totalScore']:
+                    del groupedScores[index]
+                    deleted = True
+                index = index + 1
+            if deleted==False:
                 break
-            topQuizTakers.append(scores)
-        return Response(topQuizTakers)
+        tiedScoreUsers = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).filter(totalScore=lastQuizTaker['totalScore'])
+        user = User.objects.get(id=user)
+        userScore = QuizTakers.objects.filter(user=user).values('user','user__username').annotate(totalScore=Sum('score'))
+        topQuizTakers = list(chain(groupedScores, tiedScoreUsers))
+        scoreData = {'topQuizTakers':topQuizTakers, 'userScoreData':userScore}
+        return Response(scoreData)
        

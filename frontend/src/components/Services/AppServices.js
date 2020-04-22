@@ -84,9 +84,9 @@ export const getUserQuizHistoryService = () => {
     });
 };
 
-export const getScoresListService = () => {
+export const getScoresListService = (user) => {
   return axios
-    .get(url + "api/getscorelist/", { headers: getHeaders() })
+    .get(url + "api/getscorelist/"+user, { headers: getHeaders() })
     .then((res) => {
       return res.data;
     });

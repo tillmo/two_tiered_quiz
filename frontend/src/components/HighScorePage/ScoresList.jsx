@@ -33,14 +33,9 @@ export class ScoresList extends Component {
       this.props.history.push("/");
     } else {
       const user = await getUserDetailsService();
-      const response = await getScoresListService();
-      const rowData = this.prepareQuizTableData(response);
-
-      const index = response.findIndex((res) => res.user === user);
-      if (index !== -1) {
-        const score = response[index].totalScore;
-        this.setState({ userScore: score });
-      }
+      const response = await getScoresListService(user);
+      const rowData = this.prepareQuizTableData(response.topQuizTakers);
+      this.setState({ userScore: response.userScoreData[0].totalScore });
       this.setState({ ScoresList: rowData });
     }
   }
