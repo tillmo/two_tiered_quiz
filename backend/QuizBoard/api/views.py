@@ -198,7 +198,7 @@ class QuizTakerHistoryListView(ListAPIView):
 class QuizScoresListView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    # permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request, user):  
         groupedScores = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).order_by('-totalScore')[:10]
