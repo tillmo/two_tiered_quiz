@@ -28,74 +28,75 @@ import Badge from "@material-ui/core/Badge";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import QuizDescription from "../QuizPage/QuizDescription";
 import QuizQuestion from "../QuizPage/QuizQuestion";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import {translate} from 'react-i18next';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { translate } from "react-i18next";
+import ScoresList from "../HighScorePage/ScoresList";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
 
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
 
   drawer: {
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
-      flexShrink: 0
-    }
+      flexShrink: 0,
+    },
   },
   appBar: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
-    }
+      marginLeft: drawerWidth,
+    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
 
   title: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
-      display: "block"
-    }
+      display: "block",
+    },
   },
 
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
 
   sectionDesktop: {
     display: "none",
     [theme.breakpoints.up("md")]: {
-      display: "flex"
-    }
+      display: "flex",
+    },
   },
   sectionMobile: {
     display: "flex",
     [theme.breakpoints.up("md")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   listItemStyle: {
-    fontSize: "15px"
-  }
+    fontSize: "15px",
+  },
 }));
 
-const NavBar = props => {
+const NavBar = (props) => {
   const { container } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -111,7 +112,7 @@ const NavBar = props => {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = event => {
+  const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -124,14 +125,30 @@ const NavBar = props => {
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = event => {
+  const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const logout = event => {
+  const logout = (event) => {
     localStorage.removeItem("token");
     localStorage.removeItem("loggedinTime");
-    props.history.replace('/');
+    props.history.replace("/");
+  };
+
+  const routeToMenu = (route) => (event) => {
+    event.stopPropagation();
+    props.history.push(route);
+  };
+
+  const routeToGitHub = () => (event) => {
+    event.stopPropagation();
+    const win = window.open(
+      "https://github.com/tillmo/two_tiered_quiz/issues/new",
+      "_blank"
+    );
+    if (win) {
+      win.focus();
+    }
   };
 
   const menuId = "primary-search-account-menu";
@@ -146,8 +163,6 @@ const NavBar = props => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>{t("Profile")}</MenuItem>
-      <MenuItem onClick={handleMenuClose}>{t("My account")}</MenuItem>
       <MenuItem onClick={logout}>{t("logout")}</MenuItem>
     </Menu>
   );
@@ -163,23 +178,8 @@ const NavBar = props => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
+        <p>{localStorage.getItem("username")}</p>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -188,7 +188,6 @@ const NavBar = props => {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -198,16 +197,7 @@ const NavBar = props => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button key={"WeeklyQuiz"}>
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText
-            classes={{ primary: classes.listItemStyle }}
-            primary={t("Weekly Quiz")}
-          />
-        </ListItem>
-        <ListItem button key={"archive"}>
+        <ListItem button key={"archive"} onClick={routeToMenu("/app/")}>
           <ListItemIcon style={{ minWidth: "40px" }}>
             <StorageIcon />
           </ListItemIcon>
@@ -216,28 +206,24 @@ const NavBar = props => {
             primary={t("Available Quizzes")}
           />
         </ListItem>
-        <ListItem button key={"dashboard"}>
+
+        <ListItem
+          button
+          key={"dashboard"}
+          onClick={routeToMenu("/app/dashboard/")}
+        >
           <ListItemIcon style={{ minWidth: "40px" }}>
             <AssessmentIcon />
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary={t("Dashboard")}
-          />
-        </ListItem>
-        <ListItem button key={"checksample"}>
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <RateReviewIcon />
-          </ListItemIcon>
-          <ListItemText
-            classes={{ primary: classes.listItemStyle }}
-            primary={t("Check Sample")}
+            primary={t("High Score List")}
           />
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem button key={"report"}>
+        <ListItem button key={"report"} onClick={routeToGitHub()}>
           <ListItemIcon style={{ minWidth: "40px" }}>
             <ReportIcon />
           </ListItemIcon>
@@ -269,16 +255,7 @@ const NavBar = props => {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <p>{localStorage.getItem("username")}</p>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -315,10 +292,10 @@ const NavBar = props => {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             ModalProps={{
-              keepMounted: true // Better open performance on mobile.
+              keepMounted: true, // Better open performance on mobile.
             }}
           >
             {drawer}
@@ -327,7 +304,7 @@ const NavBar = props => {
         <Hidden xsDown implementation="css">
           <Drawer
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             variant="permanent"
             open
@@ -338,16 +315,23 @@ const NavBar = props => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-
         <Route path={props.match.url + "/"} exact component={QuizDescription} />
-        <Route path={props.match.url + "/quiz/:id/:quizTakerId/:isQuizComplete"} component={QuizQuestion} />
+        <Route
+          path={props.match.url + "/quiz/:id/:quizTakerId/:isQuizComplete"}
+          component={QuizQuestion}
+        />
+        <Route
+          path={props.match.url + "/dashboard/"}
+          exact
+          component={ScoresList}
+        />
       </main>
     </div>
   );
 };
 
 NavBar.propTypes = {
-  container: PropTypes.any
+  container: PropTypes.any,
 };
 
-export default translate('common')(NavBar);
+export default translate("common")(NavBar);
