@@ -35,7 +35,9 @@ export class ScoresList extends Component {
       const user = await getUserDetailsService();
       const response = await getScoresListService(user);
       const rowData = this.prepareQuizTableData(response.topQuizTakers);
-      this.setState({ userScore: response.userScoreData[0].totalScore });
+      if (response.userScoreData[0]) {
+        this.setState({ userScore: response.userScoreData[0].totalScore });
+      }
       this.setState({ ScoresList: rowData });
     }
   }
