@@ -28,7 +28,7 @@ SECRET_KEY = 's&s6kzq96is_m(r002sbal%b@%(*ny@&bo@6dve!lq&bk84*so'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://quiz.iks.cs.ovgu.de/','127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
    'rest_framework.authentication.TokenAuthentication',
    ),
    'DEFAULT_PERMISSION_CLASSES': (
-    'rest_framework.permissions.IsAuthenticated', )
+    'rest_framework.permissions.AllowAny', )
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
