@@ -28,7 +28,7 @@ SECRET_KEY = 's&s6kzq96is_m(r002sbal%b@%(*ny@&bo@6dve!lq&bk84*so'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://quiz.iks.cs.ovgu.de/','127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
