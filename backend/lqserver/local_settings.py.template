@@ -10,6 +10,9 @@ SECRET_KEY = 'please generate one!'
 DEBUG = False  # production
 ALLOWED_HOSTS = [] # set to intended IPs and FQDNs that serve this application
 
+# mysql or mariadb database setup
+import pymysql
+pymysql.install_as_MySQLdb()
 # use 4 spaces indentation here, no tabs
 DATABASES = {
 'default': {
