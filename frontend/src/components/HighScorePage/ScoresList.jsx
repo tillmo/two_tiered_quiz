@@ -109,7 +109,7 @@ export class ScoresList extends Component {
             >
               {this.state.userScore !== -1
                 ? this.state.userScore
-                : t("Not attempted an quiz")}
+                : t("Not attempted a quiz")}
             </Typography>{" "}
           </Typography>
         </Paper>
