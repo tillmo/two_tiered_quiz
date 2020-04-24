@@ -159,7 +159,6 @@ LOGFILE = '/tmp/quiz.log'
 LOGLEVEL = 'DEBUG'
 
 # local settings can override and extend global settings
-
 local_settings_path = os.getenv("QUIZ_SETTINGS")
 if local_settings_path:
     loader = importlib.machinery.SourceFileLoader("my_local_settings", local_settings_path)
@@ -167,7 +166,7 @@ if local_settings_path:
     from my_local_settings import *
 else:
     try:
-        from local_settings import *
+        from lqserver.local_settings import *
     except ImportError:
         pass
 
