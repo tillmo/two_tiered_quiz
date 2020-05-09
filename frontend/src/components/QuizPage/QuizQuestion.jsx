@@ -38,14 +38,13 @@ export class QuizQuestion extends Component {
       this.props.history.push("/");
     } else {
       getQuizService(this.props.match.params.id).then(async (res) => {
-        let questions = res.data.question;
+        let questions = this._shufffleQuestions(res.data.question);
         let responseData;
         if (this.props.match.params.quizTakerId !== "0") {
           responseData = await getQuizTakerResponsesService(
             this.props.match.params.quizTakerId
           );
         }
-        console.log(responseData);
         for (var i = 0; i < questions.length; i++) {
           questions[i].isAttempted = false;
           questions[i].toUpdate = false;
@@ -141,6 +140,35 @@ export class QuizQuestion extends Component {
 
   handleDialogClose = () => {
     this.setState({ openConfirmDialog: false });
+  };
+
+  _shufffleQuestions = (questions) => {
+    if (questions) {
+      for (var i = 0; i < questions.length; i++) {
+        var answers = this._shuffle(questions[i].answer);
+        questions[i].answer = answers;
+        for (var j = 0; j < answers.length; j++) {
+          questions[i].answer[j].justifications = this._shuffle(
+            answers[j].justifications
+          );
+        }
+      }
+    }
+    return questions;
+  };
+
+  _shuffle = (choices) => {
+    var currentIndex = choices.length,
+      temporaryValue,
+      randomIndex;
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = choices[currentIndex];
+      choices[currentIndex] = choices[randomIndex];
+      choices[randomIndex] = temporaryValue;
+    }
+    return choices;
   };
 
   handleClose = () => {
