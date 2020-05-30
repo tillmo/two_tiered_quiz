@@ -17,7 +17,7 @@ from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Just
 from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
 
 class QuizListView(ListAPIView):
-    queryset = Quiz.objects.all()
+    queryset = Quiz.objects.order_by('-created')
     serializer_class = QuizListSerializer
     permission_classes = [permissions.IsAuthenticated,]
 
