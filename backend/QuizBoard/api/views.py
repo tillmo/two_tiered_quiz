@@ -29,10 +29,7 @@ class QuizListView(ListAPIView):
         output_serializer = QuizListSerializer(results, many=True)
         data = output_serializer.data[:]
         response = Response(data)
-        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response["Pragma"] = "no-cache"
-        response["Expires"] = "0"
-        return response
+        return set_headers_to_response(response)
 
 
 class QuizRetrieveView(RetrieveAPIView):
@@ -106,10 +103,7 @@ class QuizTakerCreateView(ListCreateAPIView):
         output_serializer = QuizTakerSerializer(results, many=True)
         data = output_serializer.data[:]
         response = Response(data)
-        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response["Pragma"] = "no-cache"
-        response["Expires"] = "0"
-        return response
+        return set_headers_to_response(response)
 
 
 class QuizTakerRetrieveView(RetrieveAPIView):
@@ -142,10 +136,7 @@ class ResponseCreateView(ListCreateAPIView):
         output_serializer = ResponseSerialzer(results, many=True)
         data = output_serializer.data[:]
         response = Response(data)
-        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response["Pragma"] = "no-cache"
-        response["Expires"] = "0"
-        return response
+        return set_headers_to_response(response)
 
 
 class QuizTakerListView(ListAPIView):
@@ -214,10 +205,7 @@ class QuizTakerHistoryListView(ListAPIView):
     def get(self, request): 
         groupedQuiz = QuizTakers.objects.values('quiz','quiz__name').annotate(usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
         response = Response(groupedQuiz)
-        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response["Pragma"] = "no-cache"
-        response["Expires"] = "0"
-        return response
+        return set_headers_to_response(response)
 
 
 class QuizScoresListView(ListAPIView):
@@ -246,7 +234,12 @@ class QuizScoresListView(ListAPIView):
         topQuizTakers = list(chain(groupedScores, tiedScoreUsers))
         scoreData = {'topQuizTakers':topQuizTakers, 'userScoreData':userScore}
         response = Response(scoreData)
-        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response["Pragma"] = "no-cache"
-        response["Expires"] = "0"
-        return response
+        return set_headers_to_response(response)
+
+
+
+def set_headers_to_response(response):
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response["Pragma"] = "no-cache"
+    response["Expires"] = "0"
+    return response
