@@ -17,9 +17,19 @@ from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Just
 from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
 
 class QuizListView(ListAPIView):
-    queryset = Quiz.objects.order_by('-created')
     serializer_class = QuizListSerializer
     permission_classes = [permissions.IsAuthenticated,]
+
+    def get_queryset(self):
+        queryset = Quiz.objects.order_by('-created')
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        results = Quiz.objects.order_by('-created')
+        output_serializer = QuizListSerializer(results, many=True)
+        data = output_serializer.data[:]
+        response = Response(data)
+        return set_headers_to_response(response)
 
 
 class QuizRetrieveView(RetrieveAPIView):
@@ -92,7 +102,8 @@ class QuizTakerCreateView(ListCreateAPIView):
         results = QuizTakers.objects.filter(id__in=todo_created)
         output_serializer = QuizTakerSerializer(results, many=True)
         data = output_serializer.data[:]
-        return Response(data)
+        response = Response(data)
+        return set_headers_to_response(response)
 
 
 class QuizTakerRetrieveView(RetrieveAPIView):
@@ -124,7 +135,8 @@ class ResponseCreateView(ListCreateAPIView):
         results = Responses.objects.filter(id__in=todo_created)
         output_serializer = ResponseSerialzer(results, many=True)
         data = output_serializer.data[:]
-        return Response(data)
+        response = Response(data)
+        return set_headers_to_response(response)
 
 
 class QuizTakerListView(ListAPIView):
@@ -192,7 +204,8 @@ class QuizTakerHistoryListView(ListAPIView):
 
     def get(self, request): 
         groupedQuiz = QuizTakers.objects.values('quiz','quiz__name').annotate(usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
-        return Response(groupedQuiz)
+        response = Response(groupedQuiz)
+        return set_headers_to_response(response)
 
 
 class QuizScoresListView(ListAPIView):
@@ -220,5 +233,13 @@ class QuizScoresListView(ListAPIView):
         userScore = QuizTakers.objects.filter(user=user).values('user','user__username').annotate(totalScore=Sum('score'))
         topQuizTakers = list(chain(groupedScores, tiedScoreUsers))
         scoreData = {'topQuizTakers':topQuizTakers, 'userScoreData':userScore}
-        return Response(scoreData)
-       
+        response = Response(scoreData)
+        return set_headers_to_response(response)
+
+
+
+def set_headers_to_response(response):
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response["Pragma"] = "no-cache"
+    response["Expires"] = "0"
+    return response
