@@ -284,6 +284,30 @@ class UserProgressView(ListAPIView):
         return set_headers_to_response(response)
 
 
+class AllUserProgressView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):  
+        userAllQuizScores = QuizTakers.objects.all().order_by('quiz', 'timestamp')
+        allQuizPercentages = []
+        quizPercentages = []
+        prevQuizId = -1
+        for quizTaker in userAllQuizScores:
+            quiz = quizTaker.quiz
+            if prevQuizId != quiz.id and len(allQuizPercentages) == 0:
+                prevQuizId = quiz
+            if prevQuizId != quiz.id and len(quizPercentages) > 0:
+                allQuizPercentages.append({'quiz': quiz.id, 'percentage': quizPercentages})
+                quizPercentages = []
+                prevQuizId = quiz.id
+            quiz = Quiz.objects.get(id=quiz.id)
+            questionCount = quiz.questions_count
+            percentage = (quizTaker.score/(questionCount*10)) * 100
+            quizPercentages.append(percentage)
+        response = Response(allQuizPercentages)
+        return set_headers_to_response(response)
 
 
 def set_headers_to_response(response):

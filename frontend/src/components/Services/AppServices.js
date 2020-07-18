@@ -115,3 +115,11 @@ export const getUserProgressService = (user) => {
       return res.data;
     });
 };
+
+export const getAllUserProgressService = () => {
+  return axios
+    .get(url + "api/alluserprogresschartdata/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};

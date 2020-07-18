@@ -5,6 +5,7 @@ import {
   getUserScoreDetailsService,
   getUserDetailsService,
   getUserProgressService,
+  getAllUserProgressService,
 } from "../Services/AppServices";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
@@ -22,6 +23,7 @@ export class UserScoreStatistics extends Component {
   state = {
     allUserScoresAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
+    allUserProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userScoreDetails: [],
   };
 
@@ -33,9 +35,11 @@ export class UserScoreStatistics extends Component {
       let scores = await getAllUserScoreChartData(this.props.quizId);
       let userScoreDetails = await getUserScoreDetailsService(user);
       let userProgress = await getUserProgressService(user);
+      let allUserProgress = await getAllUserProgressService();
       this._prepareUserScoreRowData(userScoreDetails);
       this._getAllUserScoresAxisData(scores.groupedScores);
       this._getUserProgressAxisData(userProgress);
+      this._getAllUserProgressAxisData(allUserProgress);
     }
   }
 
@@ -44,14 +48,15 @@ export class UserScoreStatistics extends Component {
     let yAxis = [];
     let scoresMap = new Map();
     for (var i = 0; i < scores.length; i++) {
-      let scoreCount = scoresMap.get(scores[i].totalScore);
+      let scoreCount = scoresMap.get(parseInt(scores[i].totalScore));
       if (scoreCount === undefined) {
-        scoresMap.set(scores[i].totalScore, 1);
+        scoresMap.set(parseInt(scores[i].totalScore), 1);
       } else {
         scoreCount++;
-        scoresMap.set(scores[i].totalScore, scoreCount);
+        scoresMap.set(parseInt(scores[i].totalScore), scoreCount);
       }
     }
+    scoresMap = new Map([...scoresMap.entries()].sort());
     scoresMap.forEach((value, key) => {
       xAxis.push(parseInt(key));
       yAxis.push(parseInt(value));
@@ -75,6 +80,34 @@ export class UserScoreStatistics extends Component {
     }
     this.setState({
       userProgressAxisData: {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        xTitle: this.props.t("Quiz"),
+        yTitle: this.props.t("Score in percentage"),
+      },
+    });
+  };
+
+  _getAllUserProgressAxisData = (scores) => {
+    let xAxis = [];
+    let yAxis = [];
+    let percentage = [];
+    for (var i = 0; i < scores.length; i++) {
+      xAxis.push(parseInt(scores[i].quiz));
+      const scorePercentages = scores[i].percentage;
+      const open = scorePercentages[0];
+      const close = scorePercentages[scorePercentages.length - 1];
+      const low = Math.min(...scorePercentages);
+      const high = Math.max(...scorePercentages);
+      percentage.push(close);
+      percentage.push(low);
+      percentage.push(high);
+      percentage.push(open);
+      yAxis.push({ x: scores[i].quiz, y: percentage });
+      percentage = [];
+    }
+    this.setState({
+      allUserProgressAxisData: {
         xAxis: xAxis,
         yAxis: yAxis,
         xTitle: this.props.t("Quiz"),
@@ -117,7 +150,11 @@ export class UserScoreStatistics extends Component {
       backgroundColor: "#3f51b5",
       color: "white",
     };
-    const { allUserScoresAxisData, userProgressAxisData } = this.state;
+    const {
+      allUserScoresAxisData,
+      userProgressAxisData,
+      allUserProgressAxisData,
+    } = this.state;
     const { t } = this.props;
     return (
       <div>
@@ -216,10 +253,31 @@ export class UserScoreStatistics extends Component {
                   >
                     {t("User Progress by Every Quiz")}
                   </div>
-
                   <ApexCharts
                     type="line"
                     axisData={userProgressAxisData}
+                  ></ApexCharts>
+                </div>
+              ) : null}
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={12} md={5}>
+            <Paper>
+              {allUserProgressAxisData.xAxis.length ? (
+                <div>
+                  <div
+                    style={{
+                      backgroundColor: "#3f51b5",
+                      color: "white",
+                      padding: "10px",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {t("All Users Performance for Every Quiz")}
+                  </div>
+                  <ApexCharts
+                    type="candlestick"
+                    axisData={allUserProgressAxisData}
                   ></ApexCharts>
                 </div>
               ) : null}
