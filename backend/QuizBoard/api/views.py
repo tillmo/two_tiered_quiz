@@ -237,6 +237,54 @@ class QuizScoresListView(ListAPIView):
         return set_headers_to_response(response)
 
 
+class OverallScoresChartView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):  
+        groupedScores = QuizTakers.objects.values('user').annotate(totalScore=Sum('score'))
+        scoreData = {'groupedScores':groupedScores}
+        response = Response(scoreData)
+        return set_headers_to_response(response)
+
+
+class UserScoresDetailsView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request, user):  
+        user = User.objects.get(id=user)
+        userScore = QuizTakers.objects.filter(user=user).values('user', 'user__username').annotate(totalScore=Sum('score'))
+        totalQuiz = Quiz.objects.count()
+        quizzesAttempted = QuizTakers.objects.filter(user=user).values('user').annotate(quizattempted=Count('user'))
+        scoreData = {'username':userScore[0]['user__username'], 'totalScore':userScore[0]['totalScore'], 'totalquiz':totalQuiz, 'quizattempted': quizzesAttempted[0]['quizattempted']}
+        response = Response(scoreData)
+        return set_headers_to_response(response)
+
+
+class UserProgressView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request, user):  
+        user = User.objects.get(id=user)
+        userScores = QuizTakers.objects.filter(user=user)
+        allQuizPercentages = []
+        for quizTaker in userScores:
+            quiz = quizTaker.quiz
+            quiz = Quiz.objects.get(id=quiz.id)
+            questionCount = quiz.questions_count
+            percentage = (quizTaker.score/(questionCount*10)) * 100
+            score = {'quiz': quiz.id, 'percentage': percentage}
+            allQuizPercentages.append(score)
+        response = Response(allQuizPercentages)
+        return set_headers_to_response(response)
+
+
+
 
 def set_headers_to_response(response):
     response["Cache-Control"] = "no-cache, no-store, must-revalidate"
