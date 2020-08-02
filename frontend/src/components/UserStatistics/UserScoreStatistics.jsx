@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import * as dc from "dc";
+import * as crossfilter from "crossfilter2/crossfilter";
 import ApexCharts from "../Charts/ApexCharts";
 import {
   getAllUserScoreChartData,
@@ -6,6 +8,7 @@ import {
   getUserDetailsService,
   getUserProgressService,
   getAllUserProgressService,
+  getAvgQuestionsSolvedService
 } from "../Services/AppServices";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
@@ -18,12 +21,15 @@ import { HasSessionExpired } from "../Utils/LoginUtils.js";
 import { translate } from "react-i18next";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { DataContext } from "../Charts/cxContext";
+import BoxChart from "../Charts/BoxChart";
 
 export class UserScoreStatistics extends Component {
   state = {
     allUserScoresAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     allUserProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
+    avgQuestionSolvedAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userScoreDetails: [],
   };
 
@@ -36,10 +42,12 @@ export class UserScoreStatistics extends Component {
       let userScoreDetails = await getUserScoreDetailsService(user);
       let userProgress = await getUserProgressService(user);
       let allUserProgress = await getAllUserProgressService();
+      let avgQuestionSolvedData = await getAvgQuestionsSolvedService();
       this._prepareUserScoreRowData(userScoreDetails);
       this._getAllUserScoresAxisData(scores.groupedScores);
       this._getUserProgressAxisData(userProgress);
       this._getAllUserProgressAxisData(allUserProgress);
+      this._getAvgQuestionSolvedAxisData(avgQuestionSolvedData);
     }
   }
 
@@ -56,7 +64,6 @@ export class UserScoreStatistics extends Component {
         scoresMap.set(parseInt(scores[i].totalScore), scoreCount);
       }
     }
-    scoresMap = new Map([...scoresMap.entries()].sort());
     scoresMap.forEach((value, key) => {
       xAxis.push(parseInt(key));
       yAxis.push(parseInt(value));
@@ -94,18 +101,11 @@ export class UserScoreStatistics extends Component {
     let percentage = [];
     for (var i = 0; i < scores.length; i++) {
       xAxis.push(parseInt(scores[i].quiz));
-      const scorePercentages = scores[i].percentage;
-      const open = scorePercentages[0];
-      const close = scorePercentages[scorePercentages.length - 1];
-      const low = Math.min(...scorePercentages);
-      const high = Math.max(...scorePercentages);
-      percentage.push(close);
-      percentage.push(low);
-      percentage.push(high);
-      percentage.push(open);
-      yAxis.push({ x: scores[i].quiz, y: percentage });
-      percentage = [];
-    }
+      const percentages =  scores[i].percentage;
+      for (var j = 0; j < percentages.length; j++) {
+        yAxis.push({ x: scores[i].quiz, y: percentages[j]});
+      }
+    }  
     this.setState({
       allUserProgressAxisData: {
         xAxis: xAxis,
@@ -138,6 +138,23 @@ export class UserScoreStatistics extends Component {
     });
   };
 
+  _getAvgQuestionSolvedAxisData = (scores) => {
+    let xAxis = [];
+    let yAxis = [];
+    for (var i = 0; i < scores.length; i++) {
+      xAxis.push(parseInt(scores[i].quiz));
+      yAxis.push(parseInt(scores[i].avg_ques_solved));
+    }  
+    this.setState({
+      avgQuestionSolvedAxisData: {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        xTitle: this.props.t("Quiz"),
+        yTitle: this.props.t("Average number of questions"),
+      },
+    });
+  };
+
   createData = (key, value) => {
     return {
       key,
@@ -154,6 +171,7 @@ export class UserScoreStatistics extends Component {
       allUserScoresAxisData,
       userProgressAxisData,
       allUserProgressAxisData,
+      avgQuestionSolvedAxisData
     } = this.state;
     const { t } = this.props;
     return (
@@ -261,7 +279,7 @@ export class UserScoreStatistics extends Component {
               ) : null}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={5}>
+          <Grid item xs={12} sm={12} md={11}>
             <Paper>
               {allUserProgressAxisData.xAxis.length ? (
                 <div>
@@ -275,9 +293,33 @@ export class UserScoreStatistics extends Component {
                   >
                     {t("All Users Performance for Every Quiz")}
                   </div>
+                  <div>
+                    <DataContext ndxData = {allUserProgressAxisData.yAxis}>
+                      <BoxChart/>
+                    </DataContext>
+                  </div>
+
+                </div>
+              ) : null}
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={12} md={11}>
+            <Paper>
+              {avgQuestionSolvedAxisData.xAxis.length ? (
+                <div>
+                  <div
+                    style={{
+                      backgroundColor: "#3f51b5",
+                      color: "white",
+                      padding: "10px",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {t("Average number of questions solved by a user per quiz")}
+                  </div>
                   <ApexCharts
-                    type="candlestick"
-                    axisData={allUserProgressAxisData}
+                    type="bar"
+                    axisData={avgQuestionSolvedAxisData}
                   ></ApexCharts>
                 </div>
               ) : null}

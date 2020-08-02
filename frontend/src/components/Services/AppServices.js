@@ -123,3 +123,11 @@ export const getAllUserProgressService = () => {
       return res.data;
     });
 };
+
+export const getAvgQuestionsSolvedService = () => {
+  return axios
+    .get(url + "api/avgquessolvedbyuser/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};

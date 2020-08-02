@@ -243,7 +243,7 @@ class OverallScoresChartView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request):  
-        groupedScores = QuizTakers.objects.values('user').annotate(totalScore=Sum('score'))
+        groupedScores = QuizTakers.objects.values('user').annotate(totalScore=Sum('score')).order_by('totalScore')
         scoreData = {'groupedScores':groupedScores}
         response = Response(scoreData)
         return set_headers_to_response(response)
@@ -307,6 +307,17 @@ class AllUserProgressView(ListAPIView):
             percentage = (quizTaker.score/(questionCount*10)) * 100
             quizPercentages.append(percentage)
         response = Response(allQuizPercentages)
+        return set_headers_to_response(response)
+
+
+class AverageQuestionsSolvedView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):
+        result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(Sum('correct_answers')/Count('user')))
+        response = Response(result)
         return set_headers_to_response(response)
 
 
