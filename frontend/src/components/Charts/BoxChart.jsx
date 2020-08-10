@@ -18,7 +18,7 @@ const reduceIntialize = () => {
 
 const boxChartFunc = (divRef, ndx) => {
   let dimensionByQuiz = ndx.dimension((d) => {
-    return "quiz " + d.x;
+    return d.x;
   });
   let groupByPercentages = dimensionByQuiz
     .group()

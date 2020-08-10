@@ -271,13 +271,13 @@ class UserProgressView(ListAPIView):
 
     def get(self, request, user):  
         user = User.objects.get(id=user)
-        userScores = QuizTakers.objects.filter(user=user)
+        userScores = QuizTakers.objects.filter(user=user).values('quiz').annotate(score=Sum('score')).order_by('quiz')
         allQuizPercentages = []
         for quizTaker in userScores:
-            quiz = quizTaker.quiz
-            quiz = Quiz.objects.get(id=quiz.id)
+            quiz = quizTaker['quiz']
+            quiz = Quiz.objects.get(id=quiz)
             questionCount = quiz.questions_count
-            percentage = (quizTaker.score/(questionCount*10)) * 100
+            percentage = (quizTaker['score']/(questionCount*10)) * 100
             score = {'quiz': quiz.id, 'percentage': percentage}
             allQuizPercentages.append(score)
         response = Response(allQuizPercentages)
@@ -290,22 +290,21 @@ class AllUserProgressView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request):  
-        userAllQuizScores = QuizTakers.objects.all().order_by('quiz', 'timestamp')
+        userAllQuizScores = QuizTakers.objects.all().order_by('quiz')
         allQuizPercentages = []
         quizPercentages = []
-        prevQuizId = -1
+        prevQuizId = userAllQuizScores[0].quiz.id
         for quizTaker in userAllQuizScores:
             quiz = quizTaker.quiz
-            if prevQuizId != quiz.id and len(allQuizPercentages) == 0:
-                prevQuizId = quiz
-            if prevQuizId != quiz.id and len(quizPercentages) > 0:
-                allQuizPercentages.append({'quiz': quiz.id, 'percentage': quizPercentages})
+            if prevQuizId != quiz.id:
+                allQuizPercentages.append({'quiz': prevQuizId, 'percentage': quizPercentages})
                 quizPercentages = []
                 prevQuizId = quiz.id
             quiz = Quiz.objects.get(id=quiz.id)
             questionCount = quiz.questions_count
             percentage = (quizTaker.score/(questionCount*10)) * 100
             quizPercentages.append(percentage)
+        allQuizPercentages.append({'quiz': prevQuizId, 'percentage': quizPercentages})
         response = Response(allQuizPercentages)
         return set_headers_to_response(response)
 

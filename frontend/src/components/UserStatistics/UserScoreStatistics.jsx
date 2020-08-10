@@ -196,7 +196,7 @@ export class UserScoreStatistics extends Component {
           spacing={3}
           style={{ justify: "space-between", marginTop: "15px" }}
         >
-          <Grid item xs={12} sm={5} md={5}>
+          <Grid item xs={12} sm={4} md={4}>
             {this.state.userScoreDetails.length ? (
               <Paper>
                 <div
@@ -235,7 +235,7 @@ export class UserScoreStatistics extends Component {
               <div>{t("You have not attempted any quizzes yet!")}</div>
             )}
           </Grid>
-          <Grid item xs={12} sm={5} md={6}>
+          <Grid item xs={12} sm={8} md={8}>
             <Paper>
               {userProgressAxisData.xAxis.length ? (
                 <div>
@@ -257,7 +257,7 @@ export class UserScoreStatistics extends Component {
               ) : null}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={11}>
+          <Grid item xs={12} sm={12} md={12}>
             <Paper>
               {userProgressAxisData.xAxis.length ? (
                 <div>
@@ -279,7 +279,7 @@ export class UserScoreStatistics extends Component {
               ) : null}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={11}>
+          <Grid item xs={12} sm={12} md={12}>
             <Paper>
               {allUserProgressAxisData.xAxis.length ? (
                 <div>
@@ -303,7 +303,7 @@ export class UserScoreStatistics extends Component {
               ) : null}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={11}>
+          <Grid item xs={12} sm={12} md={12}>
             <Paper>
               {avgQuestionSolvedAxisData.xAxis.length ? (
                 <div>
