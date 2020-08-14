@@ -3,7 +3,6 @@ import * as crossfilter from "crossfilter2/crossfilter";
 
 export const CXContext = React.createContext("CXContext");
 
-
 export class DataContext extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +11,8 @@ export class DataContext extends React.Component {
 
   componentDidMount() {
     if (this.props.ndxData) {
-        this.ndx = crossfilter(this.props.ndxData); 
-        this.setState({ hasNDX: true });
+      this.ndx = crossfilter(this.props.ndxData);
+      this.setState({ hasNDX: true });
     }
   }
 

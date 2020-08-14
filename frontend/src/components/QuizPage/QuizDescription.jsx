@@ -183,6 +183,11 @@ export class QuizDescription extends Component {
                 >
                   {t("Quiz")}
                 </TableCell>
+                <TableCell
+                  style={{ backgroundColor: "#3f51b5", color: "white" }}
+                >
+                  {t("Id")}
+                </TableCell>
                 <TableCell align="left" style={tableStyles}>
                   {t("Description")}
                 </TableCell>
@@ -203,6 +208,11 @@ export class QuizDescription extends Component {
                     <TableCell align="left">
                       <Typography variant="subtitle2" color="textPrimary">
                         {row.quizName}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Typography variant="subtitle2" color="textPrimary">
+                        {row.quizId}
                       </Typography>
                     </TableCell>
                     <TableCell

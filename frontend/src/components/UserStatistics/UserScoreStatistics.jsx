@@ -8,7 +8,7 @@ import {
   getUserDetailsService,
   getUserProgressService,
   getAllUserProgressService,
-  getAvgQuestionsSolvedService
+  getAvgQuestionsSolvedService,
 } from "../Services/AppServices";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
@@ -101,11 +101,11 @@ export class UserScoreStatistics extends Component {
     let percentage = [];
     for (var i = 0; i < scores.length; i++) {
       xAxis.push(parseInt(scores[i].quiz));
-      const percentages =  scores[i].percentage;
+      const percentages = scores[i].percentage;
       for (var j = 0; j < percentages.length; j++) {
-        yAxis.push({ x: scores[i].quiz, y: percentages[j]});
+        yAxis.push({ x: scores[i].quiz, y: percentages[j] });
       }
-    }  
+    }
     this.setState({
       allUserProgressAxisData: {
         xAxis: xAxis,
@@ -144,7 +144,7 @@ export class UserScoreStatistics extends Component {
     for (var i = 0; i < scores.length; i++) {
       xAxis.push(parseInt(scores[i].quiz));
       yAxis.push(parseInt(scores[i].avg_ques_solved));
-    }  
+    }
     this.setState({
       avgQuestionSolvedAxisData: {
         xAxis: xAxis,
@@ -171,7 +171,7 @@ export class UserScoreStatistics extends Component {
       allUserScoresAxisData,
       userProgressAxisData,
       allUserProgressAxisData,
-      avgQuestionSolvedAxisData
+      avgQuestionSolvedAxisData,
     } = this.state;
     const { t } = this.props;
     return (
@@ -294,11 +294,10 @@ export class UserScoreStatistics extends Component {
                     {t("All Users Performance for Every Quiz")}
                   </div>
                   <div>
-                    <DataContext ndxData = {allUserProgressAxisData.yAxis}>
-                      <BoxChart/>
+                    <DataContext ndxData={allUserProgressAxisData.yAxis}>
+                      <BoxChart />
                     </DataContext>
                   </div>
-
                 </div>
               ) : null}
             </Paper>
@@ -315,7 +314,9 @@ export class UserScoreStatistics extends Component {
                       marginBottom: "5px",
                     }}
                   >
-                    {t("Average number of questions solved by a user per quiz")}
+                    {t(
+                      "Average number of questions correctly solved by a user per quiz"
+                    )}
                   </div>
                   <ApexCharts
                     type="bar"
