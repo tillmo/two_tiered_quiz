@@ -2,10 +2,10 @@ This project is built using Django Framework.
 # Django environment setup
 
 1. Create virtual environment. 
-    `virtualenv env`
+    `virtualenv venv`
     
     Activate virtual environment
-    `env\Scripts\activate`
+    `venv\Scripts\activate`
 
 2. Install all the dependencies from the requirements.txt
     `pip install -r requirements.txt`
@@ -24,7 +24,12 @@ This project is built using Django Framework.
 
 ## To up the django server
 
+Activate the virtual environment using following command.
+    `venv\Scripts\activate`
+  
+Run the below command to up the django server.
+
     `python manage.py runserver`
 
-   App will be running on localhost:8000
+App will be running on localhost:8000
 
