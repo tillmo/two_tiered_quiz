@@ -58,10 +58,11 @@ Running the above command creates a new quiz in the database with all the questi
 
 There is option to switch to different settings. Please refer to the 'local_settings.py.template' in 'lqserver' directory.  
 Initially program looks for settings path in environment variable "QUIZ_SETTING" else it picks the setting for 'lqserver.local_settings'.
+The local settings will extend the global settings of the project.
 
 ## Logging
 
-The Project is enable with loggings.
+The Project is enabled with loggings.
 Outside the project folder, create a directory 'tmp' and create a file 'quiz.log'.
 Application uses this file for logging.  
 OR  

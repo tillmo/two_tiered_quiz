@@ -6,6 +6,11 @@ If it is a first time running application, run following command to install depe
 
 ### `npm install`
 
+Currently, application supports English and Deutsch langauges.
+There is '.env' config file where it allows user to change language settings, REST Url path and app title.
+
+Before starting the application make sure to do required changes to '.env' file.
+
 In the project directory, you can run:
 
 ### `npm start`
