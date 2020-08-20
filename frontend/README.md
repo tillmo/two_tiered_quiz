@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-If the application is run the first time,, run following command to install dependencies for the project.
+If the application is run the first time, run following command to install dependencies for the project.
 
 ### `npm install`
 
