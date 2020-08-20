@@ -2,6 +2,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+If the application is run the first time, run following command to install dependencies for the project.
+
+### `npm install`
+
+Currenty, the application supports English and German.   
+
+The '.env' config file allows the user to change language settings, REST Url and app title.  
+These settings can be overridden in a file '.env.local' that should not be put under version control.
+
 In the project directory, you can run:
 
 ### `npm start`
