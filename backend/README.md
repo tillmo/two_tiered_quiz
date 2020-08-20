@@ -1,7 +1,7 @@
 This project is built using Django Framework.
 # Django environment setup
 
-1. Create virtual environment. 
+1. Create a virtual environment. 
     ```
     virtualenv venv
     ```
@@ -15,6 +15,7 @@ This project is built using Django Framework.
     ```
     pip install -r requirements.txt
     ```
+    (or pip3, if python3 is used)
 
 3. For models migrations.
 
@@ -36,18 +37,18 @@ This project is built using Django Framework.
 
 - Activate the virtual environment using following command.
     ```
-    venv\Scripts\activate
+    source venv/bin/activate
     ```
   
 - Run the below command to up the django server.
 
     `python manage.py runserver`
 
- App will be running on localhost:8000
+ The app will be running on localhost:8000
 
-## To upload quiz
+## To upload a quiz
 
-There is quiz template 'quiz.txt', a format for adding questions, answers, justifications and explainations.
+There is a quiz template 'quiz.txt', a format for adding questions, answers, justifications and explainations.
 Once the quiz template is ready, run the following command
 ```
 python manage.py add_quiz.py quiz.txt
@@ -56,16 +57,11 @@ Running the above command creates a new quiz in the database with all the questi
 
 ## Local Settings
 
-There is option to switch to different settings. Please refer to the 'local_settings.py.template' in 'lqserver' directory.  
-Initially program looks for settings path in environment variable "QUIZ_SETTING" else it picks the setting for 'lqserver.local_settings'.
-The local settings will extend the global settings of the project.
+There is an option to switch to different settings, e.g. concerning logging, database setup, and allowed hosts. Also, a secret key must provided (used for token generation). Please refer to 'lsqserver/local_settings.py.template'.  
+Initially the app looks for settings in the file pointed to by the environment variable QUIZ_SETTINGS. If this is not present, it picks the settings from 'lqserver/local_settings.py', and if this is not present either, 'lqserver/settings.py' is used (however, the latter preferably should not be changed, since it is under git version control, and local credentials should not be put under version control).
 
 ## Logging
 
-The Project is enabled with loggings.
-Outside the project folder, create a directory 'tmp' and create a file 'quiz.log'.
-Application uses this file for logging.  
-OR  
-Change the path in settings.py file for the variable `LOGFILE`. Application uses this file for logging.
+Per default, logging information is written to /tmp/quiz.log. This can be changed using the variable `LOGFILE` in the local settings.
 
 
