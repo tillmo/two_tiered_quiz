@@ -23,6 +23,23 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { DataContext } from "../Charts/cxContext";
 import BoxChart from "../Charts/BoxChart";
+import PropTypes from "prop-types";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 5 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 
 export class UserScoreStatistics extends Component {
   state = {
@@ -31,6 +48,7 @@ export class UserScoreStatistics extends Component {
     allUserProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     avgQuestionSolvedAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userScoreDetails: [],
+    value: 0,
   };
 
   async componentDidMount() {
@@ -50,6 +68,10 @@ export class UserScoreStatistics extends Component {
       this._getAvgQuestionSolvedAxisData(avgQuestionSolvedData);
     }
   }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
   _getAllUserScoresAxisData = (scores) => {
     let xAxis = [];
@@ -172,6 +194,7 @@ export class UserScoreStatistics extends Component {
       userProgressAxisData,
       allUserProgressAxisData,
       avgQuestionSolvedAxisData,
+      value
     } = this.state;
     const { t } = this.props;
     return (
@@ -186,150 +209,185 @@ export class UserScoreStatistics extends Component {
               aria-label="breadcrumb"
             >
               <Typography variant="subtitle2" color="textPrimary">
-                {t("User Statistics")}
+                {t("Statistics")}
               </Typography>
             </Breadcrumbs>
           </Grid>
         </Grid>
-        <Grid
-          container
-          spacing={3}
-          style={{ justify: "space-between", marginTop: "15px" }}
-        >
-          <Grid item xs={12} sm={4} md={4}>
-            {this.state.userScoreDetails.length ? (
-              <Paper>
-                <div
-                  style={{
-                    backgroundColor: "#3f51b5",
-                    color: "white",
-                    padding: "10px",
-                  }}
-                >
-                  {t("User Report")}
-                </div>
-                <Table
-                  stickyHeader
-                  aria-label="sticky table"
-                  style={{ minHeight: 300 }}
-                >
-                  <TableBody>
-                    {this.state.userScoreDetails.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="left">
-                          <Typography variant="subtitle2" color="textPrimary">
-                            {row.key}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Typography variant="subtitle2" color="textPrimary">
-                            {row.value}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
-            ) : (
-              <div>{t("You have not attempted any quizzes yet!")}</div>
-            )}
-          </Grid>
-          <Grid item xs={12} sm={8} md={8}>
-            <Paper>
-              {userProgressAxisData.xAxis.length ? (
-                <div>
-                  <div
-                    style={{
-                      backgroundColor: "#3f51b5",
-                      color: "white",
-                      padding: "10px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {t("Score Distribution - All Users")}
-                  </div>
-                  <ApexCharts
-                    type="bar"
-                    axisData={allUserScoresAxisData}
-                  ></ApexCharts>
-                </div>
-              ) : null}
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Paper>
-              {userProgressAxisData.xAxis.length ? (
-                <div>
-                  <div
-                    style={{
-                      backgroundColor: "#3f51b5",
-                      color: "white",
-                      padding: "10px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {t("User Progress by Every Quiz")}
-                  </div>
-                  <ApexCharts
-                    type="line"
-                    axisData={userProgressAxisData}
-                  ></ApexCharts>
-                </div>
-              ) : null}
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Paper>
-              {allUserProgressAxisData.xAxis.length ? (
-                <div>
-                  <div
-                    style={{
-                      backgroundColor: "#3f51b5",
-                      color: "white",
-                      padding: "10px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {t("All Users Performance for Every Quiz")}
-                  </div>
-                  <div>
-                    <DataContext ndxData={allUserProgressAxisData.yAxis}>
-                      <BoxChart />
-                    </DataContext>
-                  </div>
-                </div>
-              ) : null}
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Paper>
-              {avgQuestionSolvedAxisData.xAxis.length ? (
-                <div>
-                  <div
-                    style={{
-                      backgroundColor: "#3f51b5",
-                      color: "white",
-                      padding: "10px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {t(
-                      "Average number of questions correctly solved by a user per quiz"
-                    )}
-                  </div>
-                  <ApexCharts
-                    type="bar"
-                    axisData={avgQuestionSolvedAxisData}
-                  ></ApexCharts>
-                </div>
-              ) : null}
-            </Paper>
-          </Grid>
-        </Grid>
+        <div style={{flexGrow:1, backgroundColor:'white'}}>
+        <AppBar position="static">
+          <Tabs
+            value={value}
+            onChange={this.handleChange}
+          >
+            <Tab label={t("User Statistics")} />
+            <Tab label={t("Overall Users Statistics")} />
+          </Tabs>
+        </AppBar>
+        {value === 0 && (
+          <TabContainer>
+            <Grid
+              container
+              spacing={3}
+              style={{ justify: "space-between", marginTop: "15px" }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                {this.state.userScoreDetails.length ? (
+                  <Paper>
+                    <div
+                      style={{
+                        backgroundColor: "#3f51b5",
+                        color: "white",
+                        padding: "10px",
+                      }}
+                    >
+                      {t("User Report")}
+                    </div>
+                    <Table
+                      stickyHeader
+                      aria-label="sticky table"
+                      style={{ minHeight: 300 }}
+                    >
+                      <TableBody>
+                        {this.state.userScoreDetails.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell align="left">
+                              <Typography
+                                variant="subtitle2"
+                                color="textPrimary"
+                              >
+                                {row.key}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="left">
+                              <Typography
+                                variant="subtitle2"
+                                color="textPrimary"
+                              >
+                                {row.value}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Paper>
+                ) : (
+                  <div>{t("You have not attempted any quizzes yet!")}</div>
+                )}
+              </Grid>
+              <Grid item xs={12} sm={8} md={8}>
+                <Paper>
+                  {userProgressAxisData.xAxis.length ? (
+                    <div>
+                      <div
+                        style={{
+                          backgroundColor: "#3f51b5",
+                          color: "white",
+                          padding: "10px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        {t("User Progress by Every Quiz")}
+                      </div>
+                      <ApexCharts
+                        type="line"
+                        axisData={userProgressAxisData}
+                      ></ApexCharts>
+                    </div>
+                  ) : null}
+                </Paper>
+              </Grid>
+            </Grid>
+          </TabContainer>
+        )}
+        {value === 1 && (
+          <TabContainer>
+            <Grid
+              container
+              spacing={3}
+              style={{ justify: "space-between", marginTop: "15px" }}
+            >
+              <Grid item xs={12} sm={12} md={12}>
+                <Paper>
+                  {userProgressAxisData.xAxis.length ? (
+                    <div>
+                      <div
+                        style={{
+                          backgroundColor: "#3f51b5",
+                          color: "white",
+                          padding: "10px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        {t("Score Distribution - All Users")}
+                      </div>
+                      <ApexCharts
+                        type="bar"
+                        axisData={allUserScoresAxisData}
+                      ></ApexCharts>
+                    </div>
+                  ) : null}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Paper>
+                  {allUserProgressAxisData.xAxis.length ? (
+                    <div>
+                      <div
+                        style={{
+                          backgroundColor: "#3f51b5",
+                          color: "white",
+                          padding: "10px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        {t("All Users Performance for Every Quiz")}
+                      </div>
+                      <div>
+                        <DataContext ndxData={allUserProgressAxisData.yAxis}>
+                          <BoxChart />
+                        </DataContext>
+                      </div>
+                    </div>
+                  ) : null}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Paper>
+                  {avgQuestionSolvedAxisData.xAxis.length ? (
+                    <div>
+                      <div
+                        style={{
+                          backgroundColor: "#3f51b5",
+                          color: "white",
+                          padding: "10px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        {t(
+                          "Average number of questions correctly solved by a user per quiz"
+                        )}
+                      </div>
+                      <ApexCharts
+                        type="bar"
+                        axisData={avgQuestionSolvedAxisData}
+                      ></ApexCharts>
+                    </div>
+                  ) : null}
+                </Paper>
+              </Grid>
+            </Grid>
+          </TabContainer>
+        )}
+        </div>
       </div>
     );
   }
 }
+
+UserScoreStatistics.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default translate("common")(UserScoreStatistics);

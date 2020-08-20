@@ -228,7 +228,7 @@ const NavBar = (props) => {
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.listItemStyle }}
-            primary={t("User Statistics")}
+            primary={t("Statistics")}
           />
         </ListItem>
       </List>
