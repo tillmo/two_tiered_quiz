@@ -1,4 +1,4 @@
-This project is built using Django Framework.
+This project is built using the Django Framework.
 # Django environment setup
 
 1. Create a virtual environment. 
