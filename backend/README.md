@@ -8,7 +8,7 @@ This project is built using Django Framework.
     
     Activate virtual environment
     ```
-    venv\Scripts\activate
+    source venv/bin/activate
     ```
 
 2. Install all the dependencies from the requirements.txt
