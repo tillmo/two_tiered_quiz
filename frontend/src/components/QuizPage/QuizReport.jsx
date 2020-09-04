@@ -47,7 +47,7 @@ export class QuizReport extends Component {
     var that = this;
     history.listen((newLocation, action) => {
       if (action === "PUSH") {} else {
-        history.go(1);
+        history.push("/app/");
       }
     });
     if (this.props.quizTakerId === "0") {
