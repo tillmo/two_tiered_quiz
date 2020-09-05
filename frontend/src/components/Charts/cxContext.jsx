@@ -20,6 +20,9 @@ export class DataContext extends React.Component {
     if (!this.state.hasNDX) {
       return null;
     }
+    if (this.props.ndxData) {
+      this.ndx = crossfilter(this.props.ndxData);
+    }
     return (
       <CXContext.Provider value={{ ndx: this.ndx }}>
         <div ref={this.parent}>{this.props.children}</div>

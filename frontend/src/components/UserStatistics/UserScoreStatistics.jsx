@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import * as dc from "dc";
-import * as crossfilter from "crossfilter2/crossfilter";
 import ApexCharts from "../Charts/ApexCharts";
 import {
   getAllUserScoreChartData,
@@ -27,6 +25,9 @@ import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import Button from "@material-ui/core/Button";
 
 function TabContainer(props) {
   return (
@@ -40,13 +41,15 @@ TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-
 export class UserScoreStatistics extends Component {
   state = {
     allUserScoresAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     userProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     allUserProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     avgQuestionSolvedAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
+    allUserProgressYAxisData: {},
+    bcStartIndex: 0,
+    bcEndIndex: 10,
     userScoreDetails: [],
     value: 0,
   };
@@ -55,17 +58,26 @@ export class UserScoreStatistics extends Component {
     if (HasSessionExpired()) {
       this.props.history.push("/");
     } else {
+      const { bcEndIndex } = this.state;
       const user = await getUserDetailsService();
       let scores = await getAllUserScoreChartData(this.props.quizId);
       let userScoreDetails = await getUserScoreDetailsService(user);
       let userProgress = await getUserProgressService(user);
       let allUserProgress = await getAllUserProgressService();
       let avgQuestionSolvedData = await getAvgQuestionsSolvedService();
+      const end =
+        bcEndIndex < allUserProgress.length - 1
+          ? bcEndIndex
+          : allUserProgress.length - 1;
       this._prepareUserScoreRowData(userScoreDetails);
       this._getAllUserScoresAxisData(scores.groupedScores);
       this._getUserProgressAxisData(userProgress);
-      this._getAllUserProgressAxisData(allUserProgress);
+      this._getAllUserProgressAxisData(allUserProgress, 0, end);
       this._getAvgQuestionSolvedAxisData(avgQuestionSolvedData);
+      this.setState({
+        allUserProgressYAxisData: allUserProgress,
+        bcEndIndex: end,
+      });
     }
   }
 
@@ -117,15 +129,15 @@ export class UserScoreStatistics extends Component {
     });
   };
 
-  _getAllUserProgressAxisData = (scores) => {
+  _getAllUserProgressAxisData = (scores, start, end) => {
     let xAxis = [];
     let yAxis = [];
-    let percentage = [];
-    for (var i = 0; i < scores.length; i++) {
-      xAxis.push(parseInt(scores[i].quiz));
-      const percentages = scores[i].percentage;
+    let subScores = scores.slice(start, end + 1);
+    for (var i = 0; i < subScores.length; i++) {
+      xAxis.push(parseInt(subScores[i].quiz));
+      const percentages = subScores[i].percentage;
       for (var j = 0; j < percentages.length; j++) {
-        yAxis.push({ x: scores[i].quiz, y: percentages[j] });
+        yAxis.push({ x: subScores[i].quiz, y: percentages[j] });
       }
     }
     this.setState({
@@ -184,17 +196,49 @@ export class UserScoreStatistics extends Component {
     };
   };
 
+  _showPreviousQuizzes = () => {
+    let start = this.state.bcStartIndex - 10;
+    start = start < 0 ? 0 : start;
+    let end = this.state.bcEndIndex - 10;
+    end =
+      end < this.state.allUserProgressYAxisData.length - 1
+        ? end
+        : this.state.allUserProgressYAxisData.length - 1;
+    this._getAllUserProgressAxisData(
+      this.state.allUserProgressYAxisData,
+      start,
+      end
+    );
+    this.setState({ bcStartIndex: start, bcEndIndex: end });
+  };
+
+  _showNextQuizzes = () => {
+    let start = this.state.bcStartIndex + 10;
+    start =
+      start > this.state.allUserProgressYAxisData.length - 1
+        ? this.state.allUserProgressYAxisData.length
+        : start;
+    let end = this.state.bcEndIndex + 10;
+    end =
+      end > this.state.allUserProgressYAxisData.length - 1
+        ? this.state.allUserProgressYAxisData.length - 1
+        : end;
+    this._getAllUserProgressAxisData(
+      this.state.allUserProgressYAxisData,
+      start,
+      end
+    );
+    this.setState({ bcStartIndex: start, bcEndIndex: end });
+  };
+
   render() {
-    const tableStyles = {
-      backgroundColor: "#3f51b5",
-      color: "white",
-    };
     const {
       allUserScoresAxisData,
       userProgressAxisData,
       allUserProgressAxisData,
       avgQuestionSolvedAxisData,
-      value
+      allUserProgressYAxisData,
+      value,
     } = this.state;
     const { t } = this.props;
     return (
@@ -214,172 +258,215 @@ export class UserScoreStatistics extends Component {
             </Breadcrumbs>
           </Grid>
         </Grid>
-        <div style={{flexGrow:1, backgroundColor:'white'}}>
-        <AppBar position="static">
-          <Tabs
-            value={value}
-            onChange={this.handleChange}
-          >
-            <Tab label={t("User Statistics")} />
-            <Tab label={t("Overall Users Statistics")} />
-          </Tabs>
-        </AppBar>
-        {value === 0 && (
-          <TabContainer>
-            <Grid
-              container
-              spacing={3}
-              style={{ justify: "space-between", marginTop: "15px" }}
-            >
-              <Grid item xs={12} sm={4} md={4}>
-                {this.state.userScoreDetails.length ? (
+        <div style={{ flexGrow: 1, backgroundColor: "white" }}>
+          <AppBar position="static">
+            <Tabs value={value} onChange={this.handleChange}>
+              <Tab label={t("User Statistics")} />
+              <Tab label={t("Overall Users Statistics")} />
+            </Tabs>
+          </AppBar>
+          {value === 0 && (
+            <TabContainer>
+              <Grid
+                container
+                spacing={3}
+                style={{ justify: "space-between", marginTop: "15px" }}
+              >
+                <Grid item xs={12} sm={4} md={4}>
+                  {this.state.userScoreDetails.length ? (
+                    <Paper>
+                      <div
+                        style={{
+                          backgroundColor: "#3f51b5",
+                          color: "white",
+                          padding: "10px",
+                        }}
+                      >
+                        {t("User Report")}
+                      </div>
+                      <Table
+                        stickyHeader
+                        aria-label="sticky table"
+                        style={{ minHeight: 300 }}
+                      >
+                        <TableBody>
+                          {this.state.userScoreDetails.map((row, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textPrimary"
+                                >
+                                  {row.key}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textPrimary"
+                                >
+                                  {row.value}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </Paper>
+                  ) : (
+                    <div>{t("You have not attempted any quizzes yet!")}</div>
+                  )}
+                </Grid>
+                <Grid item xs={12} sm={8} md={8}>
                   <Paper>
-                    <div
-                      style={{
-                        backgroundColor: "#3f51b5",
-                        color: "white",
-                        padding: "10px",
-                      }}
-                    >
-                      {t("User Report")}
-                    </div>
-                    <Table
-                      stickyHeader
-                      aria-label="sticky table"
-                      style={{ minHeight: 300 }}
-                    >
-                      <TableBody>
-                        {this.state.userScoreDetails.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left">
-                              <Typography
-                                variant="subtitle2"
-                                color="textPrimary"
-                              >
-                                {row.key}
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="left">
-                              <Typography
-                                variant="subtitle2"
-                                color="textPrimary"
-                              >
-                                {row.value}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </Paper>
-                ) : (
-                  <div>{t("You have not attempted any quizzes yet!")}</div>
-                )}
-              </Grid>
-              <Grid item xs={12} sm={8} md={8}>
-                <Paper>
-                  {userProgressAxisData.xAxis.length ? (
-                    <div>
-                      <div
-                        style={{
-                          backgroundColor: "#3f51b5",
-                          color: "white",
-                          padding: "10px",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        {t("User Progress by Every Quiz")}
-                      </div>
-                      <ApexCharts
-                        type="line"
-                        axisData={userProgressAxisData}
-                      ></ApexCharts>
-                    </div>
-                  ) : null}
-                </Paper>
-              </Grid>
-            </Grid>
-          </TabContainer>
-        )}
-        {value === 1 && (
-          <TabContainer>
-            <Grid
-              container
-              spacing={3}
-              style={{ justify: "space-between", marginTop: "15px" }}
-            >
-              <Grid item xs={12} sm={12} md={12}>
-                <Paper>
-                  {userProgressAxisData.xAxis.length ? (
-                    <div>
-                      <div
-                        style={{
-                          backgroundColor: "#3f51b5",
-                          color: "white",
-                          padding: "10px",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        {t("Score Distribution - All Users")}
-                      </div>
-                      <ApexCharts
-                        type="bar"
-                        axisData={allUserScoresAxisData}
-                      ></ApexCharts>
-                    </div>
-                  ) : null}
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Paper>
-                  {allUserProgressAxisData.xAxis.length ? (
-                    <div>
-                      <div
-                        style={{
-                          backgroundColor: "#3f51b5",
-                          color: "white",
-                          padding: "10px",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        {t("All Users Performance for Every Quiz")}
-                      </div>
+                    {userProgressAxisData.xAxis.length ? (
                       <div>
-                        <DataContext ndxData={allUserProgressAxisData.yAxis}>
-                          <BoxChart />
-                        </DataContext>
+                        <div
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            color: "white",
+                            padding: "10px",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          {t("User Progress by Every Quiz")}
+                        </div>
+                        <ApexCharts
+                          type="line"
+                          axisData={userProgressAxisData}
+                        ></ApexCharts>
                       </div>
-                    </div>
-                  ) : null}
-                </Paper>
+                    ) : null}
+                  </Paper>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Paper>
-                  {avgQuestionSolvedAxisData.xAxis.length ? (
-                    <div>
-                      <div
-                        style={{
-                          backgroundColor: "#3f51b5",
-                          color: "white",
-                          padding: "10px",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        {t(
-                          "Average number of questions correctly solved by a user per quiz"
-                        )}
+            </TabContainer>
+          )}
+          {value === 1 && (
+            <TabContainer>
+              <Grid
+                container
+                spacing={3}
+                style={{ justify: "space-between", marginTop: "15px" }}
+              >
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper>
+                    {userProgressAxisData.xAxis.length ? (
+                      <div>
+                        <div
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            color: "white",
+                            padding: "10px",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          {t("Score Distribution - All Users")}
+                        </div>
+                        <ApexCharts
+                          type="bar"
+                          axisData={allUserScoresAxisData}
+                        ></ApexCharts>
                       </div>
-                      <ApexCharts
-                        type="bar"
-                        axisData={avgQuestionSolvedAxisData}
-                      ></ApexCharts>
-                    </div>
-                  ) : null}
-                </Paper>
+                    ) : null}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper>
+                    {allUserProgressAxisData.xAxis.length ? (
+                      <div>
+                        <div
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            color: "white",
+                            padding: "10px",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          {t("All Users Performance for Every Quiz")}
+                        </div>
+                        <div>
+                          <Typography variant="subtitle2" color="textPrimary">
+                            <Button
+                              variant="contained"
+                              color={
+                                this.state.bcStartIndex !== 0
+                                  ? "primary"
+                                  : "disabled"
+                              }
+                              size="small"
+                              disabled={this.state.bcStartIndex <= 0}
+                              style={{ marginLeft: "10px" }}
+                              onClick={this._showPreviousQuizzes}
+                              startIcon={<KeyboardArrowLeftIcon />}
+                            >
+                              {t("Back")}
+                            </Button>
+                            {"  " + (this.state.bcStartIndex + 1)} -{" "}
+                            {this.state.bcEndIndex + 1}{" "}
+                            {t("of") +
+                              " " +
+                              allUserProgressYAxisData.length +
+                              " " +
+                              t("Quizzes")}
+                            <Button
+                              variant="contained"
+                              size="small"
+                              color={
+                                allUserProgressYAxisData.length - 1 >=
+                                this.state.bcEndIndex
+                                  ? "primary"
+                                  : "disabled"
+                              }
+                              style={{ marginLeft: "10px" }}
+                              disabled={
+                                allUserProgressYAxisData.length - 1 <=
+                                this.state.bcEndIndex
+                              }
+                              onClick={this._showNextQuizzes}
+                              endIcon={<KeyboardArrowRightIcon />}
+                            >
+                              {t("Next")}
+                            </Button>
+                          </Typography>
+                        </div>
+
+                        <div>
+                          <DataContext ndxData={allUserProgressAxisData.yAxis}>
+                            <BoxChart />
+                          </DataContext>
+                        </div>
+                      </div>
+                    ) : null}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper>
+                    {avgQuestionSolvedAxisData.xAxis.length ? (
+                      <div>
+                        <div
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            color: "white",
+                            padding: "10px",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          {t(
+                            "Average number of questions correctly solved by a user per quiz"
+                          )}
+                        </div>
+                        <ApexCharts
+                          type="bar"
+                          axisData={avgQuestionSolvedAxisData}
+                        ></ApexCharts>
+                      </div>
+                    ) : null}
+                  </Paper>
+                </Grid>
               </Grid>
-            </Grid>
-          </TabContainer>
-        )}
+            </TabContainer>
+          )}
         </div>
       </div>
     );

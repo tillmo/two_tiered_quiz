@@ -8,7 +8,7 @@ export const ChartTemplate = (props) => {
   React.useEffect(() => {
     const newChart = props.chartFunction(div.current, ndx);
     newChart.render();
-  }, 1);
+  }, [ndx]);
 
   return <div ref={div}></div>;
 };
