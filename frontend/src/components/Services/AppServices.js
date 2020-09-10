@@ -91,3 +91,43 @@ export const getScoresListService = (user) => {
       return res.data;
     });
 };
+
+export const getAllUserScoreChartData = () => {
+  return axios
+    .get(url + "api/getscorechartdata/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getUserScoreDetailsService = (user) => {
+  return axios
+    .get(url + "api/userscoredetails/"+user, { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getUserProgressService = (user) => {
+  return axios
+    .get(url + "api/userprogresschartdata/"+user, { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getAllUserProgressService = () => {
+  return axios
+    .get(url + "api/alluserprogresschartdata/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getAvgQuestionsSolvedService = () => {
+  return axios
+    .get(url + "api/avgquessolvedbyuser/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
