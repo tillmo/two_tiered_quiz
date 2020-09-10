@@ -197,9 +197,9 @@ export class UserScoreStatistics extends Component {
   };
 
   _showPreviousQuizzes = () => {
-    let start = this.state.bcStartIndex - 10;
+    let start = this.state.bcStartIndex - 15;
     start = start < 0 ? 0 : start;
-    let end = this.state.bcEndIndex - 10;
+    let end = this.state.bcEndIndex - 15;
     end =
       end < this.state.allUserProgressYAxisData.length - 1
         ? end
@@ -213,12 +213,12 @@ export class UserScoreStatistics extends Component {
   };
 
   _showNextQuizzes = () => {
-    let start = this.state.bcStartIndex + 10;
+    let start = this.state.bcStartIndex + 15;
     start =
       start > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length
         : start;
-    let end = this.state.bcEndIndex + 10;
+    let end = this.state.bcEndIndex + 15;
     end =
       end > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length - 1
