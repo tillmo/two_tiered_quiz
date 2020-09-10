@@ -40,10 +40,16 @@ export class QuizReport extends Component {
 
   async componentDidMount() {
     let questions = await getQuizDetailService(this.props.quizId);
+    const { history } = this.props;
     this.setState({ questions: questions });
     await this.handleSubmitQuiz();
     let quizTaker = await this._getQuizTakerDetails();
     var that = this;
+    history.listen((newLocation, action) => {
+      if (action === "PUSH") {} else {
+        history.push("/app/");
+      }
+    });
     if (this.props.quizTakerId === "0") {
       await createReportService(quizTaker)
         .then(async (res) => {
