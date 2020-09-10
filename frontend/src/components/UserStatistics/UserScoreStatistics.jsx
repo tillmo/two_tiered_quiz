@@ -49,7 +49,7 @@ export class UserScoreStatistics extends Component {
     avgQuestionSolvedAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     allUserProgressYAxisData: {},
     bcStartIndex: 0,
-    bcEndIndex: 10,
+    bcEndIndex: 14,
     userScoreDetails: [],
     value: 0,
   };
