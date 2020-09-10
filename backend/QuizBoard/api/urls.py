@@ -17,7 +17,12 @@ from .views import (
     ResponsesUpdateView,
     QuizWithoutFlagsRetrieveView,
     QuizTakerHistoryListView,
-    QuizScoresListView
+    QuizScoresListView,
+    OverallScoresChartView,
+    UserScoresDetailsView,
+    UserProgressView,
+    AllUserProgressView,
+    AverageQuestionsSolvedView
 )
 
 urlpatterns = [
@@ -37,4 +42,9 @@ urlpatterns = [
     path('getquiz/<pk>', QuizWithoutFlagsRetrieveView.as_view()),
     path('getuserquizhistory/', QuizTakerHistoryListView.as_view()),
     path('getscorelist/<int:user>', QuizScoresListView.as_view()),
+    path('getscorechartdata/', OverallScoresChartView.as_view()),
+    path('userscoredetails/<int:user>', UserScoresDetailsView.as_view()),
+    path('userprogresschartdata/<int:user>', UserProgressView.as_view()),
+    path('alluserprogresschartdata/', AllUserProgressView.as_view()),
+    path('avgquessolvedbyuser/', AverageQuestionsSolvedView.as_view()),
 ]

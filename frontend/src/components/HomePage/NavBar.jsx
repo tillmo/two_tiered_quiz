@@ -31,6 +31,8 @@ import QuizQuestion from "../QuizPage/QuizQuestion";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { translate } from "react-i18next";
 import ScoresList from "../HighScorePage/ScoresList";
+import UserScoreStatistics from "../UserStatistics/UserScoreStatistics";
+import MultilineChartIcon from '@material-ui/icons/MultilineChart';
 
 const drawerWidth = 240;
 
@@ -220,6 +222,15 @@ const NavBar = (props) => {
             primary={t("High Score List")}
           />
         </ListItem>
+        <ListItem button key={"statistics"} onClick={routeToMenu("/app/userstatistics/")}>
+          <ListItemIcon style={{ minWidth: "40px" }}>
+            <MultilineChartIcon />
+          </ListItemIcon>
+          <ListItemText
+            classes={{ primary: classes.listItemStyle }}
+            primary={t("Statistics")}
+          />
+        </ListItem>
       </List>
       <Divider />
       <List>
@@ -324,6 +335,11 @@ const NavBar = (props) => {
           path={props.match.url + "/dashboard/"}
           exact
           component={ScoresList}
+        />
+        <Route
+          path={props.match.url + "/userstatistics/"}
+          exact
+          component={UserScoreStatistics}
         />
       </main>
     </div>
