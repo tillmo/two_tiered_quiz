@@ -22,7 +22,8 @@ from .views import (
     UserScoresDetailsView,
     UserProgressView,
     AllUserProgressView,
-    AverageQuestionsSolvedView
+    AverageQuestionsSolvedView,
+    UserRetrieveView
 )
 
 urlpatterns = [
@@ -47,4 +48,5 @@ urlpatterns = [
     path('userprogresschartdata/<int:user>', UserProgressView.as_view()),
     path('alluserprogresschartdata/', AllUserProgressView.as_view()),
     path('avgquessolvedbyuser/', AverageQuestionsSolvedView.as_view()),
+    path('checkadmincredentials/<pk>', UserRetrieveView.as_view()),
 ]

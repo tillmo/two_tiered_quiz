@@ -131,3 +131,11 @@ export const getAvgQuestionsSolvedService = () => {
       return res.data;
     });
 };
+
+export const getUserDetailsServiceAdm = (user) => {
+  return axios
+    .get(url + "api/checkadmincredentials/"+user, { headers: getHeaders() })
+    .then((res) => {
+      return res.data.is_staff;
+    });
+};

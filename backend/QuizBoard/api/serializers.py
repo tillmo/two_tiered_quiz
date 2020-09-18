@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_auth.registration.serializers import RegisterSerializer
 from allauth.account import app_settings as allauth_settings
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
+from django.contrib.auth.models import User
 
 class ExplainationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -127,3 +128,11 @@ class QuizWithoutFlagsSerializer(serializers.ModelSerializer):
 
     def get_question(self, obj):
         return [QuestionWithoutFlagsSerializer(s).data for s in obj.question_set.all()]
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+            model = User
+            fields = ('id', 'is_staff')

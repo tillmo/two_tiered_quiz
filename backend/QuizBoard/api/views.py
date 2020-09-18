@@ -14,7 +14,7 @@ from django.db.models import Count
 from django.db.models import Max, Sum
 from itertools import chain
 from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
-from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
+from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer, UserSerializer
 
 class QuizListView(ListAPIView):
     serializer_class = QuizListSerializer
@@ -318,6 +318,12 @@ class AverageQuestionsSolvedView(ListAPIView):
         result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(Sum('correct_answers')/Count('user')))
         response = Response(result)
         return set_headers_to_response(response)
+
+
+class UserRetrieveView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated,]
 
 
 def set_headers_to_response(response):
