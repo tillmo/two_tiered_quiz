@@ -1,20 +1,24 @@
+from itertools import chain
+
 from django.contrib.auth.models import User
+from django.db.models import Count, Max, Sum
+from QuizBoard.models import (Answer, Explaination, Justifications, Question,
+                              Quiz, QuizTakers, Responses)
 from rest_framework import permissions, viewsets
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, ListCreateAPIView,
+                                     RetrieveAPIView, UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView,
-    ListCreateAPIView,
-)
-from django.db.models import Count
-from django.db.models import Max, Sum
-from itertools import chain
-from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
-from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
+
+from .serializers import (AnswerSerializer, ExplainationSerializer,
+                          JustificationsSerializer, QuestionSerializer,
+                          QuizListSerializer, QuizSerializer,
+                          QuizTakerResponseSerializer, QuizTakerSerializer,
+                          QuizWithoutFlagsSerializer, ResponseSerialzer)
+from django.db.models import FloatField
+from django.db.models.functions import Cast
+
 
 class QuizListView(ListAPIView):
     serializer_class = QuizListSerializer
@@ -315,8 +319,30 @@ class AverageQuestionsSolvedView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request):
-        result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(Sum('correct_answers')/Count('user')))
+        result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(Cast(Sum('correct_answers') * 1.0 /Count('user') * 1.0,FloatField())))
         response = Response(result)
+        return set_headers_to_response(response)
+
+
+class OverallAttemptsOverQuizChartView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):  
+        groupedQuizzes = QuizTakers.objects.values('user').annotate(totalQuizzes=Count('quiz')).order_by('totalQuizzes')
+        scoreData = {'groupedQuizzes':groupedQuizzes}
+        response = Response(scoreData)
+        return set_headers_to_response(response)
+
+
+class TotalParticipantsView(ListAPIView):
+    queryset = User.objects.none()
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request):  
+        totalUsers = User.objects.count()
+        response = Response({'totalUsers': totalUsers})
         return set_headers_to_response(response)
 
 

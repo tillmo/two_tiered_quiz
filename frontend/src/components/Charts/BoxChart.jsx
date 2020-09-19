@@ -29,7 +29,7 @@ const boxChartFunc = (divRef, ndx) => {
     .margins({ top: 20, bottom: 40, right: 10, left: 30 })
     .dimension(dimensionByQuiz, "quiz")
     .keyAccessor(function (d) {
-      return "quiz " + d.key;
+      return "quiz " + d.key + "(" + d.value.length + ")";
     })
     .group(groupByPercentages);
   return boxPlot;
