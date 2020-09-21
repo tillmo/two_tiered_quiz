@@ -251,20 +251,20 @@ export class UserScoreStatistics extends Component {
     this.setState({ bcStartIndex: start, bcEndIndex: end });
   };
 
-  _getAllQuizAttemptsChartData = (scores) => {
+  _getAllQuizAttemptsChartData = (userQuizes) => {
     let xAxis = [];
     let yAxis = [];
-    let scoresMap = new Map();
-    for (var i = 0; i < scores.length; i++) {
-      let scoreCount = scoresMap.get(parseInt(scores[i].totalQuizzes));
-      if (scoreCount === undefined) {
-        scoresMap.set(parseInt(scores[i].totalQuizzes), 1);
+    let quizMap = new Map();
+    for (var i = 0; i < userQuizes.length; i++) {
+      let quizCount = quizMap.get(parseInt(userQuizes[i].totalQuizzes));
+      if (quizCount === undefined) {
+        quizMap.set(parseInt(userQuizes[i].totalQuizzes), 1);
       } else {
-        scoreCount++;
-        scoresMap.set(parseInt(scores[i].totalQuizzes), scoreCount);
+        quizCount++;
+        quizMap.set(parseInt(userQuizes[i].totalQuizzes), quizCount);
       }
     }
-    scoresMap.forEach((value, key) => {
+    quizMap.forEach((value, key) => {
       xAxis.push(parseInt(key));
       yAxis.push(parseInt(value));
     });
