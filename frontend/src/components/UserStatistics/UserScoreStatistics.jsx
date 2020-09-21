@@ -57,10 +57,11 @@ export class UserScoreStatistics extends Component {
     },
     allUserProgressYAxisData: {},
     bcStartIndex: 0,
-    bcEndIndex: 14,
+    bcEndIndex: 6,
     userScoreDetails: [],
     value: 0,
     totalParticipants: 0,
+    totalParticipantsInOneQuiz: 0,
   };
 
   async componentDidMount() {
@@ -102,6 +103,7 @@ export class UserScoreStatistics extends Component {
     let xAxis = [];
     let yAxis = [];
     let scoresMap = new Map();
+    let totalParticipantsInOneQuiz = 0;
     for (var i = 0; i < scores.length; i++) {
       let scoreCount = scoresMap.get(parseInt(scores[i].totalScore));
       if (scoreCount === undefined) {
@@ -114,6 +116,7 @@ export class UserScoreStatistics extends Component {
     scoresMap.forEach((value, key) => {
       xAxis.push(parseInt(key));
       yAxis.push(parseInt(value));
+      totalParticipantsInOneQuiz = totalParticipantsInOneQuiz + value;
     });
     this.setState({
       allUserScoresAxisData: {
@@ -122,6 +125,7 @@ export class UserScoreStatistics extends Component {
         xTitle: this.props.t("Score"),
         yTitle: this.props.t("Number of users"),
       },
+      totalParticipantsInOneQuiz: totalParticipantsInOneQuiz,
     });
   };
 
@@ -210,9 +214,12 @@ export class UserScoreStatistics extends Component {
   };
 
   _showPreviousQuizzes = () => {
-    let start = this.state.bcStartIndex - 15;
+    const endIndexDiff = Math.abs(
+      this.state.bcStartIndex - this.state.allUserProgressYAxisData.length - 1
+    );
+    let start = this.state.bcStartIndex - 6;
     start = start < 0 ? 0 : start;
-    let end = this.state.bcEndIndex - 15;
+    let end = this.state.bcEndIndex + endIndexDiff - 6;
     end =
       end < this.state.allUserProgressYAxisData.length - 1
         ? end
@@ -226,12 +233,12 @@ export class UserScoreStatistics extends Component {
   };
 
   _showNextQuizzes = () => {
-    let start = this.state.bcStartIndex + 15;
+    let start = this.state.bcStartIndex + 6;
     start =
       start > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length
         : start;
-    let end = this.state.bcEndIndex + 15;
+    let end = this.state.bcEndIndex + 6;
     end =
       end > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length - 1
@@ -280,6 +287,7 @@ export class UserScoreStatistics extends Component {
       allUserProgressYAxisData,
       allQuizAttemptsChartData,
       totalParticipants,
+      totalParticipantsInOneQuiz,
       value,
     } = this.state;
     const { t } = this.props;
@@ -396,7 +404,7 @@ export class UserScoreStatistics extends Component {
                   variant="subtitle2"
                   style={{ marginLeft: "12px" }}
                 >
-                  {t("Total number of participants")}:
+                  {t("Total number of users")}:
                   <Typography
                     color="textSecondary"
                     variant="subtitle2"
@@ -406,6 +414,23 @@ export class UserScoreStatistics extends Component {
                     }}
                   >
                     {totalParticipants}
+                  </Typography>{" "}
+                </Typography>
+                <Typography
+                  color="textPrimary"
+                  variant="subtitle2"
+                  style={{ marginLeft: "12px" }}
+                >
+                  {t("Total number of users attempted a quiz")}:
+                  <Typography
+                    color="textSecondary"
+                    variant="subtitle2"
+                    style={{
+                      display: "inline-block",
+                      marginLeft: "5px",
+                    }}
+                  >
+                    {totalParticipantsInOneQuiz}
                   </Typography>{" "}
                 </Typography>
                 <Grid item xs={12} sm={12} md={12}>
