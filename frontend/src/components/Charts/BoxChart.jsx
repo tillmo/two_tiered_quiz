@@ -32,15 +32,7 @@ const BoxChart = (props) => {
       .margins({ top: 20, bottom: 40, right: 10, left: 30 })
       .dimension(dimensionByQuiz, "quiz")
       .keyAccessor(function (d) {
-        return (
-          "quiz " +
-          d.key +
-          "(" +
-          t("Number of users") +
-          ":" +
-          d.value.length +
-          ")"
-        );
+        return "quiz " + d.key + "(" + d.value.length + ")";
       })
       .group(groupByPercentages);
     return boxPlot;

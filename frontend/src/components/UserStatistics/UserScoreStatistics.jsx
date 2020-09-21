@@ -57,7 +57,7 @@ export class UserScoreStatistics extends Component {
     },
     allUserProgressYAxisData: {},
     bcStartIndex: 0,
-    bcEndIndex: 6,
+    bcEndIndex: 15,
     userScoreDetails: [],
     value: 0,
     totalParticipants: 0,
@@ -217,9 +217,9 @@ export class UserScoreStatistics extends Component {
     const endIndexDiff = Math.abs(
       this.state.bcStartIndex - this.state.allUserProgressYAxisData.length - 1
     );
-    let start = this.state.bcStartIndex - 6;
+    let start = this.state.bcStartIndex - 15;
     start = start < 0 ? 0 : start;
-    let end = this.state.bcEndIndex + endIndexDiff - 6;
+    let end = this.state.bcEndIndex + endIndexDiff - 15;
     end =
       end < this.state.allUserProgressYAxisData.length - 1
         ? end
@@ -233,12 +233,12 @@ export class UserScoreStatistics extends Component {
   };
 
   _showNextQuizzes = () => {
-    let start = this.state.bcStartIndex + 6;
+    let start = this.state.bcStartIndex + 15;
     start =
       start > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length
         : start;
-    let end = this.state.bcEndIndex + 6;
+    let end = this.state.bcEndIndex + 15;
     end =
       end > this.state.allUserProgressYAxisData.length - 1
         ? this.state.allUserProgressYAxisData.length - 1
@@ -467,7 +467,12 @@ export class UserScoreStatistics extends Component {
                             marginBottom: "5px",
                           }}
                         >
-                          {t("All Users Performance for Every Quiz")}
+                          {t("All Users Performance for Every Quiz") +
+                            " (" +
+                            t("in brackets") +
+                            ":" +
+                            t("Number of users") +
+                            ")"}
                         </div>
                         <div>
                           <Typography variant="subtitle2" color="textPrimary">
