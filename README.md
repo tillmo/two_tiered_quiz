@@ -1,5 +1,5 @@
-# Two-tiered multiple choice quiz
-A multiple choice quiz with a second tier. After selecting an answer to a multiple choice question, one has to choose from several justifications of this answer. This will impede a random filling out, and foster a deeper understanding. Moreover, for a wrong justification, the user can get an explanation why it is wrong.
+# Two-tiered single choice quiz
+A single choice quiz with a second tier. After selecting an answer to a single choice question, one has to choose from several justifications of this answer. This will impede a random filling out, and foster a deeper understanding. Moreover, for a wrong justification, the user can get an explanation why it is wrong.
 
 ## License / Copyright
 
