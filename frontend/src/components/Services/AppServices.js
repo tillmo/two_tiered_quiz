@@ -132,7 +132,7 @@ export const getAvgQuestionsSolvedService = () => {
     });
 };
 
-export const getAllQuizAttemptsChartData = () => {
+export const getAllQuestionAttemptsChartData = () => {
   return axios
     .get(url + "api/getoverallquizzesattempts/", { headers: getHeaders() })
     .then((res) => {

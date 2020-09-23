@@ -7,7 +7,7 @@ import {
   getUserProgressService,
   getAllUserProgressService,
   getAvgQuestionsSolvedService,
-  getAllQuizAttemptsChartData,
+  getAllQuestionAttemptsChartData,
   getTotalParticipants,
 } from "../Services/AppServices";
 import Grid from "@material-ui/core/Grid";
@@ -49,12 +49,13 @@ export class UserScoreStatistics extends Component {
     userProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     allUserProgressAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     avgQuestionSolvedAxisData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
-    allQuizAttemptsChartData: {
+    allQuestionAttemptsChartData: {
       xAxis: [],
       yAxis: [],
       xTitle: "",
       yTitle: "",
     },
+    allQuizAttemptsChartData: { xAxis: [], yAxis: [], xTitle: "", yTitle: "" },
     allUserProgressYAxisData: {},
     bcStartIndex: 0,
     bcEndIndex: 15,
@@ -75,7 +76,7 @@ export class UserScoreStatistics extends Component {
       let userProgress = await getUserProgressService(user);
       let allUserProgress = await getAllUserProgressService();
       let avgQuestionSolvedData = await getAvgQuestionsSolvedService();
-      let allQuizAttempts = await getAllQuizAttemptsChartData();
+      let allQuizAttempts = await getAllQuestionAttemptsChartData();
       let totalParticipants = await getTotalParticipants();
       const end =
         bcEndIndex < allUserProgress.length - 1
@@ -86,7 +87,8 @@ export class UserScoreStatistics extends Component {
       this._getUserProgressAxisData(userProgress);
       this._getAllUserProgressAxisData(allUserProgress, 0, end);
       this._getAvgQuestionSolvedAxisData(avgQuestionSolvedData);
-      this._getAllQuizAttemptsChartData(allQuizAttempts.groupedQuizzes);
+      this._getAllQuestionAttemptsChartData(allQuizAttempts.groupedQuizzes);
+      this._getAllQuizAttemptsChartData(allUserProgress);
       this.setState({
         allUserProgressYAxisData: allUserProgress,
         bcEndIndex: end,
@@ -251,7 +253,7 @@ export class UserScoreStatistics extends Component {
     this.setState({ bcStartIndex: start, bcEndIndex: end });
   };
 
-  _getAllQuizAttemptsChartData = (userQuizes) => {
+  _getAllQuestionAttemptsChartData = (userQuizes) => {
     let xAxis = [];
     let yAxis = [];
     let quizMap = new Map();
@@ -269,11 +271,28 @@ export class UserScoreStatistics extends Component {
       yAxis.push(parseInt(value));
     });
     this.setState({
+      allQuestionAttemptsChartData: {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        xTitle: this.props.t("Number of questions attempted"),
+        yTitle: this.props.t("Number of users"),
+      },
+    });
+  };
+
+  _getAllQuizAttemptsChartData = (scores) => {
+    let xAxis = [];
+    let yAxis = [];
+    for (var i = 0; i < scores.length; i++) {
+      xAxis.push(parseInt(scores[i].quiz));
+      yAxis.push(parseInt(scores[i].percentage.length));
+    }
+    this.setState({
       allQuizAttemptsChartData: {
         xAxis: xAxis,
         yAxis: yAxis,
-        xTitle: this.props.t("Number of quizzes attempted"),
-        yTitle: this.props.t("Number of users"),
+        xTitle: this.props.t("Quiz"),
+        yTitle: this.props.t("Number of users attempted"),
       },
     });
   };
@@ -285,9 +304,10 @@ export class UserScoreStatistics extends Component {
       allUserProgressAxisData,
       avgQuestionSolvedAxisData,
       allUserProgressYAxisData,
-      allQuizAttemptsChartData,
+      allQuestionAttemptsChartData,
       totalParticipants,
       totalParticipantsInOneQuiz,
+      allQuizAttemptsChartData,
       value,
     } = this.state;
     const { t } = this.props;
@@ -555,6 +575,28 @@ export class UserScoreStatistics extends Component {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
                   <Paper>
+                    {allQuestionAttemptsChartData.xAxis.length ? (
+                      <div>
+                        <div
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            color: "white",
+                            padding: "10px",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          {t("Distribution of question attempts - All Users")}
+                        </div>
+                        <ApexCharts
+                          type="bar"
+                          axisData={allQuestionAttemptsChartData}
+                        ></ApexCharts>
+                      </div>
+                    ) : null}
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Paper>
                     {allQuizAttemptsChartData.xAxis.length ? (
                       <div>
                         <div
@@ -565,7 +607,7 @@ export class UserScoreStatistics extends Component {
                             marginBottom: "5px",
                           }}
                         >
-                          {t("Quizzes Attempts Distribution - All Users")}
+                          {t("Distribution of quiz attempts - All Users")}
                         </div>
                         <ApexCharts
                           type="bar"
