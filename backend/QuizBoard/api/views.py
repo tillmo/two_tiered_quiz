@@ -231,10 +231,16 @@ class QuizScoresListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request, user):
-        groupedScores = QuizTakers.objects.values('user', 'user__username').annotate(
-            totalScore=Sum('score')).order_by('-totalScore')[:10]
+        user_score = getGroupedUserscores()
+        all_scores = []
+        user_score_sorted = {k: v for k, v in sorted(
+            user_score.items(), key=lambda item: item[1], reverse=True)}
+        for key, value in user_score_sorted.items():
+            user_obj = User.objects.get(id=key)
+            all_scores.append(
+                {'user': key, 'user__username': user_obj.username, "totalScore": value})
+        groupedScores = all_scores[:10]
         lastQuizTaker = groupedScores[len(groupedScores)-1]
-        groupedScores = list(groupedScores)
         while True:
             index = 0
             indexList = []
@@ -246,11 +252,10 @@ class QuizScoresListView(ListAPIView):
                 index = index + 1
             if deleted == False:
                 break
-        tiedScoreUsers = QuizTakers.objects.values('user', 'user__username').annotate(
-            totalScore=Sum('score')).filter(totalScore=lastQuizTaker['totalScore'])
-        user = User.objects.get(id=user)
-        userScore = QuizTakers.objects.filter(user=user).values(
-            'user', 'user__username').annotate(totalScore=Sum('score'))
+        tiedScoreUsers = [
+            quizTaker for quizTaker in all_scores if quizTaker['totalScore'] == lastQuizTaker['totalScore']]
+        userScore = [
+            quizTaker for quizTaker in all_scores if quizTaker['user'] == user]
         topQuizTakers = list(chain(groupedScores, tiedScoreUsers))
         scoreData = {'topQuizTakers': topQuizTakers,
                      'userScoreData': userScore}
@@ -264,8 +269,12 @@ class OverallScoresChartView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        groupedScores = QuizTakers.objects.values('user').annotate(
-            totalScore=Sum('score')).order_by('totalScore')
+        user_score = getGroupedUserscores()
+        user_score_sorted = {k: v for k, v in sorted(
+            user_score.items(), key=lambda item: item[1])}
+        groupedScores = []
+        for key, value in user_score_sorted.items():
+            groupedScores.append({'user': key, "totalScore": value})
         scoreData = {'groupedScores': groupedScores}
         response = Response(scoreData)
         return set_headers_to_response(response)
@@ -297,15 +306,18 @@ class UserProgressView(ListAPIView):
     def get(self, request, user):
         user = User.objects.get(id=user)
         userScores = QuizTakers.objects.filter(user=user).values(
-            'quiz').annotate(score=Sum('score')).order_by('quiz')
+            'quiz', 'score').order_by('quiz')
         allQuizPercentages = []
+        quiz_set = set()
         for quizTaker in userScores:
             quiz = quizTaker['quiz']
             quiz = Quiz.objects.get(id=quiz)
             questionCount = quiz.questions_count
             percentage = (quizTaker['score']/(questionCount*10)) * 100
-            score = {'quiz': quiz.id, 'percentage': percentage}
-            allQuizPercentages.append(score)
+            if quiz.id not in quiz_set:
+                score = {'quiz': quiz.id, 'percentage': percentage}
+                allQuizPercentages.append(score)
+                quiz_set.add(quiz.id)
         response = Response(allQuizPercentages)
         return set_headers_to_response(response)
 
@@ -320,6 +332,7 @@ class AllUserProgressView(ListAPIView):
         allQuizPercentages = []
         quizPercentages = []
         prevQuizId = userAllQuizScores[0].quiz.id
+        user_set = set()
         for quizTaker in userAllQuizScores:
             quiz = quizTaker.quiz
             if prevQuizId != quiz.id:
@@ -327,10 +340,13 @@ class AllUserProgressView(ListAPIView):
                     {'quiz': prevQuizId, 'percentage': quizPercentages})
                 quizPercentages = []
                 prevQuizId = quiz.id
+                user_set = set()
             quiz = Quiz.objects.get(id=quiz.id)
             questionCount = quiz.questions_count
             percentage = (quizTaker.score/(questionCount*10)) * 100
-            quizPercentages.append(percentage)
+            if quizTaker.user not in user_set:
+                quizPercentages.append(percentage)
+                user_set.add(quizTaker.user)
         allQuizPercentages.append(
             {'quiz': prevQuizId, 'percentage': quizPercentages})
         response = Response(allQuizPercentages)
@@ -343,8 +359,28 @@ class AverageQuestionsSolvedView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(
-            Cast(Sum('correct_answers') * 1.0 / Count('user') * 1.0, FloatField())))
+        query_set = QuizTakers.objects.all().order_by('quiz')
+        quiz_correct_ans = {}
+        user_set = set()
+        prev_quiz_id = query_set[0].quiz.id
+        for quiz_taker in query_set:
+            if prev_quiz_id != quiz_taker.quiz.id:
+                print(prev_quiz_id, quiz_correct_ans[prev_quiz_id])
+                quiz_correct_ans[prev_quiz_id] = quiz_correct_ans[prev_quiz_id] * \
+                    1.0 / len(user_set) * 1.0
+                print(len(user_set))
+                prev_quiz_id = quiz_taker.quiz.id
+                user_set = set()
+            if quiz_taker.user.id not in user_set:
+                if quiz_taker.quiz.id in quiz_correct_ans:
+                    quiz_correct_ans[quiz_taker.quiz.id] = quiz_correct_ans[quiz_taker.quiz.id] + \
+                        quiz_taker.correct_answers
+                else:
+                    quiz_correct_ans[quiz_taker.quiz.id] = quiz_taker.correct_answers
+                user_set.add(quiz_taker.user.id)
+        result = []
+        for key, value in quiz_correct_ans.items():
+            result.append({'quiz': key, "avg_ques_solved": value})
         response = Response(result)
         return set_headers_to_response(response)
 
@@ -356,7 +392,7 @@ class OverallAttemptsOverQuizChartView(ListAPIView):
 
     def get(self, request):
         groupedQuizzes = QuizTakers.objects.values('user').annotate(
-            totalQuizzes=Count('quiz', distinct = True)).order_by('totalQuizzes')
+            totalQuizzes=Count('quiz', distinct=True)).order_by('totalQuizzes')
         scoreData = {'groupedQuizzes': groupedQuizzes}
         response = Response(scoreData)
         return set_headers_to_response(response)
@@ -377,3 +413,22 @@ def set_headers_to_response(response):
     response["Pragma"] = "no-cache"
     response["Expires"] = "0"
     return response
+
+
+def getGroupedUserscores():
+    query_set = QuizTakers.objects.all().order_by('user')
+    users_score = {}
+    quiz_set = set()
+    prev_user_id = query_set[0].user.id
+    for quiz_taker in query_set:
+        if prev_user_id != quiz_taker.user.id:
+            prev_user_id = quiz_taker.user.id
+            quiz_set = set()
+        if quiz_taker.quiz.id not in quiz_set:
+            if quiz_taker.user.id in users_score:
+                users_score[quiz_taker.user.id] = users_score[quiz_taker.user.id] + \
+                    quiz_taker.score
+            else:
+                users_score[quiz_taker.user.id] = quiz_taker.score
+            quiz_set.add(quiz_taker.quiz.id)
+    return users_score

@@ -274,8 +274,8 @@ export class UserScoreStatistics extends Component {
       allQuestionAttemptsChartData: {
         xAxis: xAxis,
         yAxis: yAxis,
-        xTitle: this.props.t("Number of questions attempted"),
-        yTitle: this.props.t("Number of users"),
+        xTitle: this.props.t("Number of quizzes attempted"),
+        yTitle: this.props.t("Number of participants"),
       },
     });
   };
@@ -292,7 +292,7 @@ export class UserScoreStatistics extends Component {
         xAxis: xAxis,
         yAxis: yAxis,
         xTitle: this.props.t("Quiz"),
-        yTitle: this.props.t("Number of users attempted"),
+        yTitle: this.props.t("Number of participants"),
       },
     });
   };
@@ -585,7 +585,7 @@ export class UserScoreStatistics extends Component {
                             marginBottom: "5px",
                           }}
                         >
-                          {t("Distribution of question attempts - All Users")}
+                          {t("Participants vs. Quizzez attempted")}
                         </div>
                         <ApexCharts
                           type="bar"
@@ -607,7 +607,7 @@ export class UserScoreStatistics extends Component {
                             marginBottom: "5px",
                           }}
                         >
-                          {t("Distribution of quiz attempts - All Users")}
+                          {t("Participants per Quiz")}
                         </div>
                         <ApexCharts
                           type="bar"
