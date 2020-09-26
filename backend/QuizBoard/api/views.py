@@ -1,24 +1,28 @@
+from itertools import chain
+
 from django.contrib.auth.models import User
+from django.db.models import Count, Max, Sum
+from QuizBoard.models import (Answer, Explaination, Justifications, Question,
+                              Quiz, QuizTakers, Responses)
 from rest_framework import permissions, viewsets
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, ListCreateAPIView,
+                                     RetrieveAPIView, UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView,
-    ListCreateAPIView,
-)
-from django.db.models import Count
-from django.db.models import Max, Sum
-from itertools import chain
-from QuizBoard.models import Quiz, Question, Answer, Responses, QuizTakers, Justifications, Explaination
-from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer, JustificationsSerializer, ExplainationSerializer, QuizListSerializer, QuizTakerSerializer, ResponseSerialzer, QuizTakerResponseSerializer, QuizWithoutFlagsSerializer
+
+from .serializers import (AnswerSerializer, ExplainationSerializer,
+                          JustificationsSerializer, QuestionSerializer,
+                          QuizListSerializer, QuizSerializer,
+                          QuizTakerResponseSerializer, QuizTakerSerializer,
+                          QuizWithoutFlagsSerializer, ResponseSerialzer)
+from django.db.models import FloatField
+from django.db.models.functions import Cast
+
 
 class QuizListView(ListAPIView):
     serializer_class = QuizListSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
         queryset = Quiz.objects.order_by('-created')
@@ -35,20 +39,21 @@ class QuizListView(ListAPIView):
 class QuizRetrieveView(RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
 class QuizCreateView(ListCreateAPIView):
     queryset = Quiz.objects.none()
     serializer_class = QuizSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
         queryset = Quiz.objects.all()
         return queryset
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=isinstance(request.data, list))
+        serializer = self.get_serializer(
+            data=request.data, many=isinstance(request.data, list))
         serializer.is_valid(raise_exception=True)
         todo_created = []
         for list_elt in request.data:
@@ -63,35 +68,39 @@ class QuizCreateView(ListCreateAPIView):
 class QuestionCreateView(CreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
 class AnswerCreateView(CreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
+
 
 class JustificationsCreateView(CreateAPIView):
     queryset = Justifications.objects.all()
     serializer_class = JustificationsSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
+
 
 class ExplainationsCreateView(CreateAPIView):
     queryset = Explaination.objects.all()
     serializer_class = ExplainationSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
+
 
 class QuizTakerCreateView(ListCreateAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
-    
+    permission_classes = [permissions.IsAuthenticated, ]
+
     def get_queryset(self):
         queryset = QuizTakers.objects.all()
         return queryset
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=isinstance(request.data, list))
+        serializer = self.get_serializer(
+            data=request.data, many=isinstance(request.data, list))
         serializer.is_valid(raise_exception=True)
         todo_created = []
         for list_elt in request.data:
@@ -109,27 +118,31 @@ class QuizTakerCreateView(ListCreateAPIView):
 class QuizTakerRetrieveView(RetrieveAPIView):
     queryset = QuizTakers.objects.all()
     serializer_class = QuizTakerResponseSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
 class ResponseCreateView(ListCreateAPIView):
     queryset = Responses.objects.none()
     serializer_class = ResponseSerialzer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
         queryset = Responses.objects.all()
         return queryset
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=isinstance(request.data, list))
+        serializer = self.get_serializer(
+            data=request.data, many=isinstance(request.data, list))
         serializer.is_valid(raise_exception=True)
         todo_created = []
         for list_elt in request.data:
-            list_elt['quiztaker'] = QuizTakers.objects.get(id=list_elt['quiztaker'])
-            list_elt['question'] = Question.objects.get(id=list_elt['question'])
+            list_elt['quiztaker'] = QuizTakers.objects.get(
+                id=list_elt['quiztaker'])
+            list_elt['question'] = Question.objects.get(
+                id=list_elt['question'])
             list_elt['answer'] = Answer.objects.get(id=list_elt['answer'])
-            list_elt['justification'] = Justifications.objects.get(id=list_elt['justification'])
+            list_elt['justification'] = Justifications.objects.get(
+                id=list_elt['justification'])
             todo_obj = Responses.objects.create(**list_elt)
             todo_created.append(todo_obj.id)
         results = Responses.objects.filter(id__in=todo_created)
@@ -141,14 +154,14 @@ class ResponseCreateView(ListCreateAPIView):
 
 class QuizTakerListView(ListAPIView):
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
         user = self.kwargs['user']
         try:
             user = User.objects.get(id=user)
             queryset = QuizTakers.objects.filter(user=user)
-        except (QuizTakers.DoesNotExist,Quiz.DoesNotExist,User.DoesNotExist):
+        except (QuizTakers.DoesNotExist, Quiz.DoesNotExist, User.DoesNotExist):
             queryset = QuizTakers.objects.none()
         return queryset
 
@@ -156,11 +169,11 @@ class QuizTakerListView(ListAPIView):
 class QuizTakerUpdateView(UpdateAPIView):
     queryset = QuizTakers.objects.all()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     # def update(self, request, *args, **kwargs):
     #     instance = self.get_object()
-    #     for list_elt in request.data:   
+    #     for list_elt in request.data:
     #         instance.correct_answers = list_elt['correct_answers']
     #         instance.save()
     #     serializer = self.get_serializer(instance)
@@ -172,38 +185,42 @@ class QuizTakerUpdateView(UpdateAPIView):
 class ResponsesUpdateView(UpdateAPIView):
     queryset = Responses.objects.none()
     serializer_class = ResponseSerialzer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
         queryset = Responses.objects.all()
         return queryset
 
     def update(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=isinstance(request.data, list))
+        serializer = self.get_serializer(
+            data=request.data, many=isinstance(request.data, list))
         serializer.is_valid(raise_exception=True)
         todo_created = []
-        responses= []
-        for list_elt in request.data: 
-            qt = QuizTakers.objects.get(id=list_elt['quiztaker'])  
+        responses = []
+        for list_elt in request.data:
+            qt = QuizTakers.objects.get(id=list_elt['quiztaker'])
             ques = Question.objects.get(id=list_elt['question'])
             # response = Responses.objects.filter(quiztaker=qt, question=ques)
             answers = Answer.objects.get(id=list_elt['answer'])
-            justifications = Justifications.objects.get(id=list_elt['justification'])
-            responses = Responses.objects.select_related().filter(quiztaker=qt, question=ques).update(answer=answers, justification = justifications)
+            justifications = Justifications.objects.get(
+                id=list_elt['justification'])
+            responses = Responses.objects.select_related().filter(
+                quiztaker=qt, question=ques).update(answer=answers, justification=justifications)
 
 
 class QuizWithoutFlagsRetrieveView(RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizWithoutFlagsSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
 class QuizTakerHistoryListView(ListAPIView):
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request): 
-        groupedQuiz = QuizTakers.objects.values('quiz','quiz__name').annotate(usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
+    def get(self, request):
+        groupedQuiz = QuizTakers.objects.values('quiz', 'quiz__name').annotate(
+            usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
         response = Response(groupedQuiz)
         return set_headers_to_response(response)
 
@@ -211,28 +228,37 @@ class QuizTakerHistoryListView(ListAPIView):
 class QuizScoresListView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request, user):  
-        groupedScores = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).order_by('-totalScore')[:10]
+    def get(self, request, user):
+        user_score = getGroupedUserscores()
+        all_scores = []
+        user_score_sorted = {k: v for k, v in sorted(
+            user_score.items(), key=lambda item: item[1], reverse=True)}
+        for key, value in user_score_sorted.items():
+            user_obj = User.objects.get(id=key)
+            all_scores.append(
+                {'user': key, 'user__username': user_obj.username, "totalScore": value})
+        groupedScores = all_scores[:10]
         lastQuizTaker = groupedScores[len(groupedScores)-1]
-        groupedScores = list(groupedScores)
         while True:
             index = 0
-            indexList =[]
+            indexList = []
             deleted = False
             for quizTaker in groupedScores:
                 if lastQuizTaker['totalScore'] == quizTaker['totalScore']:
                     del groupedScores[index]
                     deleted = True
                 index = index + 1
-            if deleted==False:
+            if deleted == False:
                 break
-        tiedScoreUsers = QuizTakers.objects.values('user','user__username').annotate(totalScore=Sum('score')).filter(totalScore=lastQuizTaker['totalScore'])
-        user = User.objects.get(id=user)
-        userScore = QuizTakers.objects.filter(user=user).values('user','user__username').annotate(totalScore=Sum('score'))
+        tiedScoreUsers = [
+            quizTaker for quizTaker in all_scores if quizTaker['totalScore'] == lastQuizTaker['totalScore']]
+        userScore = [
+            quizTaker for quizTaker in all_scores if quizTaker['user'] == user]
         topQuizTakers = list(chain(groupedScores, tiedScoreUsers))
-        scoreData = {'topQuizTakers':topQuizTakers, 'userScoreData':userScore}
+        scoreData = {'topQuizTakers': topQuizTakers,
+                     'userScoreData': userScore}
         response = Response(scoreData)
         return set_headers_to_response(response)
 
@@ -240,11 +266,16 @@ class QuizScoresListView(ListAPIView):
 class OverallScoresChartView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request):  
-        groupedScores = QuizTakers.objects.values('user').annotate(totalScore=Sum('score')).order_by('totalScore')
-        scoreData = {'groupedScores':groupedScores}
+    def get(self, request):
+        user_score = getGroupedUserscores()
+        user_score_sorted = {k: v for k, v in sorted(
+            user_score.items(), key=lambda item: item[1])}
+        groupedScores = []
+        for key, value in user_score_sorted.items():
+            groupedScores.append({'user': key, "totalScore": value})
+        scoreData = {'groupedScores': groupedScores}
         response = Response(scoreData)
         return set_headers_to_response(response)
 
@@ -252,14 +283,17 @@ class OverallScoresChartView(ListAPIView):
 class UserScoresDetailsView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request, user):  
+    def get(self, request, user):
         user = User.objects.get(id=user)
-        userScore = QuizTakers.objects.filter(user=user).values('user', 'user__username').annotate(totalScore=Sum('score'))
+        userScore = QuizTakers.objects.filter(user=user).values(
+            'user', 'user__username').annotate(totalScore=Sum('score'))
         totalQuiz = Quiz.objects.count()
-        quizzesAttempted = QuizTakers.objects.filter(user=user).values('user').annotate(quizattempted=Count('user'))
-        scoreData = {'username':userScore[0]['user__username'], 'totalScore':userScore[0]['totalScore'], 'totalquiz':totalQuiz, 'quizattempted': quizzesAttempted[0]['quizattempted']}
+        quizzesAttempted = QuizTakers.objects.filter(user=user).values(
+            'user').annotate(quizattempted=Count('user'))
+        scoreData = {'username': userScore[0]['user__username'], 'totalScore': userScore[0]
+                     ['totalScore'], 'totalquiz': totalQuiz, 'quizattempted': quizzesAttempted[0]['quizattempted']}
         response = Response(scoreData)
         return set_headers_to_response(response)
 
@@ -267,19 +301,23 @@ class UserScoresDetailsView(ListAPIView):
 class UserProgressView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request, user):  
+    def get(self, request, user):
         user = User.objects.get(id=user)
-        userScores = QuizTakers.objects.filter(user=user).values('quiz').annotate(score=Sum('score')).order_by('quiz')
+        userScores = QuizTakers.objects.filter(user=user).values(
+            'quiz', 'score').order_by('quiz')
         allQuizPercentages = []
+        quiz_set = set()
         for quizTaker in userScores:
             quiz = quizTaker['quiz']
             quiz = Quiz.objects.get(id=quiz)
             questionCount = quiz.questions_count
             percentage = (quizTaker['score']/(questionCount*10)) * 100
-            score = {'quiz': quiz.id, 'percentage': percentage}
-            allQuizPercentages.append(score)
+            if quiz.id not in quiz_set:
+                score = {'quiz': quiz.id, 'percentage': percentage}
+                allQuizPercentages.append(score)
+                quiz_set.add(quiz.id)
         response = Response(allQuizPercentages)
         return set_headers_to_response(response)
 
@@ -287,24 +325,30 @@ class UserProgressView(ListAPIView):
 class AllUserProgressView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request):  
+    def get(self, request):
         userAllQuizScores = QuizTakers.objects.all().order_by('quiz')
         allQuizPercentages = []
         quizPercentages = []
         prevQuizId = userAllQuizScores[0].quiz.id
+        user_set = set()
         for quizTaker in userAllQuizScores:
             quiz = quizTaker.quiz
             if prevQuizId != quiz.id:
-                allQuizPercentages.append({'quiz': prevQuizId, 'percentage': quizPercentages})
+                allQuizPercentages.append(
+                    {'quiz': prevQuizId, 'percentage': quizPercentages})
                 quizPercentages = []
                 prevQuizId = quiz.id
+                user_set = set()
             quiz = Quiz.objects.get(id=quiz.id)
             questionCount = quiz.questions_count
             percentage = (quizTaker.score/(questionCount*10)) * 100
-            quizPercentages.append(percentage)
-        allQuizPercentages.append({'quiz': prevQuizId, 'percentage': quizPercentages})
+            if quizTaker.user not in user_set:
+                quizPercentages.append(percentage)
+                user_set.add(quizTaker.user)
+        allQuizPercentages.append(
+            {'quiz': prevQuizId, 'percentage': quizPercentages})
         response = Response(allQuizPercentages)
         return set_headers_to_response(response)
 
@@ -312,11 +356,55 @@ class AllUserProgressView(ListAPIView):
 class AverageQuestionsSolvedView(ListAPIView):
     queryset = QuizTakers.objects.none()
     serializer_class = QuizTakerSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        result = QuizTakers.objects.values('quiz').annotate(avg_ques_solved=(Sum('correct_answers')/Count('user')))
+        query_set = QuizTakers.objects.all().order_by('quiz')
+        quiz_correct_ans = {}
+        user_set = set()
+        prev_quiz_id = query_set[0].quiz.id
+        for quiz_taker in query_set:
+            if prev_quiz_id != quiz_taker.quiz.id:
+                print(prev_quiz_id, quiz_correct_ans[prev_quiz_id])
+                quiz_correct_ans[prev_quiz_id] = quiz_correct_ans[prev_quiz_id] * \
+                    1.0 / len(user_set) * 1.0
+                print(len(user_set))
+                prev_quiz_id = quiz_taker.quiz.id
+                user_set = set()
+            if quiz_taker.user.id not in user_set:
+                if quiz_taker.quiz.id in quiz_correct_ans:
+                    quiz_correct_ans[quiz_taker.quiz.id] = quiz_correct_ans[quiz_taker.quiz.id] + \
+                        quiz_taker.correct_answers
+                else:
+                    quiz_correct_ans[quiz_taker.quiz.id] = quiz_taker.correct_answers
+                user_set.add(quiz_taker.user.id)
+        result = []
+        for key, value in quiz_correct_ans.items():
+            result.append({'quiz': key, "avg_ques_solved": value})
         response = Response(result)
+        return set_headers_to_response(response)
+
+
+class OverallAttemptsOverQuizChartView(ListAPIView):
+    queryset = QuizTakers.objects.none()
+    serializer_class = QuizTakerSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request):
+        groupedQuizzes = QuizTakers.objects.values('user').annotate(
+            totalQuizzes=Count('quiz', distinct=True)).order_by('totalQuizzes')
+        scoreData = {'groupedQuizzes': groupedQuizzes}
+        response = Response(scoreData)
+        return set_headers_to_response(response)
+
+
+class TotalParticipantsView(ListAPIView):
+    queryset = User.objects.none()
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request):
+        totalUsers = User.objects.count()
+        response = Response({'totalUsers': totalUsers})
         return set_headers_to_response(response)
 
 
@@ -325,3 +413,22 @@ def set_headers_to_response(response):
     response["Pragma"] = "no-cache"
     response["Expires"] = "0"
     return response
+
+
+def getGroupedUserscores():
+    query_set = QuizTakers.objects.all().order_by('user')
+    users_score = {}
+    quiz_set = set()
+    prev_user_id = query_set[0].user.id
+    for quiz_taker in query_set:
+        if prev_user_id != quiz_taker.user.id:
+            prev_user_id = quiz_taker.user.id
+            quiz_set = set()
+        if quiz_taker.quiz.id not in quiz_set:
+            if quiz_taker.user.id in users_score:
+                users_score[quiz_taker.user.id] = users_score[quiz_taker.user.id] + \
+                    quiz_taker.score
+            else:
+                users_score[quiz_taker.user.id] = quiz_taker.score
+            quiz_set.add(quiz_taker.quiz.id)
+    return users_score

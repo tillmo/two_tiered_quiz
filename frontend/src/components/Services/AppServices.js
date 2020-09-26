@@ -86,7 +86,7 @@ export const getUserQuizHistoryService = () => {
 
 export const getScoresListService = (user) => {
   return axios
-    .get(url + "api/getscorelist/"+user, { headers: getHeaders() })
+    .get(url + "api/getscorelist/" + user, { headers: getHeaders() })
     .then((res) => {
       return res.data;
     });
@@ -102,7 +102,7 @@ export const getAllUserScoreChartData = () => {
 
 export const getUserScoreDetailsService = (user) => {
   return axios
-    .get(url + "api/userscoredetails/"+user, { headers: getHeaders() })
+    .get(url + "api/userscoredetails/" + user, { headers: getHeaders() })
     .then((res) => {
       return res.data;
     });
@@ -110,7 +110,7 @@ export const getUserScoreDetailsService = (user) => {
 
 export const getUserProgressService = (user) => {
   return axios
-    .get(url + "api/userprogresschartdata/"+user, { headers: getHeaders() })
+    .get(url + "api/userprogresschartdata/" + user, { headers: getHeaders() })
     .then((res) => {
       return res.data;
     });
@@ -127,6 +127,22 @@ export const getAllUserProgressService = () => {
 export const getAvgQuestionsSolvedService = () => {
   return axios
     .get(url + "api/avgquessolvedbyuser/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getAllQuestionAttemptsChartData = () => {
+  return axios
+    .get(url + "api/getoverallquizzesattempts/", { headers: getHeaders() })
+    .then((res) => {
+      return res.data;
+    });
+};
+
+export const getTotalParticipants = () => {
+  return axios
+    .get(url + "api/gettotalparticipants/", { headers: getHeaders() })
     .then((res) => {
       return res.data;
     });

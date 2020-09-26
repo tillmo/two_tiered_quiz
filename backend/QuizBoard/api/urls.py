@@ -22,7 +22,9 @@ from .views import (
     UserScoresDetailsView,
     UserProgressView,
     AllUserProgressView,
-    AverageQuestionsSolvedView
+    AverageQuestionsSolvedView,
+    OverallAttemptsOverQuizChartView,
+    TotalParticipantsView
 )
 
 urlpatterns = [
@@ -47,4 +49,7 @@ urlpatterns = [
     path('userprogresschartdata/<int:user>', UserProgressView.as_view()),
     path('alluserprogresschartdata/', AllUserProgressView.as_view()),
     path('avgquessolvedbyuser/', AverageQuestionsSolvedView.as_view()),
+    path('getoverallquizzesattempts/', OverallAttemptsOverQuizChartView.as_view()),
+    path('gettotalparticipants/', TotalParticipantsView.as_view()),
+
 ]
