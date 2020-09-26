@@ -585,7 +585,7 @@ export class UserScoreStatistics extends Component {
                             marginBottom: "5px",
                           }}
                         >
-                          {t("Participants vs. Quizzez attempted")}
+                          {t("Participants vs. Quizzes attempted")}
                         </div>
                         <ApexCharts
                           type="bar"
