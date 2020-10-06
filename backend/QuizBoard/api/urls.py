@@ -1,11 +1,11 @@
-from django.urls import path,include
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
 from .views import (
-    QuizListView, 
-    QuizRetrieveView, 
-    QuizCreateView, 
-    QuestionCreateView, 
+    QuizListView,
+    QuizRetrieveView,
+    QuizCreateView,
+    QuestionCreateView,
     AnswerCreateView,
     JustificationsCreateView,
     ExplainationsCreateView,
@@ -24,7 +24,9 @@ from .views import (
     AllUserProgressView,
     AverageQuestionsSolvedView,
     OverallAttemptsOverQuizChartView,
-    TotalParticipantsView
+    TotalParticipantsView,
+    UserRetrieveView,
+    UploadQuizView
 )
 
 urlpatterns = [
@@ -49,7 +51,9 @@ urlpatterns = [
     path('userprogresschartdata/<int:user>', UserProgressView.as_view()),
     path('alluserprogresschartdata/', AllUserProgressView.as_view()),
     path('avgquessolvedbyuser/', AverageQuestionsSolvedView.as_view()),
-    path('getoverallquizzesattempts/', OverallAttemptsOverQuizChartView.as_view()),
+    path('getoverallquizzesattempts/',
+         OverallAttemptsOverQuizChartView.as_view()),
     path('gettotalparticipants/', TotalParticipantsView.as_view()),
-
+    path('checkadmincredentials/<pk>', UserRetrieveView.as_view()),
+    path('uploaduserquiz/', UploadQuizView.as_view()),
 ]

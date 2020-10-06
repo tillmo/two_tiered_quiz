@@ -1,4 +1,5 @@
 {
+  "Admin Login": "Admin-Anmeldung",
   "Answer": "Antwort",
   "Available Quizzes": "Verfügbare Quizze",
   "All Users Performance for Every Quiz": "Leistung aller Benutzer für jedes Quiz",
@@ -11,6 +12,7 @@
   "confirm password": "Passwort bestätigen",
   "CONTINUE": "WEITER",
   "Created Date": "Erstellt am",
+  "Choose File": "Wählen Sie Datei",
   "Dashboard": "Dashboard",
   "Description": "Beschreibung",
   "Distribution of question attempts - All Users": "Verteilung der Frageversuche - Alle Benutzer",
@@ -66,6 +68,8 @@
   "Total number of participants": "Gesamtzahl der Teilnehmer",
   "Total number of users": "Gesamtzahl der Benutzer",
   "Total number of users attempted a quiz": "Gesamtzahl der Benutzer, die ein Quiz versucht haben",
+  "Upload Quiz": "Hochlade-Quiz",
+  "Upload": "Hochladen",
   "User": "Nutzer",
   "username": "Login-Name",
   "User Report": "Benutzer-Bericht",

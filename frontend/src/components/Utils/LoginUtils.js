@@ -13,7 +13,27 @@ export const HasSessionExpired = () => {
   if (diffMins > 60) {
     localStorage.removeItem("token");
     localStorage.removeItem("loggedinTime");
-    localStorage.removeItem("username");
+    localStorage.removeItem("username");  
+    localStorage.removeItem("isStaff");
+    return true;
+  }
+  return false;
+};
+
+export const HasAdminSessionExpired = () => {
+  var loggedInTime = localStorage.getItem("admloggedinTime");
+  var authToken = localStorage.getItem("admtoken");
+  var isStaff = localStorage.getItem("isStaff");
+  var timeDifference = Date.now() - loggedInTime;
+  var diffMins = Math.round(timeDifference / 1000 / 60);
+  if (loggedInTime === null || authToken === null || isStaff === null) {
+    return true;
+  }
+  if (diffMins > 60) {
+    localStorage.removeItem("admtoken");
+    localStorage.removeItem("admloggedinTime");
+    localStorage.removeItem("admusername");
+    localStorage.removeItem("isStaff");
     return true;
   }
   return false;

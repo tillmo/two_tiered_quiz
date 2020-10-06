@@ -6,6 +6,11 @@ const getHeaders = () => {
   return { Authorization: "Token " + authToken };
 };
 
+const getAdmHeaders = () => {
+  var authToken = localStorage.getItem("admtoken");
+  return { Authorization: "Token " + authToken };
+};
+
 export const getLoginService = (userCredentials) => {
   return axios.post(url + "rest-auth/login/", userCredentials);
 };
@@ -145,5 +150,27 @@ export const getTotalParticipants = () => {
     .get(url + "api/gettotalparticipants/", { headers: getHeaders() })
     .then((res) => {
       return res.data;
+    });
+};
+
+export const getUserDetailsServiceAdm = (user) => {
+  return axios
+    .get(url + "api/checkadmincredentials/" + user, { headers: getAdmHeaders() })
+    .then((res) => {
+      return res.data.is_staff;
+    });
+};
+
+export const uploadUserQuizService = (data) => {
+  return axios.post(url + "api/uploaduserquiz/", data, {
+    headers: getAdmHeaders(),
+  });
+};
+
+export const getUserDetailsServiceAdmId = () => {
+  return axios
+    .get(url + "rest-auth/user/", { headers: getAdmHeaders() })
+    .then((res) => {
+      return res.data.pk;
     });
 };

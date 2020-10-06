@@ -25,6 +25,7 @@ def read_quiz(quiz_str):
     except Exception as e:
         print(e)
         print("Aborting")
+        raise e
         
 @transaction.atomic
 def read_quiz_aux(quiz_str):
