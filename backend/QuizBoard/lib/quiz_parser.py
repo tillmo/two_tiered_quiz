@@ -15,16 +15,19 @@ from django.db import transaction
 from QuizBoard.models import Quiz, Question, Answer, Justifications, Explaination
 
 def read_quiz_file(file):
-    print('Reading {0} into database'.format(file))
-    with open(file) as f:
-        read_quiz(f.read())
+    try:
+        print('Reading {0} into database'.format(file))
+        with open(file) as f:
+            read_quiz(f.read())
+    except Exception as e:
+        print(e)
+        print("Aborting")
+    
 
 def read_quiz(quiz_str):
     try:
         read_quiz_aux(quiz_str)
     except Exception as e:
-        print(e)
-        print("Aborting")
         raise e
         
 @transaction.atomic
@@ -43,7 +46,8 @@ def read_quiz_aux(quiz_str):
             prefix, contents = line.split(':', 1)
             if prefix=='quiz':
                 if Quiz.objects.filter(name=contents):
-                    raise Exception("duplicate quiz")
+                    wrong_line = "Wrong line: {0}".format(line)
+                    raise Exception(wrong_line+"\nduplicate quiz")
                 quiz = Quiz.objects.create(name=contents)
                 # remove all contexts that have become invalid
                 question = None
@@ -70,7 +74,7 @@ def read_quiz_aux(quiz_str):
             elif prefix=='e':
                 Explaination.objects.create(justification=just,text=contents)
             else:
-                raise Exception("Unknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
+                wrong_line = "Wrong line: {0}".format(line)
+                raise Exception(wrong_line+"\nUnknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
     except Exception as e:
-        print("Wrong line: {0}".format(line))
         raise e

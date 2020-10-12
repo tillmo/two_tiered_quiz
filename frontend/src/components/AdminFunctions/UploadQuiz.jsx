@@ -17,7 +17,7 @@ export class UploadQuiz extends Component {
     message: "",
     fileName: "",
     openSnackBar: false,
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
   };
 
   componentDidMount() {
@@ -27,11 +27,20 @@ export class UploadQuiz extends Component {
   }
 
   onChange = (file) => {
-    this.setState({ fileName: file.name, file: file });
+    if (file) {
+      this.setState({ fileName: file.name, file: file });
+    }
   };
 
   uploadQuiz = (event) => {
     const data = new FormData();
+    if (this.state.fileName === "") {
+      this.setState({
+        message: this.props.t("Please select a file"),
+        openSnackBar: true,
+      });
+      return;
+    }
     data.append("file", this.state.file);
     uploadUserQuizService(data)
       .then((res) => {
