@@ -19,7 +19,7 @@ from .serializers import (AnswerSerializer, ExplainationSerializer,
                           QuizWithoutFlagsSerializer, ResponseSerialzer, UserSerializer)
 from django.db.models import FloatField
 from django.db.models.functions import Cast
-from QuizBoard.lib.quiz_parser import read_quiz
+from QuizBoard.lib.quiz_parser import read_quiz_web
 from django.core.files import File
 from rest_framework import status
 
@@ -446,13 +446,12 @@ class UploadQuizView(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
-        s = 'Upload quiz successful'
-        try:
-            file_content = request.FILES['file'].read()
-            read_quiz(file_content.decode('utf-8'))
-        except Exception as e:
-            s = str(e)
+        file_content = request.FILES['file'].read()
+        s = read_quiz_web(file_content.decode('utf-8'))
+        if s != "":
             response = Response(s, status.HTTP_400_BAD_REQUEST)
             return response
-        response = Response(s)
-        return set_headers_to_response(response)
+        else:
+            s = 'Upload quiz successful'
+            response = Response(s)
+            return set_headers_to_response(response)
