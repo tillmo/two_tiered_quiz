@@ -88,4 +88,8 @@ def read_quiz_aux(quiz_str):
                 raise Exception(
                     wrong_line+"\nUnknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
     except Exception as e:
-        raise e
+        message = str(e)
+        if message == "not enough values to unpack (expected 2, got 1)":
+            raise Exception("Wrong quiz format\nPlease use the correct format quiz as mentioned")   
+        else: 
+            raise e

@@ -50,6 +50,7 @@ export class UploadQuiz extends Component {
         if (err)
           this.setState({ message: err.response.data, openSnackBar: true });
       });
+      this.setState({ fileName: "", file: null });
   };
 
   handleClose = () => {
