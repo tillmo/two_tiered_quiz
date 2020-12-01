@@ -54,8 +54,7 @@ def read_quiz_aux(quiz_str):
             prefix, contents = line.split(':', 1)
             if prefix == 'quiz':
                 if Quiz.objects.filter(name=contents):
-                    wrong_line = "Wrong line: {0}".format(line)
-                    raise Exception(wrong_line+"\nduplicate quiz")
+                    raise Exception("duplicate quiz")
                 quiz = Quiz.objects.create(name=contents)
                 # remove all contexts that have become invalid
                 question = None
@@ -84,12 +83,11 @@ def read_quiz_aux(quiz_str):
             elif prefix == 'e':
                 Explaination.objects.create(justification=just, text=contents)
             else:
-                wrong_line = "Wrong line: {0}".format(line)
-                raise Exception(
-                    wrong_line+"\nUnknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
+                raise Exception("Unknown prefix: {0}:\nUse quiz:, d:, q:, a:, j:, e:".format(prefix))
     except Exception as e:
+        wrong_line = "Wrong line: {0}".format(line)
         message = str(e)
         if message == "not enough values to unpack (expected 2, got 1)":
             raise Exception("Wrong quiz format\nPlease use the correct format quiz as mentioned")   
         else: 
-            raise e
+            raise Exception(wrong_line+"\n"+message)
