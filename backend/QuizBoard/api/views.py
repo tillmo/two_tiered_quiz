@@ -5,6 +5,7 @@ from django.db.models import Count, Max, Sum
 from QuizBoard.models import (Answer, Explaination, Justifications, Question,
                               Quiz, QuizTakers, Responses)
 from rest_framework import permissions, viewsets
+from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, ListCreateAPIView,
                                      RetrieveAPIView, UpdateAPIView)
@@ -15,9 +16,12 @@ from .serializers import (AnswerSerializer, ExplainationSerializer,
                           JustificationsSerializer, QuestionSerializer,
                           QuizListSerializer, QuizSerializer,
                           QuizTakerResponseSerializer, QuizTakerSerializer,
-                          QuizWithoutFlagsSerializer, ResponseSerialzer)
+                          QuizWithoutFlagsSerializer, ResponseSerialzer, UserSerializer)
 from django.db.models import FloatField
 from django.db.models.functions import Cast
+from QuizBoard.lib.quiz_parser import read_quiz_web
+from django.core.files import File
+from rest_framework import status
 
 
 class QuizListView(ListAPIView):
@@ -365,10 +369,8 @@ class AverageQuestionsSolvedView(ListAPIView):
         prev_quiz_id = query_set[0].quiz.id
         for quiz_taker in query_set:
             if prev_quiz_id != quiz_taker.quiz.id:
-                print(prev_quiz_id, quiz_correct_ans[prev_quiz_id])
                 quiz_correct_ans[prev_quiz_id] = quiz_correct_ans[prev_quiz_id] * \
                     1.0 / len(user_set) * 1.0
-                print(len(user_set))
                 prev_quiz_id = quiz_taker.quiz.id
                 user_set = set()
             if quiz_taker.user.id not in user_set:
@@ -432,3 +434,24 @@ def getGroupedUserscores():
                 users_score[quiz_taker.user.id] = quiz_taker.score
             quiz_set.add(quiz_taker.quiz.id)
     return users_score
+
+
+class UserRetrieveView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+
+class UploadQuizView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request, *args, **kwargs):
+        file_content = request.FILES['file'].read()
+        s = read_quiz_web(file_content.decode('utf-8'))
+        if s != "":
+            response = Response(s, status.HTTP_400_BAD_REQUEST)
+            return response
+        else:
+            s = 'Upload quiz successful'
+            response = Response(s)
+            return set_headers_to_response(response)
