@@ -3,7 +3,7 @@ from itertools import chain
 from django.contrib.auth.models import User
 from django.db.models import Count, Max, Sum
 from QuizBoard.models import (Answer, Explaination, Justifications, Question,
-                              Quiz, QuizTakers, Responses)
+                              Quiz, QuizTakers, Responses, TestUsers)
 from rest_framework import permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
@@ -223,7 +223,8 @@ class QuizTakerHistoryListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        groupedQuiz = QuizTakers.objects.values('quiz', 'quiz__name').annotate(
+        groupedQuiz = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).values('quiz', 'quiz__name').annotate(
             usersAttempted=Count('quiz')).annotate(highScore=Max('score'))
         response = Response(groupedQuiz)
         return set_headers_to_response(response)
@@ -291,10 +292,12 @@ class UserScoresDetailsView(ListAPIView):
 
     def get(self, request, user):
         user = User.objects.get(id=user)
-        userScore = QuizTakers.objects.filter(user=user).values(
+        userScore = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).filter(user=user).values(
             'user', 'user__username').annotate(totalScore=Sum('score'))
         totalQuiz = Quiz.objects.count()
-        quizzesAttempted = QuizTakers.objects.filter(user=user).values(
+        quizzesAttempted = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).filter(user=user).values(
             'user').annotate(quizattempted=Count('user'))
         scoreData = {'username': userScore[0]['user__username'], 'totalScore': userScore[0]
                      ['totalScore'], 'totalquiz': totalQuiz, 'quizattempted': quizzesAttempted[0]['quizattempted']}
@@ -309,7 +312,8 @@ class UserProgressView(ListAPIView):
 
     def get(self, request, user):
         user = User.objects.get(id=user)
-        userScores = QuizTakers.objects.filter(user=user).values(
+        userScores = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).filter(user=user).values(
             'quiz', 'score').order_by('quiz')
         allQuizPercentages = []
         quiz_set = set()
@@ -332,7 +336,8 @@ class AllUserProgressView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        userAllQuizScores = QuizTakers.objects.all().order_by('quiz')
+        userAllQuizScores = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).order_by('quiz')
         allQuizPercentages = []
         quizPercentages = []
         prevQuizId = userAllQuizScores[0].quiz.id
@@ -363,7 +368,8 @@ class AverageQuestionsSolvedView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        query_set = QuizTakers.objects.all().order_by('quiz')
+        query_set = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).order_by('quiz')
         quiz_correct_ans = {}
         user_set = set()
         prev_quiz_id = query_set[0].quiz.id
@@ -393,7 +399,8 @@ class OverallAttemptsOverQuizChartView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        groupedQuizzes = QuizTakers.objects.values('user').annotate(
+        groupedQuizzes = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).values('user').annotate(
             totalQuizzes=Count('quiz', distinct=True)).order_by('totalQuizzes')
         scoreData = {'groupedQuizzes': groupedQuizzes}
         response = Response(scoreData)
@@ -405,7 +412,8 @@ class TotalParticipantsView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
-        totalUsers = User.objects.count()
+        totalUsers = User.objects.exclude(id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).count()
         response = Response({'totalUsers': totalUsers})
         return set_headers_to_response(response)
 
@@ -418,7 +426,8 @@ def set_headers_to_response(response):
 
 
 def getGroupedUserscores():
-    query_set = QuizTakers.objects.all().order_by('user')
+    query_set = QuizTakers.objects.exclude(user__id__in=TestUsers.objects.filter(
+            test_flag=True).values_list('id', flat=True)).order_by('user')
     users_score = {}
     quiz_set = set()
     prev_user_id = query_set[0].user.id

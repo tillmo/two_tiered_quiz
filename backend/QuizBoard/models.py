@@ -79,6 +79,14 @@ class Responses(models.Model):
     def __str__(self):
         return self.question.label
 
+class TestUsers(models.Model):
+    test_quiztaker = models.OneToOneField(User, on_delete=models.CASCADE)
+    test_flag = models.BooleanField(default=False)
+
+    def  __str__(self):
+        return self.test_quiztaker.username
+
+
 @receiver(post_save, sender=Quiz)
 def set_default_quiz(sender, instance, created,**kwargs):
     quiz = Quiz.objects.filter(id = instance.id)
@@ -92,3 +100,13 @@ def set_default(sender, instance, created,**kwargs):
 @receiver(pre_save, sender=Quiz)
 def slugify_title(sender, instance, *args, **kwargs):
     instance.slug = slugify(instance.name)
+
+
+@receiver(post_save, sender=User)
+def create_user_testusers(sender, instance, created, **kwargs):
+    if created:
+        TestUsers.objects.create(test_quiztaker=instance)
+
+@receiver(post_save, sender=User)
+def save_user_testusers(sender, instance, **kwargs):
+    instance.testusers.save()
