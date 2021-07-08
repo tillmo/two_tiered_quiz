@@ -1,0 +1,53 @@
+From 5198586b1a710beef4dd422d57ce7254030d676c Mon Sep 17 00:00:00 2001
+From: Till Mossakowski <till@iws.cs.ovgu.de>
+Date: Fri, 24 Apr 2020 18:49:46 +0200
+Subject: [PATCH] patches needed for making django work
+
+---
+ .../django/contrib/admin/templatetags/admin_static.py           | 2 +-
+ .../django/contrib/staticfiles/templatetags/staticfiles.py      | 2 +-
+ lib/python3.6/site-packages/django/db/backends/mysql/base.py    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/python3.6/site-packages/django/contrib/admin/templatetags/admin_static.py b/lib/python3.6/site-packages/django/contrib/admin/templatetags/admin_static.py
+index 6b1738d..671969c 100644
+--- a/lib/python3.6/site-packages/django/contrib/admin/templatetags/admin_static.py
++++ b/lib/python3.6/site-packages/django/contrib/admin/templatetags/admin_static.py
+@@ -2,7 +2,7 @@ import warnings
+ 
+ from django.template import Library
+ from django.templatetags.static import static as _static
+-from django.utils.deprecation import RemovedInDjango30Warning
++# from django.utils.deprecation import RemovedInDjango30Warning
+ 
+ register = Library()
+ 
+diff --git a/lib/python3.6/site-packages/django/contrib/staticfiles/templatetags/staticfiles.py b/lib/python3.6/site-packages/django/contrib/staticfiles/templatetags/staticfiles.py
+index 9fa3926..7ed2672 100644
+--- a/lib/python3.6/site-packages/django/contrib/staticfiles/templatetags/staticfiles.py
++++ b/lib/python3.6/site-packages/django/contrib/staticfiles/templatetags/staticfiles.py
+@@ -4,7 +4,7 @@ from django import template
+ from django.templatetags.static import (
+     do_static as _do_static, static as _static,
+ )
+-from django.utils.deprecation import RemovedInDjango30Warning
++# from django.utils.deprecation import RemovedInDjango30Warning
+ 
+ register = template.Library()
+ 
+diff --git a/lib/python3.6/site-packages/django/db/backends/mysql/base.py b/lib/python3.6/site-packages/django/db/backends/mysql/base.py
+index d60ff79..1e7c08f 100644
+--- a/lib/python3.6/site-packages/django/db/backends/mysql/base.py
++++ b/lib/python3.6/site-packages/django/db/backends/mysql/base.py
+@@ -34,7 +34,7 @@ from .validation import DatabaseValidation                  # isort:skip
+ 
+ version = Database.version_info
+ if version < (1, 3, 13):
+-    raise ImproperlyConfigured('mysqlclient 1.3.13 or newer is required; you have %s.' % Database.__version__)
++    pass #raise ImproperlyConfigured('mysqlclient 1.3.13 or newer is required; you have %s.' % Database.__version__)
+ 
+ 
+ # MySQLdb returns TIME columns as timedelta -- they are more like timedelta in
+-- 
+2.17.1
+
